@@ -78,6 +78,10 @@ require_once 'includes/header.php';
                     </div>
                 </form>
 
+                <div class="text-center mt-3">
+                    <a href="forgot_password.php" style="color: var(--barber-gold); text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
+                </div>
+
                 <hr class="my-4">
                 <p class="text-center mb-0">Don't have an account? <a href="register.php">Register here</a></p>
             </div>
