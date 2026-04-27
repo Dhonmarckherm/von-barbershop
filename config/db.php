@@ -1,14 +1,16 @@
 <?php
 /**
  * Database Configuration
- * PDO connection to MySQL with error handling
+ * PDO connection to MySQL with environment variable support
  */
 
-define('DB_HOST', 'localhost');
-define('DB_PORT', '3305');
-define('DB_NAME', 'barbershop');
-define('DB_USER', 'root');
-define('DB_PASS', 'Sakuma@10');
+// Load from environment variables (for production/Render)
+// Fallback to hardcoded values (for local development)
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_PORT', getenv('DB_PORT') ?: '3305');
+define('DB_NAME', getenv('DB_NAME') ?: 'barbershop');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: 'Sakuma@10');
 define('DB_CHARSET', 'utf8mb4');
 
 try {
