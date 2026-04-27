@@ -3,9 +3,10 @@
 # Enable Rewrite Engine
 RewriteEngine On
 
-# Redirect to HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# NOTE: HTTPS redirect disabled - Render.com handles HTTPS automatically
+# Uncomment below if deploying to a server that doesn't force HTTPS
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Prevent directory browsing
 Options -Indexes

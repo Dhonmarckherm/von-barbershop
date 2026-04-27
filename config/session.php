@@ -6,12 +6,16 @@
 
 function initializeSession() {
     if (session_status() === PHP_SESSION_NONE) {
+        // Detect if we're on HTTPS (production) or HTTP (local)
+        $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
+                   || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
+        
         // Session cookie parameters MUST be set before session_start()
         session_set_cookie_params([
             'lifetime' => 86400,        // 24 hours
             'path' => '/',
             'domain' => '',
-            'secure' => false,          // Set to true if using HTTPS
+            'secure' => $isHttps,       // Auto-detect HTTPS
             'httponly' => true,         // Prevent JavaScript access
             'samesite' => 'Lax'         // CSRF protection
         ]);
