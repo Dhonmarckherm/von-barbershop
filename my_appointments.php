@@ -12,7 +12,7 @@ $stmt->execute([$_SESSION['user_id']]);
 $appointments = $stmt->fetchAll();
 
 // Get greeting
-$greeting = 'Good Day';
+$greeting = 'Good Day'; // Updated greeting
 
 // Count appointments by status
 $pendingCount = 0;
