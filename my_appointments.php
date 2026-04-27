@@ -11,17 +11,8 @@ $stmt = $pdo->prepare("SELECT id, appointment_date, appointment_time, status, cr
 $stmt->execute([$_SESSION['user_id']]);
 $appointments = $stmt->fetchAll();
 
-// Get time-based greeting
-$hour = date('H');
-if ($hour >= 5 && $hour < 12) {
-    $greeting = 'Good Morning';
-} elseif ($hour >= 12 && $hour < 17) {
-    $greeting = 'Good Afternoon';
-} elseif ($hour >= 17 && $hour < 21) {
-    $greeting = 'Good Evening';
-} else {
-    $greeting = 'Good Night';
-}
+// Get greeting
+$greeting = 'Good Day';
 
 // Count appointments by status
 $pendingCount = 0;
