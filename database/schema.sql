@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS appointments (
 -- Insert default admin user (password: admin123)
 -- Hashed with password_hash('admin123', PASSWORD_BCRYPT)
 INSERT IGNORE INTO users (name, email, password_hash, role) VALUES
-('Admin', 'admin@barbershop.com', '$2y$10$ns6Wv1X99mM5Ezp7suJqe.TBvJIyvNSJ4fSPr4TRToVeow719YBqu', 'admin');
+('Admin', 'admin@barbershop.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
 
 -- Insert sample services
 INSERT IGNORE INTO services (name, price, duration) VALUES
