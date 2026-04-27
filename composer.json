@@ -1,0 +1,14 @@
+{
+    "name": "barbershop/booking-system",
+    "description": "Barbershop Booking System with PHP, MySQL, and PHPMailer",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Barbershop\\": "src/"
+        }
+    }
+}

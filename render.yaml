@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: von-barbershop
+    env: php
+    region: oregon
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+    startCommand: heroku-php-apache2
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
