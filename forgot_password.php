@@ -27,8 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?");
             $stmt->execute([$token, $expires, $user['id']]);
             
-            // Create reset link
-            $resetLink = "http://localhost:8000/reset_password.php?token=$token";
+            // Create reset link with correct domain
+            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'];
+            $resetLink = "$protocol://$host/reset_password.php?token=$token";
             
             // In production, send email here. For now, show the link
             $success = "Password reset link has been generated. In production, this would be sent to your email.<br><br>Reset Link: <a href='$resetLink' target='_blank'>Click here to reset password</a>";
