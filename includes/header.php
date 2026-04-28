@@ -37,7 +37,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                     <?php if ($isLoggedIn): ?>
                         <?php if ($isAdmin): ?>
                             <li class="nav-item"><a class="nav-link" href="admin_dashboard.php">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin_users.php">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="admin_users.php">Manage Users</a></li>
                             <li class="nav-item"><a class="nav-link" href="admin_settings.php">Settings</a></li>
                             <li class="nav-item"><a class="nav-link" href="admin_announcements.php">Announcements</a></li>
                         <?php else: ?>

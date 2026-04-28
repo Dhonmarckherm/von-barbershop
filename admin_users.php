@@ -8,14 +8,42 @@ require_once 'includes/auth_check.php';
 require_once 'includes/admin_check.php';
 require_once 'config/db.php';
 
-$stmt = $pdo->query("SELECT id, name, email, role, created_at FROM users WHERE role != 'customer' ORDER BY role DESC, name ASC");
+$stmt = $pdo->query("SELECT id, name, email, role, created_at FROM users ORDER BY role ASC, name ASC");
 $users = $stmt->fetchAll();
 
 require_once 'includes/header.php';
 ?>
 
-<h2 class="mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Profile</h2>
-<p class="mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Edit admin account details</p>
+<h2 class="mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Manage Users</h2>
+<p class="mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">View, edit, and delete user accounts</p>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 col-6 mb-3">
+        <div class="stats-card">
+            <h3 style="color: var(--barber-gold);"><?php echo count($users); ?></h3>
+            <p>Total Users</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="stats-card">
+            <h3 style="color: var(--barber-gold);"><?php echo count(array_filter($users, fn($u) => $u['role'] === 'customer')); ?></h3>
+            <p>Customers</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="stats-card">
+            <h3 style="color: var(--barber-gold);"><?php echo count(array_filter($users, fn($u) => $u['role'] === 'barber')); ?></h3>
+            <p>Barbers</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="stats-card">
+            <h3 style="color: var(--barber-gold);"><?php echo count(array_filter($users, fn($u) => $u['role'] === 'admin')); ?></h3>
+            <p>Admins</p>
+        </div>
+    </div>
+</div>
 
 <div class="card">
     <div class="card-body">
@@ -32,28 +60,43 @@ require_once 'includes/header.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($users as $user): ?>
+                    <?php if (empty($users)): ?>
                         <tr>
-                            <td><?php echo $user['id']; ?></td>
-                            <td><?php echo htmlspecialchars($user['name']); ?></td>
-                            <td><?php echo htmlspecialchars($user['email']); ?></td>
-                            <td>
-                                <span class="badge <?php echo $user['role'] === 'admin' ? 'bg-danger' : 'bg-primary'; ?>">
-                                    <?php echo ucfirst($user['role']); ?>
-                                </span>
-                            </td>
-                            <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning edit-user-btn"
-                                    data-id="<?php echo $user['id']; ?>"
-                                    data-name="<?php echo htmlspecialchars($user['name']); ?>"
-                                    data-email="<?php echo htmlspecialchars($user['email']); ?>"
-                                    data-role="<?php echo $user['role']; ?>">
-                                    Edit
-                                </button>
-                            </td>
+                            <td colspan="6" class="text-center text-muted">No users found</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php foreach ($users as $user): ?>
+                            <tr>
+                                <td><?php echo $user['id']; ?></td>
+                                <td><?php echo htmlspecialchars($user['name']); ?></td>
+                                <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                <td>
+                                    <span class="badge <?php echo $user['role'] === 'admin' ? 'bg-danger' : ($user['role'] === 'barber' ? 'bg-primary' : 'bg-success'); ?>">
+                                        <?php echo ucfirst($user['role']); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning edit-user-btn me-1"
+                                        data-id="<?php echo $user['id']; ?>"
+                                        data-name="<?php echo htmlspecialchars($user['name']); ?>"
+                                        data-email="<?php echo htmlspecialchars($user['email']); ?>"
+                                        data-role="<?php echo $user['role']; ?>">
+                                        Edit
+                                    </button>
+                                    <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                                        <button class="btn btn-sm btn-danger delete-user-btn" 
+                                            data-id="<?php echo $user['id']; ?>" 
+                                            data-name="<?php echo htmlspecialchars($user['name']); ?>">
+                                            Delete
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary">You</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -106,6 +149,29 @@ require_once 'includes/header.php';
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="saveUserBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Delete User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteUserName"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone. All appointments associated with this user will also be deleted.</small></p>
+                <input type="hidden" id="deleteUserId">
+                <div id="deleteUserError" class="alert alert-danger d-none"></div>
+                <div id="deleteUserSuccess" class="alert alert-success d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete User</button>
             </div>
         </div>
     </div>
@@ -210,6 +276,57 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error(err);
             editUserError.textContent = 'An error occurred while updating.';
             editUserError.classList.remove('d-none');
+        });
+    });
+
+    // Delete functionality
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+    const deleteUserId = document.getElementById('deleteUserId');
+    const deleteUserName = document.getElementById('deleteUserName');
+    const deleteUserError = document.getElementById('deleteUserError');
+    const deleteUserSuccess = document.getElementById('deleteUserSuccess');
+
+    // Open delete modal
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            deleteUserId.value = this.dataset.id;
+            deleteUserName.textContent = this.dataset.name;
+            deleteUserError.classList.add('d-none');
+            deleteUserSuccess.classList.add('d-none');
+            deleteModal.show();
+        });
+    });
+
+    // Confirm delete
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        const id = deleteUserId.value;
+
+        deleteUserError.classList.add('d-none');
+        deleteUserSuccess.classList.add('d-none');
+
+        fetch('api/delete_user.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'user_id=' + encodeURIComponent(id)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                deleteUserSuccess.textContent = 'User deleted successfully!';
+                deleteUserSuccess.classList.remove('d-none');
+                setTimeout(() => {
+                    deleteModal.hide();
+                    location.reload();
+                }, 1000);
+            } else {
+                deleteUserError.textContent = data.error || 'Failed to delete user.';
+                deleteUserError.classList.remove('d-none');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            deleteUserError.textContent = 'An error occurred while deleting.';
+            deleteUserError.classList.remove('d-none');
         });
     });
 });
