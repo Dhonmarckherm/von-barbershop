@@ -675,9 +675,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-punchline::before {
     content: '"';
     position: absolute;
-    top: -20px;
-    left: -30px;
-    font-size: 4rem;
+    top: -15px;
+    left: -20px;
+    font-size: 3rem;
     color: var(--accent-gold);
     opacity: 0.3;
     font-family: 'Playfair Display', serif;
@@ -687,13 +687,13 @@ h1, h2, h3, h4, h5, h6 {
 .hero-punchline::after {
     content: '"';
     position: absolute;
-    bottom: -30px;
-    right: -30px;
-    font-size: 4rem;
+    bottom: -25px;
+    right: -20px;
+    font-size: 3rem;
     color: var(--accent-gold);
     opacity: 0.3;
     font-family: 'Playfair Display', serif;
-    animation: quote-appear 0.8s ease-out 2.3s both;
+    animation: quote-appear 0.8s ease-out 2.5s both;
 }
 
 @keyframes punchline-reveal {
@@ -801,6 +801,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.85rem;
     opacity: 0;
     animation: fadeInUp 1s ease-out 2s forwards;
+    text-align: center;
+    width: 100%;
+    display: block;
 }
 
 .hero-register a {
@@ -1668,6 +1671,27 @@ img, video, canvas, svg {
     .hero-punchline {
         font-size: 1rem;
         padding: 0 10px;
+        line-height: 1.4;
+    }
+    
+    .hero-punchline::before,
+    .hero-punchline::after {
+        font-size: 2rem;
+    }
+    
+    .hero-punchline::before {
+        top: -10px;
+        left: -15px;
+    }
+    
+    .hero-punchline::after {
+        bottom: -20px;
+        right: -15px;
+    }
+    
+    .hero-register {
+        font-size: 0.8rem;
+        margin-top: 1rem;
     }
     
     .hero-subtitle {
@@ -1756,6 +1780,22 @@ img, video, canvas, svg {
     
     .hero-punchline {
         font-size: 0.9rem;
+        letter-spacing: 2px;
+    }
+    
+    .hero-punchline::before,
+    .hero-punchline::after {
+        font-size: 1.5rem;
+    }
+    
+    .hero-punchline::before {
+        top: -8px;
+        left: -12px;
+    }
+    
+    .hero-punchline::after {
+        bottom: -18px;
+        right: -12px;
     }
     
     /* Fix navbar brand */
