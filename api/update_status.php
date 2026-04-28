@@ -62,11 +62,16 @@ if ($stmt->rowCount() > 0 || $appt['current_status'] === $status) {
         'time'           => $appt['appointment_time'],
     ];
 
-    // Send email notification on status change
-    if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
-        sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
-    } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
-        sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+    // Send email notification on status change (optional - won't crash if mailer fails)
+    try {
+        if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
+            @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
+        } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
+            @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+        }
+    } catch (Exception $e) {
+        // Email failed but appointment status was updated successfully
+        error_log('Email notification failed: ' . $e->getMessage());
     }
 
     echo json_encode(['success' => true]);
