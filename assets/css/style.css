@@ -1637,7 +1637,8 @@ img, video, canvas, svg {
    ========================================== */
 @media (max-width: 1024px) {
     .hero {
-        padding: 60px 20px;
+        padding: 100px 30px;
+        min-height: 100vh;
     }
     
     .hero h1 {
@@ -1651,16 +1652,30 @@ img, video, canvas, svg {
     .card {
         margin-bottom: 20px;
     }
+    
+    /* Ensure animations work on tablet */
+    .hero-particles {
+        display: block;
+    }
+    
+    .particle {
+        animation: float-particle 8s infinite;
+    }
+    
+    .hero-title-letter {
+        animation: letter-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 }
 
 /* ==========================================
    MOBILE PHONES & ANDROID (< 768px)
    ========================================== */
 @media (max-width: 768px) {
-    /* Fix hero section */
+    /* Fix hero section - keep animations visible */
     .hero {
-        padding: 40px 15px;
-        min-height: auto;
+        padding: 80px 15px 60px;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
     }
     
     .hero-title {
@@ -1692,6 +1707,30 @@ img, video, canvas, svg {
     .hero-register {
         font-size: 0.8rem;
         margin-top: 1rem;
+    }
+    
+    /* Ensure all hero animations work on mobile */
+    .hero-particles {
+        display: block;
+        opacity: 1;
+    }
+    
+    .particle {
+        animation: float-particle 8s infinite;
+    }
+    
+    .hero-title-letter {
+        animation: letter-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    
+    .hero-subtitle,
+    .hero-description,
+    .hero-punchline,
+    .hero-divider,
+    .hero-buttons,
+    .hero-register,
+    .scroll-indicator {
+        animation-play-state: running !important;
     }
     
     .hero-subtitle {
@@ -1773,7 +1812,13 @@ img, video, canvas, svg {
    SMALL PHONES (< 576px)
    ========================================== */
 @media (max-width: 576px) {
-    /* Further reduce hero size */
+    /* Further reduce hero size but keep animations */
+    .hero {
+        padding: 70px 15px 50px;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
     .hero-title {
         font-size: 2rem !important;
     }
@@ -1796,6 +1841,19 @@ img, video, canvas, svg {
     .hero-punchline::after {
         bottom: -18px;
         right: -12px;
+    }
+    
+    /* Keep all animations running on small phones */
+    .hero-particles {
+        display: block;
+    }
+    
+    .particle {
+        animation: float-particle 8s infinite;
+    }
+    
+    .hero-title-letter {
+        animation: letter-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     
     /* Fix navbar brand */
