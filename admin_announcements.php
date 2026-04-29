@@ -51,8 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
                     
+                    error_log("Announcement: Sending to " . $recipient['email']);
+                    error_log("Announcement: Brevo key exists: " . ($brevoKey ? 'YES' : 'NO'));
+                    
                     if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
                         // Use Brevo HTTP API (faster)
+                        error_log("Announcement: Using Brevo HTTP API");
                         $htmlContent = '
                             <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
                                 <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
@@ -62,11 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         ';
                         
-                        if (sendBrevoEmail($recipient['email'], $recipient['name'], $subject, $htmlContent)) {
+                        $emailResult = sendBrevoEmail($recipient['email'], $recipient['name'], $subject, $htmlContent);
+                        error_log("Announcement: Brevo API result for " . $recipient['email'] . ": " . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                        
+                        if ($emailResult) {
                             $sentCount++;
                         }
                     } else {
                         // Fallback to PHPMailer SMTP
+                        error_log("Announcement: Using PHPMailer SMTP fallback");
                         $mail = getMailer();
                         $mail->addAddress($recipient['email'], $recipient['name']);
                         $mail->isHTML(true);
@@ -81,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ';
                         $mail->send();
                         $sentCount++;
+                        error_log("Announcement: SMTP email sent successfully");
                     }
                 } catch (Exception $e) {
                     error_log("Announcement failed to " . $recipient['email'] . ": " . $e->getMessage());
