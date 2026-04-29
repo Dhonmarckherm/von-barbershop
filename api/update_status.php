@@ -95,8 +95,30 @@ try {
                 $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
                 
                 if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
+                    // Send acceptance email to customer
                     $emailResult = sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Acceptance email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                    
+                    // Notify barber about acceptance
+                    try {
+                        $mail = getMailer();
+                        $mail->addAddress($barberEmail, 'Barber');
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Appointment Accepted - ' . $appt['customer_name'];
+                        $mail->Body = "
+                            <h2>Appointment Accepted</h2>
+                            <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
+                            <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
+                            <p><strong>Location:</strong> {$appt['location']}</p>
+                            <p><strong>Date:</strong> {$appt['appointment_date']}</p>
+                            <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                            <p>This appointment has been accepted.</p>
+                        ";
+                        $mail->send();
+                        error_log('Barber notification sent for acceptance');
+                    } catch (Exception $e) {
+                        error_log('Barber acceptance notification failed: ' . $e->getMessage());
+                    }
                 } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
                     // Send cancellation email to customer
                     $emailResult = sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
