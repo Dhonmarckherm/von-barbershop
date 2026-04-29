@@ -22,8 +22,9 @@ function getMailer(): PHPMailer {
     $mail = new PHPMailer(true);
 
     // Server settings - use environment variables from Render
-    $mailUsername = getenv('MAIL_USERNAME') ?: 'dhonmarck2004@gmail.com';
-    $mailPassword = getenv('MAIL_PASSWORD') ?: 'glqypadiqiqidsgb';
+    // Try multiple methods: getenv, $_ENV, $_SERVER, then fallback
+    $mailUsername = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? null) ?: ($_SERVER['MAIL_USERNAME'] ?? null) ?: 'dhonmarck2004@gmail.com';
+    $mailPassword = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? null) ?: ($_SERVER['MAIL_PASSWORD'] ?? null) ?: 'glqypadiqiqidsgb';
 
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
