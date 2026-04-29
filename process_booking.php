@@ -77,11 +77,16 @@ if ($user) {
     // Fetch barber/admin email
     $barberStmt = $pdo->query("SELECT email FROM users WHERE role = 'admin' OR role = 'barber' ORDER BY id ASC LIMIT 1");
     $barber = $barberStmt->fetch();
-    $barberEmail = $barber ? $barber['email'] : 'your-email@gmail.com';
+    $barberEmail = $barber ? $barber['email'] : 'dhonmarckhermosura295@gmail.com';
 
-    // Send emails via PHPMailer
-    $emailSent = sendBookingEmails($user['email'], $user['name'], $appointmentDetails, $barberEmail);
+    // Send emails via PHPMailer (with error handling)
+    try {
+        $emailSent = sendBookingEmails($user['email'], $user['name'], $appointmentDetails, $barberEmail);
+    } catch (Exception $e) {
+        error_log('Booking email failed: ' . $e->getMessage());
+        $emailSent = false;
+    }
 }
 
-header('Location: my_appointments.php?booked=1&email=' . ($emailSent ? 'sent' : 'failed'));
+header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
 exit;
