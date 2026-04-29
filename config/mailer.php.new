@@ -1,0 +1,43 @@
+<?php
+/**
+ * PHPMailer Configuration
+ * 
+ * Install PHPMailer first: composer require phpmailer/phpmailer
+ * Then configure your SMTP credentials below or load from environment variables.
+ */
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/settings.php';
+
+/**
+ * Returns a configured PHPMailer instance.
+ *
+ * @return PHPMailer
+ */
+function getMailer(): PHPMailer {
+    $mail = new PHPMailer(true);
+
+    // Server settings - use environment variables from Render
+    $mailUsername = getenv('MAIL_USERNAME') ?: 'dhonmarckhermosura295@gmail.com';
+    $mailPassword = getenv('MAIL_PASSWORD') ?: 'pqceytaojobhjzfe';
+
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $mailUsername;
+    $mail->Password   = $mailPassword;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+    $mail->SMTPDebug  = 0; // Disable debug output for production
+    $mail->Timeout    = 10; // 10 second timeout to prevent hanging
+
+    // Sender
+    $siteName = getSetting('barbershop_name', 'V.O.N Barbershop');
+    $mail->setFrom($mailUsername, $siteName);
+
+    return $mail;
+}

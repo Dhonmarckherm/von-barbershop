@@ -25,14 +25,14 @@ function getMailer(): PHPMailer {
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';       // Update with your SMTP host
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'dhonmarck2004@gmail.com'; // Your Gmail address
-    $mail->Password   = 'hndiqhqtvbhodpqi';        // Your Gmail App Password
+    $mail->Username   = getenv('MAIL_USERNAME') ?: 'dhonmarckhermosura295@gmail.com'; // Your Gmail address
+    $mail->Password   = getenv('MAIL_PASSWORD') ?: 'pqceytaojobhjzfe';        // Your Gmail App Password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 
     // Sender
     $siteName = getSetting('barbershop_name', 'Barbershop Booking');
-    $mail->setFrom('dhonmarck2004@gmail.com', $siteName);
+    $mail->setFrom($mailUsername, $siteName);
 
     return $mail;
 }

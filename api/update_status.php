@@ -6,7 +6,7 @@
  *   - appointment_id (int)
  *   - status (pending|accepted|completed|cancelled)
  * 
- * Admin access only. Updates status immediately.
+ * Admin access only. Sends email notification to customer on accept/cancel.
  */
 
 require_once __DIR__ . '/../config/db.php';
@@ -37,8 +37,8 @@ if (!in_array($status, $allowedStatuses, true)) {
     exit;
 }
 
-// Fetch appointment to verify it exists
-$stmt = $pdo->prepare("SELECT id, status FROM appointments WHERE id = ?");
+// Fetch current status and customer details
+$stmt = $pdo->prepare("SELECT a.status AS current_status, a.appointment_date, a.appointment_time, a.haircut_description, a.location, u.name AS customer_name, u.email AS customer_email FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ?");
 $stmt->execute([$appointmentId]);
 $appt = $stmt->fetch();
 
@@ -51,8 +51,48 @@ if (!$appt) {
 $stmt = $pdo->prepare("UPDATE appointments SET status = ? WHERE id = ?");
 $stmt->execute([$status, $appointmentId]);
 
-if ($stmt->rowCount() > 0 || $appt['status'] === $status) {
-    // Status updated successfully - email notifications disabled for performance
+if ($stmt->rowCount() > 0 || $appt['current_status'] === $status) {
+    // Send email notification asynchronously (non-blocking)
+    if (in_array($status, ['accepted', 'cancelled'])) {
+        $details = [
+            'customer_name'  => $appt['customer_name'],
+            'customer_email' => $appt['customer_email'],
+            'service_name'   => $appt['haircut_description'],
+            'location'       => $appt['location'],
+            'date'           => $appt['appointment_date'],
+            'time'           => $appt['appointment_time'],
+        ];
+
+        // Use fastcgi_finish_request() to send response before sending email
+        if (function_exists('fastcgi_finish_request')) {
+            echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
+            fastcgi_finish_request();
+        } else {
+            // For non-FastCGI, send response and continue
+            ignore_user_abort(true);
+            set_time_limit(30);
+            echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
+            ob_end_flush();
+            flush();
+        }
+
+        // Send email after response is sent
+        try {
+            require_once __DIR__ . '/../config/mailer.php';
+            
+            if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
+                @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
+            } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
+                @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+            }
+        } catch (Exception $e) {
+            error_log('Email notification failed: ' . $e->getMessage());
+        } catch (Error $e) {
+            error_log('Email notification error: ' . $e->getMessage());
+        }
+        exit;
+    }
+
     echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
 } else {
     echo json_encode(['error' => 'No changes made. Appointment may not exist.']);
