@@ -80,20 +80,18 @@ if ($user) {
     $barberEmail = $barber ? $barber['email'] : 'dhonmarck2004@gmail.com';
 
     // Send emails via PHPMailer (with error handling)
-    // Email attempts are logged but don't affect booking success
     try {
         $emailSent = sendBookingEmails($user['email'], $user['name'], $appointmentDetails, $barberEmail);
         if ($emailSent) {
-            error_log('Booking emails SENT successfully');
+            error_log('Booking emails SENT successfully to customer and barber');
         } else {
-            error_log('Booking emails returned false - SMTP issue on Render');
+            error_log('Booking emails returned false - sendBookingEmails failed');
         }
     } catch (Exception $e) {
-        error_log('Booking email exception: ' . $e->getMessage());
+        error_log('Booking email FAILED with exception: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
+        $emailSent = false;
     }
-    
-    // Always report success - appointment is saved regardless of email
-    $emailSent = true;
 }
 
 header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
