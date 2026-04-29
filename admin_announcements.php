@@ -49,20 +49,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             foreach ($recipients as $recipient) {
                 try {
-                    $mail = getMailer();
-                    $mail->addAddress($recipient['email'], $recipient['name']);
-                    $mail->isHTML(true);
-                    $mail->Subject = $subject;
-                    $mail->Body = '
-                        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
-                            <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
-                            <div style="margin-top: 20px; line-height: 1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
-                            <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
-                            <p style="color: #8A8A9A; font-size: 0.85rem;">This message was sent by your barber.</p>
-                        </div>
-                    ';
-                    $mail->send();
-                    $sentCount++;
+                    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+                    
+                    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+                        // Use Brevo HTTP API (faster)
+                        $htmlContent = '
+                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
+                                <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
+                                <div style="margin-top: 20px; line-height: 1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
+                                <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
+                                <p style="color: #8A8A9A; font-size: 0.85rem;">This message was sent by your barber.</p>
+                            </div>
+                        ';
+                        
+                        if (sendBrevoEmail($recipient['email'], $recipient['name'], $subject, $htmlContent)) {
+                            $sentCount++;
+                        }
+                    } else {
+                        // Fallback to PHPMailer SMTP
+                        $mail = getMailer();
+                        $mail->addAddress($recipient['email'], $recipient['name']);
+                        $mail->isHTML(true);
+                        $mail->Subject = $subject;
+                        $mail->Body = '
+                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
+                                <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
+                                <div style="margin-top: 20px; line-height: 1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
+                                <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
+                                <p style="color: #8A8A9A; font-size: 0.85rem;">This message was sent by your barber.</p>
+                            </div>
+                        ';
+                        $mail->send();
+                        $sentCount++;
+                    }
                 } catch (Exception $e) {
                     error_log("Announcement failed to " . $recipient['email'] . ": " . $e->getMessage());
                 }

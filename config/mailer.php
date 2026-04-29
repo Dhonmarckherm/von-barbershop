@@ -68,6 +68,63 @@ function getMailer(): PHPMailer {
 }
 
 /**
+ * Send email using Brevo HTTP API (faster than SMTP).
+ *
+ * @param string $toEmail
+ * @param string $toName
+ * @param string $subject
+ * @param string $htmlBody
+ * @return bool
+ */
+function sendBrevoEmail(string $toEmail, string $toName, string $subject, string $htmlBody): bool {
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+    
+    if (!$brevoKey) {
+        error_log('Brevo API key not found');
+        return false;
+    }
+    
+    $data = [
+        'sender' => [
+            'name' => 'V.O.N Barbershop',
+            'email' => 'noreply@vonbarbershop.com'
+        ],
+        'to' => [
+            [
+                'email' => $toEmail,
+                'name' => $toName
+            ]
+        ],
+        'subject' => $subject,
+        'htmlContent' => $htmlBody
+    ];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.brevo.com/v3/smtp/email');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'accept: application/json',
+        'api-key: ' . $brevoKey,
+        'content-type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($httpCode >= 200 && $httpCode < 300) {
+        return true;
+    } else {
+        error_log("Brevo API Error: HTTP $httpCode - $error - Response: $response");
+        return false;
+    }
+}
+
+/**
  * Send booking notification emails to customer and admin.
  *
  * @param string $customerEmail
@@ -77,7 +134,29 @@ function getMailer(): PHPMailer {
  */
 function sendBookingEmails(string $customerEmail, string $customerName, array $appointmentDetails, string $adminEmail): bool {
     try {
-        // Email to Customer
+        // Check if using Brevo API key
+        $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+        
+        if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+            // Use Brevo HTTP API (faster)
+            $customerSent = sendBrevoEmail(
+                $customerEmail,
+                $customerName,
+                'Your Appointment Confirmation - Barbershop',
+                buildCustomerEmailBody($appointmentDetails)
+            );
+            
+            $adminSent = sendBrevoEmail(
+                $adminEmail,
+                'Barber',
+                'New Booking Received - Barbershop',
+                buildAdminEmailBody($appointmentDetails)
+            );
+            
+            return $customerSent && $adminSent;
+        }
+        
+        // Fallback to PHPMailer SMTP
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
         $mail->isHTML(true);
@@ -85,7 +164,6 @@ function sendBookingEmails(string $customerEmail, string $customerName, array $a
         $mail->Body    = buildCustomerEmailBody($appointmentDetails);
         $mail->send();
 
-        // Email to Admin/Barber
         $mail = getMailer();
         $mail->addAddress($adminEmail, 'Barber');
         $mail->isHTML(true);
@@ -109,6 +187,17 @@ function sendBookingEmails(string $customerEmail, string $customerName, array $a
  * @return bool
  */
 function sendAcceptanceEmail(string $customerEmail, string $customerName, array $details): bool {
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+    
+    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+        return sendBrevoEmail(
+            $customerEmail,
+            $customerName,
+            'Your Appointment Has Been Accepted - Barbershop',
+            buildAcceptanceEmailBody($details)
+        );
+    }
+    
     try {
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
@@ -132,6 +221,17 @@ function sendAcceptanceEmail(string $customerEmail, string $customerName, array 
  * @return bool
  */
 function sendCancellationEmail(string $customerEmail, string $customerName, array $details): bool {
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+    
+    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+        return sendBrevoEmail(
+            $customerEmail,
+            $customerName,
+            'Your Appointment Has Been Cancelled - Barbershop',
+            buildCancellationEmailBody($details)
+        );
+    }
+    
     try {
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
@@ -155,6 +255,17 @@ function sendCancellationEmail(string $customerEmail, string $customerName, arra
  * @return bool
  */
 function sendRescheduleEmail(string $customerEmail, string $customerName, array $details): bool {
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+    
+    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+        return sendBrevoEmail(
+            $customerEmail,
+            $customerName,
+            'Your Appointment Has Been Rescheduled - Barbershop',
+            buildRescheduleEmailBody($details)
+        );
+    }
+    
     try {
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
