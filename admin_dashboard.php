@@ -277,6 +277,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('confirmStatusBtn').addEventListener('click', function() {
         const id = statusAppointmentId.value;
         const status = statusNewValue.value;
+        const confirmBtn = this;
+        
+        // Disable button to prevent double-click
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Processing...';
 
         fetch('api/update_status.php', {
             method: 'POST',
@@ -286,15 +291,29 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(r => r.json())
         .then(data => {
             statusModal.hide();
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm';
+            
             if (data.success) {
+                // Show success message
+                const statusMessages = {
+                    'accepted': '✅ Appointment has been ACCEPTED successfully!\n\nCustomer will receive a confirmation email.',
+                    'cancelled': '❌ Appointment has been CANCELLED successfully!\n\nCustomer will receive a cancellation email.',
+                    'completed': '✅ Appointment marked as COMPLETED successfully!',
+                    'pending': '✅ Appointment status reset to PENDING!'
+                };
+                
+                alert(statusMessages[status] || '✅ Status updated successfully!');
                 location.reload();
             } else {
-                alert(data.error || 'Failed to update status');
+                alert('❌ Error: ' + (data.error || 'Failed to update status'));
             }
         })
         .catch(err => {
-            console.error(err);
-            alert('An error occurred');
+            statusModal.hide();
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm';
+            alert('❌ Network error: ' + err.message);
         });
     });
 
