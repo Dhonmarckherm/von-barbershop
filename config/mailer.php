@@ -21,28 +21,17 @@ require_once __DIR__ . '/settings.php';
 function getMailer(): PHPMailer {
     $mail = new PHPMailer(true);
 
-    // Server settings - try ALL methods to get credentials from Render
-    // Priority: getenv() → $_ENV → $_SERVER → hardcoded fallback
-    $username = getenv('MAIL_USERNAME');
-    if (!$username && isset($_ENV['MAIL_USERNAME'])) {
-        $username = $_ENV['MAIL_USERNAME'];
-    }
-    if (!$username && isset($_SERVER['MAIL_USERNAME'])) {
-        $username = $_SERVER['MAIL_USERNAME'];
-    }
-    $mailUsername = $username ?: 'dhonmarck2004@gmail.com';
-
-    $password = getenv('MAIL_PASSWORD');
-    if (!$password && isset($_ENV['MAIL_PASSWORD'])) {
-        $password = $_ENV['MAIL_PASSWORD'];
-    }
-    if (!$password && isset($_SERVER['MAIL_PASSWORD'])) {
-        $password = $_SERVER['MAIL_PASSWORD'];
-    }
-    $mailPassword = $password ?: 'glqypadiqiqidsgb';
-
-    // Log credentials being used (for debugging)
-    error_log("MAILER CONFIG - Username: $mailUsername, Password length: " . strlen($mailPassword));
+    // Server settings - Direct credentials (verified working)
+    // Environment variables from Render override these if set
+    $mailUsername = 'dhonmarck2004@gmail.com';
+    $mailPassword = 'glqypadiqiqidsgb';
+    
+    // Try to override with environment variables if available
+    $envUsername = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? null) ?: ($_SERVER['MAIL_USERNAME'] ?? null);
+    $envPassword = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? null) ?: ($_SERVER['MAIL_PASSWORD'] ?? null);
+    
+    if ($envUsername) $mailUsername = $envUsername;
+    if ($envPassword) $mailPassword = $envPassword;
 
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
