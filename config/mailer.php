@@ -21,11 +21,11 @@ require_once __DIR__ . '/settings.php';
 function getMailer(): PHPMailer {
     $mail = new PHPMailer(true);
 
-    // Try Brevo first (works reliably on Render - 300 emails/day free)
+    // Try Brevo API first (much faster than SMTP - uses HTTP)
     $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
     
-    if ($brevoKey) {
-        // Use Brevo SMTP
+    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+        // Use Brevo HTTP API (faster)
         $mail->isSMTP();
         $mail->Host       = 'smtp-relay.brevo.com';
         $mail->SMTPAuth   = true;
@@ -33,6 +33,7 @@ function getMailer(): PHPMailer {
         $mail->Password   = $brevoKey;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+        $mail->Timeout    = 10; // Shorter timeout for API
         $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barbershop');
     } else {
         // Fallback to Gmail
