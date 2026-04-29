@@ -17,14 +17,24 @@ function initializeSession() {
             'domain' => '',
             'secure' => $isHttps,       // Auto-detect HTTPS
             'httponly' => true,         // Prevent JavaScript access
-            'samesite' => 'Lax'         // CSRF protection
+            'samesite' => 'None'        // Required for cross-site requests on Render
         ]);
 
         // Garbage collection settings
         ini_set('session.gc_maxlifetime', 86400);
-        ini_set('session.use_strict_mode', 1);
+        ini_set('session.use_strict_mode', 0);
+        ini_set('session.use_cookies', 1);
+        ini_set('session.use_only_cookies', 1);
         
         // Start the session
         session_start();
+        
+        // Regenerate session ID periodically for security
+        if (!isset($_SESSION['created'])) {
+            $_SESSION['created'] = time();
+        } elseif (time() - $_SESSION['created'] > 3600) {
+            session_regenerate_id(true);
+            $_SESSION['created'] = time();
+        }
     }
 }
