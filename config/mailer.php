@@ -84,6 +84,11 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
         return false;
     }
     
+    if (strpos($brevoKey, 'xkeysib-') !== 0) {
+        error_log('Brevo API key has wrong format: ' . substr($brevoKey, 0, 10) . '...');
+        return false;
+    }
+    
     $data = [
         'sender' => [
             'name' => 'V.O.N Barbershop',
@@ -99,6 +104,11 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
         'htmlContent' => $htmlBody
     ];
     
+    if (!function_exists('curl_init')) {
+        error_log('cURL is not enabled on this server');
+        return false;
+    }
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://api.brevo.com/v3/smtp/email');
     curl_setopt($ch, CURLOPT_POST, true);
@@ -110,6 +120,7 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -117,6 +128,7 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
     curl_close($ch);
     
     if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Brevo email sent successfully to $toEmail");
         return true;
     } else {
         error_log("Brevo API Error: HTTP $httpCode - $error - Response: $response");
