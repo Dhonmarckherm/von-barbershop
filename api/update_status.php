@@ -87,9 +87,11 @@ try {
                 require_once __DIR__ . '/../config/mailer.php';
                 
                 if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
-                    @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
+                    $emailResult = sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
+                    error_log('Acceptance email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
                 } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
-                    @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+                    $emailResult = sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+                    error_log('Cancellation email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
                 }
             } catch (Exception $e) {
                 error_log('Email notification failed: ' . $e->getMessage());

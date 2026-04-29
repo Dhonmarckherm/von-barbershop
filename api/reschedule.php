@@ -93,7 +93,8 @@ if ($stmt->rowCount() > 0) {
     // Send email after response
     try {
         require_once __DIR__ . '/../config/mailer.php';
-        @sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
+        $emailResult = sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
+        error_log('Reschedule email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
     } catch (Exception $e) {
         error_log('Reschedule email failed: ' . $e->getMessage());
     } catch (Error $e) {
