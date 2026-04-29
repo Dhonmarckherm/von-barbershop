@@ -3,21 +3,30 @@ $pageTitle = 'Home';
 require_once 'config/db.php';
 require_once 'includes/header.php';
 
-// Fetch reviews for homepage display
-$stmt = $pdo->query("
-    SELECT r.rating, r.comment, r.created_at, u.name 
-    FROM reviews r 
-    JOIN users u ON r.user_id = u.id 
-    ORDER BY r.created_at DESC 
-    LIMIT 10
-");
-$reviews = $stmt->fetchAll();
+// Fetch reviews for homepage display (handle if table doesn't exist yet)
+$reviews = [];
+$averageRating = 0;
+$totalReviews = 0;
 
-// Calculate average rating
-$stmt = $pdo->query("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews");
-$ratingStats = $stmt->fetch();
-$averageRating = $ratingStats['avg_rating'] ? round($ratingStats['avg_rating'], 1) : 0;
-$totalReviews = $ratingStats['total_reviews'];
+try {
+    $stmt = $pdo->query("
+        SELECT r.rating, r.comment, r.created_at, u.name 
+        FROM reviews r 
+        JOIN users u ON r.user_id = u.id 
+        ORDER BY r.created_at DESC 
+        LIMIT 10
+    ");
+    $reviews = $stmt->fetchAll();
+
+    // Calculate average rating
+    $stmt = $pdo->query("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews");
+    $ratingStats = $stmt->fetch();
+    $averageRating = $ratingStats['avg_rating'] ? round($ratingStats['avg_rating'], 1) : 0;
+    $totalReviews = $ratingStats['total_reviews'];
+} catch (PDOException $e) {
+    // Table doesn't exist yet, use defaults
+    error_log("Reviews table not found: " . $e->getMessage());
+}
 ?>
 
 <div class="hero">
