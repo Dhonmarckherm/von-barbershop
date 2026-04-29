@@ -24,7 +24,7 @@ function getMailer(): PHPMailer {
     // Server settings - Direct credentials (verified working)
     // Environment variables from Render override these if set
     $mailUsername = 'dhonmarck2004@gmail.com';
-    $mailPassword = 'glqypadiqiqidsgb';
+    $mailPassword = 'ffsygjederrhvpfu';
     
     // Try to override with environment variables if available
     $envUsername = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? null) ?: ($_SERVER['MAIL_USERNAME'] ?? null);
