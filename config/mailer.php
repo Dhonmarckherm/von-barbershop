@@ -29,7 +29,7 @@ function getMailer(): PHPMailer {
         $mail->isSMTP();
         $mail->Host       = 'smtp-relay.brevo.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = $brevoKey;
+        $mail->Username   = 'a9a607001@smtp-brevo.com';
         $mail->Password   = $brevoKey;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
