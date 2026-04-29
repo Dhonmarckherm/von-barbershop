@@ -21,35 +21,46 @@ require_once __DIR__ . '/settings.php';
 function getMailer(): PHPMailer {
     $mail = new PHPMailer(true);
 
-    // Server settings - Direct credentials (verified working)
-    // Environment variables from Render override these if set
-    $mailUsername = 'dhonmarck2004@gmail.com';
-    $mailPassword = 'ffsygjederrhvpfu';
+    // Try SendGrid first (works reliably on Render)
+    $sendgridKey = getenv('SENDGRID_API_KEY') ?: ($_ENV['SENDGRID_API_KEY'] ?? null) ?: ($_SERVER['SENDGRID_API_KEY'] ?? null);
     
-    // Try to override with environment variables if available
-    $envUsername = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? null) ?: ($_SERVER['MAIL_USERNAME'] ?? null);
-    $envPassword = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? null) ?: ($_SERVER['MAIL_PASSWORD'] ?? null);
+    if ($sendgridKey) {
+        // Use SendGrid API
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.sendgrid.net';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'apikey';
+        $mail->Password   = $sendgridKey;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barbershop');
+    } else {
+        // Fallback to Gmail
+        $mailUsername = 'dhonmarck2004@gmail.com';
+        $mailPassword = 'ffsygjederrhvpfu';
+        
+        $envUsername = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? null) ?: ($_SERVER['MAIL_USERNAME'] ?? null);
+        $envPassword = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? null) ?: ($_SERVER['MAIL_PASSWORD'] ?? null);
+        
+        if ($envUsername) $mailUsername = $envUsername;
+        if ($envPassword) $mailPassword = $envPassword;
+        
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $mailUsername;
+        $mail->Password   = $mailPassword;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->setFrom($mailUsername, 'V.O.N Barbershop');
+    }
     
-    if ($envUsername) $mailUsername = $envUsername;
-    if ($envPassword) $mailPassword = $envPassword;
-
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
-    $mail->SMTPAuth   = true;
-    $mail->Username   = $mailUsername;
-    $mail->Password   = $mailPassword;
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
-    $mail->SMTPDebug  = 0; // Disable debug output
+    $mail->SMTPDebug  = 0;
     $mail->Debugoutput = function($str, $level) {
         error_log("PHPMailer Debug [$level]: $str");
     };
-    $mail->Timeout    = 15; // 15 second timeout
+    $mail->Timeout    = 15;
     $mail->SMTPKeepAlive = false;
-
-    // Sender
-    $siteName = getSetting('barbershop_name', 'V.O.N Barbershop');
-    $mail->setFrom($mailUsername, $siteName);
 
     return $mail;
 }
