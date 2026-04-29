@@ -185,7 +185,7 @@ try {
 <!-- Customer Reviews Section -->
 <div class="row mt-5 mb-4">
     <div class="col-12">
-        <div class="card">
+        <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border: 2px solid rgba(197,160,89,0.3);">
             <div class="card-body p-4">
                 <div class="text-center mb-4">
                     <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">
@@ -200,15 +200,15 @@ try {
                             <div class="mb-2">
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
                                     <i class="bi bi-star<?php echo ($i <= $averageRating) ? '-fill' : ''; ?>" 
-                                       style="color: <?php echo ($i <= $averageRating) ? '#ffc107' : '#ddd'; ?>; font-size: 2rem;"></i>
+                                       style="color: <?php echo ($i <= $averageRating) ? '#ffc107' : '#555'; ?>; font-size: 2rem;"></i>
                                 <?php endfor; ?>
                             </div>
-                            <p style="color: var(--barber-gray); margin: 0;">
+                            <p style="color: #F5F0E8; margin: 0; opacity: 0.8;">
                                 Based on <?php echo $totalReviews; ?> review<?php echo $totalReviews != 1 ? 's' : ''; ?>
                             </p>
                         </div>
                     <?php else: ?>
-                        <p style="color: var(--barber-gray);" class="mt-3">Be the first to leave a review!</p>
+                        <p style="color: #F5F0E8; opacity: 0.8;" class="mt-3">Be the first to leave a review!</p>
                     <?php endif; ?>
                 </div>
 
@@ -217,25 +217,25 @@ try {
                     <div class="row">
                         <?php foreach ($reviews as $review): ?>
                             <div class="col-md-6 mb-3">
-                                <div class="p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--barber-gold);">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="p-4" style="background: rgba(255,255,255,0.05); border-radius: 15px; border-left: 4px solid var(--barber-gold); backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.08)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(197,160,89,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
                                         <div>
-                                            <strong style="color: var(--barber-dark);">
+                                            <strong style="color: var(--barber-gold); font-size: 1.1rem;">
                                                 <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($review['name']); ?>
                                             </strong>
                                         </div>
-                                        <small style="color: var(--barber-gray);">
+                                        <small style="color: #F5F0E8; opacity: 0.6;">
                                             <?php echo date('M d, Y', strtotime($review['created_at'])); ?>
                                         </small>
                                     </div>
-                                    <div class="mb-2">
+                                    <div class="mb-3">
                                         <?php for ($i = 1; $i <= 5; $i++): ?>
                                             <i class="bi bi-star<?php echo ($i <= $review['rating']) ? '-fill' : ''; ?>" 
-                                               style="color: <?php echo ($i <= $review['rating']) ? '#ffc107' : '#ddd'; ?>;"></i>
+                                               style="color: <?php echo ($i <= $review['rating']) ? '#ffc107' : '#555'; ?>; font-size: 1.2rem;"></i>
                                         <?php endfor; ?>
                                     </div>
                                     <?php if ($review['comment']): ?>
-                                        <p style="color: #333; margin: 0; font-size: 0.95rem; line-height: 1.6;">
+                                        <p style="color: #F5F0E8; margin: 0; font-size: 1rem; line-height: 1.7; font-weight: 400;">
                                             <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
                                         </p>
                                     <?php endif; ?>
