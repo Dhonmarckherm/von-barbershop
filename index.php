@@ -235,7 +235,7 @@ try {
                                         <?php endfor; ?>
                                     </div>
                                     <?php if ($review['comment']): ?>
-                                        <p style="color: var(--barber-gray); margin: 0; font-size: 0.95rem;">
+                                        <p style="color: #333; margin: 0; font-size: 0.95rem; line-height: 1.6;">
                                             <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
                                         </p>
                                     <?php endif; ?>
