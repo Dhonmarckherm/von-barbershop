@@ -10,7 +10,6 @@
  */
 
 require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/mailer.php';
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
@@ -53,25 +52,34 @@ $stmt = $pdo->prepare("UPDATE appointments SET status = ? WHERE id = ?");
 $stmt->execute([$status, $appointmentId]);
 
 if ($stmt->rowCount() > 0 || $appt['current_status'] === $status) {
-    $details = [
-        'customer_name'  => $appt['customer_name'],
-        'customer_email' => $appt['customer_email'],
-        'service_name'   => $appt['haircut_description'],
-        'location'       => $appt['location'],
-        'date'           => $appt['appointment_date'],
-        'time'           => $appt['appointment_time'],
-    ];
-
-    // Send email notification on status change (optional - won't crash if mailer fails)
+    // Try to send email notifications (won't break if it fails)
     try {
-        if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
-            @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
-        } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
-            @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+        // Only attempt emails if mailer is configured
+        $mailUsername = getenv('MAIL_USERNAME');
+        $mailPassword = getenv('MAIL_PASSWORD');
+        
+        if ($mailUsername && $mailPassword) {
+            require_once __DIR__ . '/../config/mailer.php';
+            
+            $details = [
+                'customer_name'  => $appt['customer_name'],
+                'customer_email' => $appt['customer_email'],
+                'service_name'   => $appt['haircut_description'],
+                'location'       => $appt['location'],
+                'date'           => $appt['appointment_date'],
+                'time'           => $appt['appointment_time'],
+            ];
+
+            if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
+                @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
+            } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
+                @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
+            }
         }
     } catch (Exception $e) {
-        // Email failed but appointment status was updated successfully
         error_log('Email notification failed: ' . $e->getMessage());
+    } catch (Error $e) {
+        error_log('Email notification error: ' . $e->getMessage());
     }
 
     echo json_encode(['success' => true]);

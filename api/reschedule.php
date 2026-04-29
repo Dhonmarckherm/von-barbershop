@@ -11,7 +11,6 @@
  */
 
 require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/mailer.php';
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
@@ -67,18 +66,31 @@ $stmt = $pdo->prepare("UPDATE appointments SET appointment_date = ?, appointment
 $stmt->execute([$newDate, $newTime, $appointmentId]);
 
 if ($stmt->rowCount() > 0) {
-    // Send reschedule email
-    $details = [
-        'customer_name'  => $appt['customer_name'],
-        'customer_email' => $appt['customer_email'],
-        'service_name'   => $appt['haircut_description'],
-        'location'       => $appt['location'],
-        'date'           => $newDate,
-        'time'           => $newTime,
-        'old_date'       => $appt['appointment_date'],
-        'old_time'       => $appt['appointment_time'],
-    ];
-    sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
+    // Try to send reschedule email (won't break if it fails)
+    try {
+        $mailUsername = getenv('MAIL_USERNAME');
+        $mailPassword = getenv('MAIL_PASSWORD');
+        
+        if ($mailUsername && $mailPassword) {
+            require_once __DIR__ . '/../config/mailer.php';
+            
+            $details = [
+                'customer_name'  => $appt['customer_name'],
+                'customer_email' => $appt['customer_email'],
+                'service_name'   => $appt['haircut_description'],
+                'location'       => $appt['location'],
+                'date'           => $newDate,
+                'time'           => $newTime,
+                'old_date'       => $appt['appointment_date'],
+                'old_time'       => $appt['appointment_time'],
+            ];
+            @sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
+        }
+    } catch (Exception $e) {
+        error_log('Reschedule email failed: ' . $e->getMessage());
+    } catch (Error $e) {
+        error_log('Reschedule email error: ' . $e->getMessage());
+    }
 
     echo json_encode(['success' => true]);
 } else {
