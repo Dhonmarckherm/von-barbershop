@@ -40,7 +40,7 @@ function initializeSession() {
 /**
  * Set persistent auth cookies as backup for sessions
  */
-function setAuthCookies($userId, $name, $email, $role) {
+function setAuthCookies(int $userId, string $name, string $email, string $role): void {
     $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
     
@@ -52,7 +52,7 @@ function setAuthCookies($userId, $name, $email, $role) {
         'samesite' => 'Lax'
     ];
     
-    setcookie('auth_user_id', $userId, $cookieParams);
+    setcookie('auth_user_id', (string)$userId, $cookieParams);
     setcookie('auth_name', $name, $cookieParams);
     setcookie('auth_email', $email, $cookieParams);
     setcookie('auth_role', $role, $cookieParams);
@@ -61,7 +61,7 @@ function setAuthCookies($userId, $name, $email, $role) {
 /**
  * Clear auth cookies on logout
  */
-function clearAuthCookies() {
+function clearAuthCookies(): void {
     setcookie('auth_user_id', '', time() - 3600, '/');
     setcookie('auth_name', '', time() - 3600, '/');
     setcookie('auth_email', '', time() - 3600, '/');
