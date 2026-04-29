@@ -21,16 +21,16 @@ require_once __DIR__ . '/settings.php';
 function getMailer(): PHPMailer {
     $mail = new PHPMailer(true);
 
-    // Try SendGrid first (works reliably on Render)
-    $sendgridKey = getenv('SENDGRID_API_KEY') ?: ($_ENV['SENDGRID_API_KEY'] ?? null) ?: ($_SERVER['SENDGRID_API_KEY'] ?? null);
+    // Try Brevo first (works reliably on Render - 300 emails/day free)
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
     
-    if ($sendgridKey) {
-        // Use SendGrid API
+    if ($brevoKey) {
+        // Use Brevo SMTP
         $mail->isSMTP();
-        $mail->Host       = 'smtp.sendgrid.net';
+        $mail->Host       = 'smtp-relay.brevo.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'apikey';
-        $mail->Password   = $sendgridKey;
+        $mail->Username   = $brevoKey;
+        $mail->Password   = $brevoKey;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barbershop');
@@ -52,7 +52,6 @@ function getMailer(): PHPMailer {
         $mail->Password   = $mailPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
-        // Increase timeout and retries for Render
         $mail->Timeout    = 30;
         $mail->SMTPKeepAlive = false;
         $mail->setFrom($mailUsername, 'V.O.N Barbershop');
