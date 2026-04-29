@@ -47,9 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($errors)) {
-            // Increase timeout for bulk sending
-            set_time_limit(300); // 5 minutes max
-            
             foreach ($recipients as $recipient) {
                 try {
                     $mail = getMailer();
@@ -66,12 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ';
                     $mail->send();
                     $sentCount++;
-                    
-                    // Send response to browser progressively
-                    if ($sentCount % 5 === 0) {
-                        echo "<script>console.log('Sent to " . $sentCount . " customers...');</script>";
-                        flush();
-                    }
                 } catch (Exception $e) {
                     error_log("Announcement failed to " . $recipient['email'] . ": " . $e->getMessage());
                 }
