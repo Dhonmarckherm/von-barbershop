@@ -6,7 +6,7 @@
  *   - appointment_id (int)
  *   - status (pending|accepted|completed|cancelled)
  * 
- * Admin access only. Sends email notification to customer on accept/cancel.
+ * Admin access only. Updates status immediately.
  */
 
 require_once __DIR__ . '/../config/db.php';
@@ -37,8 +37,8 @@ if (!in_array($status, $allowedStatuses, true)) {
     exit;
 }
 
-// Fetch current status and customer details before updating
-$stmt = $pdo->prepare("SELECT a.status AS current_status, a.appointment_date, a.appointment_time, a.haircut_description, a.location, u.name AS customer_name, u.email AS customer_email FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ?");
+// Fetch appointment to verify it exists
+$stmt = $pdo->prepare("SELECT id, status FROM appointments WHERE id = ?");
 $stmt->execute([$appointmentId]);
 $appt = $stmt->fetch();
 
@@ -51,38 +51,9 @@ if (!$appt) {
 $stmt = $pdo->prepare("UPDATE appointments SET status = ? WHERE id = ?");
 $stmt->execute([$status, $appointmentId]);
 
-if ($stmt->rowCount() > 0 || $appt['current_status'] === $status) {
-    // Try to send email notifications (won't break if it fails)
-    try {
-        // Only attempt emails if mailer is configured
-        $mailUsername = getenv('MAIL_USERNAME');
-        $mailPassword = getenv('MAIL_PASSWORD');
-        
-        if ($mailUsername && $mailPassword) {
-            require_once __DIR__ . '/../config/mailer.php';
-            
-            $details = [
-                'customer_name'  => $appt['customer_name'],
-                'customer_email' => $appt['customer_email'],
-                'service_name'   => $appt['haircut_description'],
-                'location'       => $appt['location'],
-                'date'           => $appt['appointment_date'],
-                'time'           => $appt['appointment_time'],
-            ];
-
-            if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
-                @sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
-            } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
-                @sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
-            }
-        }
-    } catch (Exception $e) {
-        error_log('Email notification failed: ' . $e->getMessage());
-    } catch (Error $e) {
-        error_log('Email notification error: ' . $e->getMessage());
-    }
-
-    echo json_encode(['success' => true]);
+if ($stmt->rowCount() > 0 || $appt['status'] === $status) {
+    // Status updated successfully - email notifications disabled for performance
+    echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
 } else {
     echo json_encode(['error' => 'No changes made. Appointment may not exist.']);
 }

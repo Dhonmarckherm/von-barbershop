@@ -7,7 +7,7 @@
  *   - new_date (YYYY-MM-DD)
  *   - new_time (HH:MM)
  * 
- * Admin access only. Sends email notification to customer.
+ * Admin access only. Updates appointment immediately.
  */
 
 require_once __DIR__ . '/../config/db.php';
@@ -44,7 +44,7 @@ if (empty($newTime) || !preg_match('/^\d{2}:\d{2}$/', $newTime)) {
 }
 
 // Fetch current appointment details
-$stmt = $pdo->prepare("SELECT a.appointment_date, a.appointment_time, a.haircut_description, a.location, u.name AS customer_name, u.email AS customer_email FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ?");
+$stmt = $pdo->prepare("SELECT appointment_date, appointment_time FROM appointments WHERE id = ?");
 $stmt->execute([$appointmentId]);
 $appt = $stmt->fetch();
 
@@ -66,33 +66,8 @@ $stmt = $pdo->prepare("UPDATE appointments SET appointment_date = ?, appointment
 $stmt->execute([$newDate, $newTime, $appointmentId]);
 
 if ($stmt->rowCount() > 0) {
-    // Try to send reschedule email (won't break if it fails)
-    try {
-        $mailUsername = getenv('MAIL_USERNAME');
-        $mailPassword = getenv('MAIL_PASSWORD');
-        
-        if ($mailUsername && $mailPassword) {
-            require_once __DIR__ . '/../config/mailer.php';
-            
-            $details = [
-                'customer_name'  => $appt['customer_name'],
-                'customer_email' => $appt['customer_email'],
-                'service_name'   => $appt['haircut_description'],
-                'location'       => $appt['location'],
-                'date'           => $newDate,
-                'time'           => $newTime,
-                'old_date'       => $appt['appointment_date'],
-                'old_time'       => $appt['appointment_time'],
-            ];
-            @sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
-        }
-    } catch (Exception $e) {
-        error_log('Reschedule email failed: ' . $e->getMessage());
-    } catch (Error $e) {
-        error_log('Reschedule email error: ' . $e->getMessage());
-    }
-
-    echo json_encode(['success' => true]);
+    // Reschedule successful - email notifications disabled for performance
+    echo json_encode(['success' => true, 'message' => 'Appointment rescheduled successfully']);
 } else {
     echo json_encode(['error' => 'No changes made.']);
 }
