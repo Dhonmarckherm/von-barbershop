@@ -86,7 +86,7 @@ if ($stmt->rowCount() > 0) {
         ignore_user_abort(true);
         set_time_limit(30);
         echo json_encode(['success' => true, 'message' => 'Appointment rescheduled successfully']);
-        ob_end_flush();
+        if (ob_get_level() > 0) { ob_end_flush(); }
         flush();
     }
 
