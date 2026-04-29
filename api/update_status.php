@@ -18,10 +18,13 @@ initializeSession();
 
 header('Content-Type: application/json');
 
+// Debug: Log session data
+error_log('Session data: ' . print_r($_SESSION, true));
+
 // Admin check
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
     http_response_code(403);
-    echo json_encode(['error' => 'Forbidden. Admin access required. Please log in as admin.']);
+    echo json_encode(['error' => 'Forbidden. Admin access required. Please log in as admin. Session role: ' . ($_SESSION['role'] ?? 'not set')]);
     exit;
 }
 
