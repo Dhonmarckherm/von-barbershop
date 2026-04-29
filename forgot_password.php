@@ -62,11 +62,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
                 
+                error_log("Password Reset: Checking Brevo key...");
+                error_log("Password Reset: Key exists: " . ($brevoKey ? 'YES' : 'NO'));
+                if ($brevoKey) {
+                    error_log("Password Reset: Key starts with: " . substr($brevoKey, 0, 10) . "...");
+                }
+                
                 if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
                     // Use Brevo HTTP API (faster)
+                    error_log("Password Reset: Using Brevo HTTP API for " . $user['email']);
                     $emailSent = sendBrevoEmail($user['email'], $user['name'], $subject, $message);
+                    error_log("Password Reset: Brevo API result: " . ($emailSent ? 'SUCCESS' : 'FAILED'));
                 } else {
                     // Fallback to PHPMailer SMTP
+                    error_log("Password Reset: Using PHPMailer SMTP fallback");
                     $mail = getMailer();
                     $mail->addAddress($user['email'], $user['name']);
                     $mail->isHTML(true);
@@ -74,9 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mail->Body = $message;
                     $mail->send();
                     $emailSent = true;
+                    error_log("Password Reset: SMTP email sent successfully");
                 }
             } catch (Exception $e) {
                 error_log("Password Reset Email Error: " . $e->getMessage());
+                error_log("Password Reset Email Stack: " . $e->getTraceAsString());
                 $emailSent = false;
             }
             
