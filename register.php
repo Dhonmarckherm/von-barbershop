@@ -2,6 +2,7 @@
 $pageTitle = 'Register';
 require_once 'config/db.php';
 require_once 'config/session.php';
+require_once 'config/mailer.php';
 initializeSession();
 
 $errors = [];
@@ -40,6 +41,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'customer')");
         $stmt->execute([$name, $email, $hash]);
+        
+        // Send welcome email to new user
+        try {
+            $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+            
+            $subject = 'Welcome to V.O.N Barbershop! ✂️';
+            $htmlContent = "
+                <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8;'>
+                    <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 20px; text-align: center;'>
+                        <h1 style='color: #C5A059; font-family: Playfair Display, serif; font-size: 32px; margin: 0;'>Welcome to V.O.N Barbershop!</h1>
+                        <p style='color: #F5F0E8; font-size: 18px; margin-top: 10px;'>Thank you for registering, " . htmlspecialchars($name) . "! ✂️</p>
+                    </div>
+                    <div style='padding: 30px 20px; background: #1a1a2e;'>
+                        <p style='font-size: 16px; line-height: 1.6;'>We're excited to have you join our community! You can now:</p>
+                        <ul style='font-size: 16px; line-height: 1.8;'>
+                            <li>✅ Book appointments online</li>
+                            <li>✅ Choose your preferred haircut style</li>
+                            <li>✅ Select your location (shop or home service)</li>
+                            <li>✅ Receive email confirmations</li>
+                            <li>✅ Manage your bookings</li>
+                        </ul>
+                        <div style='text-align: center; margin: 30px 0;'>
+                            <a href='https://von-barbershop.onrender.com/login.php' style='background: #C5A059; color: #1a1a2e; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;'>Login Now</a>
+                        </div>
+                        <p style='color: #8A8A9A; font-size: 14px; line-height: 1.6;'>If you have any questions, feel free to contact us. We look forward to serving you!</p>
+                    </div>
+                    <hr style='border-color: rgba(197,160,89,0.3); margin: 0 20px;'>
+                    <div style='padding: 20px; text-align: center; background: #1a1a2e;'>
+                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barbershop - Premium Grooming Experience</p>
+                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 5px 0 0 0;'>Developed by Dhon Marck V. Hermosura, IT Specialist</p>
+                    </div>
+                </div>
+            ";
+            
+            if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+                // Use Brevo HTTP API
+                sendBrevoEmail($email, $name, $subject, $htmlContent);
+                error_log("Welcome email sent to new user: $email");
+            } else {
+                // Fallback to PHPMailer SMTP
+                $mail = getMailer();
+                $mail->addAddress($email, $name);
+                $mail->isHTML(true);
+                $mail->Subject = $subject;
+                $mail->Body = $htmlContent;
+                $mail->send();
+                error_log("Welcome email sent to new user (SMTP): $email");
+            }
+        } catch (Exception $e) {
+            error_log("Welcome email failed: " . $e->getMessage());
+        }
+        
         header('Location: login.php?registered=1');
         exit;
     }
