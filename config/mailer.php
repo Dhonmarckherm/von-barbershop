@@ -92,7 +92,7 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
     $data = [
         'sender' => [
             'name' => 'V.O.N Barbershop',
-            'email' => 'noreply@vonbarbershop.com'
+            'email' => 'dhonmarck2004@gmail.com'
         ],
         'to' => [
             [
