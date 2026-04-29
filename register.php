@@ -46,6 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
             
+            error_log("Welcome Email: Starting for $email");
+            error_log("Welcome Email: Brevo key exists: " . ($brevoKey ? 'YES' : 'NO'));
+            if ($brevoKey) {
+                error_log("Welcome Email: Key starts with: " . substr($brevoKey, 0, 10) . "...");
+            }
+            
             $subject = 'Welcome to V.O.N Barbershop! ✂️';
             $htmlContent = "
                 <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8;'>
@@ -77,20 +83,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
                 // Use Brevo HTTP API
-                sendBrevoEmail($email, $name, $subject, $htmlContent);
-                error_log("Welcome email sent to new user: $email");
+                error_log("Welcome Email: Using Brevo HTTP API");
+                $emailResult = sendBrevoEmail($email, $name, $subject, $htmlContent);
+                error_log("Welcome Email: Brevo API result: " . ($emailResult ? 'SUCCESS' : 'FAILED'));
             } else {
                 // Fallback to PHPMailer SMTP
+                error_log("Welcome Email: Using PHPMailer SMTP fallback");
                 $mail = getMailer();
                 $mail->addAddress($email, $name);
                 $mail->isHTML(true);
                 $mail->Subject = $subject;
                 $mail->Body = $htmlContent;
                 $mail->send();
-                error_log("Welcome email sent to new user (SMTP): $email");
+                error_log("Welcome Email: SMTP email sent successfully");
             }
         } catch (Exception $e) {
             error_log("Welcome email failed: " . $e->getMessage());
+            error_log("Welcome email stack trace: " . $e->getTraceAsString());
         }
         
         header('Location: login.php?registered=1');
