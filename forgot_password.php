@@ -58,15 +58,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message .= "</div>";
             $message .= "</body></html>";
             
-            // Send the email
+            // Send the email using Brevo API
             try {
-                $mail = getMailer();
-                $mail->addAddress($user['email'], $user['name']);
-                $mail->isHTML(true);
-                $mail->Subject = $subject;
-                $mail->Body = $message;
-                $mail->send();
-                $emailSent = true;
+                $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+                
+                if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+                    // Use Brevo HTTP API (faster)
+                    $emailSent = sendBrevoEmail($user['email'], $user['name'], $subject, $message);
+                } else {
+                    // Fallback to PHPMailer SMTP
+                    $mail = getMailer();
+                    $mail->addAddress($user['email'], $user['name']);
+                    $mail->isHTML(true);
+                    $mail->Subject = $subject;
+                    $mail->Body = $message;
+                    $mail->send();
+                    $emailSent = true;
+                }
             } catch (Exception $e) {
                 error_log("Password Reset Email Error: " . $e->getMessage());
                 $emailSent = false;
