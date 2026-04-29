@@ -10,31 +10,60 @@ function initializeSession() {
         $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
                    || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
         
-        // Session cookie parameters MUST be set before session_start()
+        // Session cookie parameters
         session_set_cookie_params([
             'lifetime' => 86400,        // 24 hours
             'path' => '/',
             'domain' => '',
-            'secure' => $isHttps,       // Auto-detect HTTPS
-            'httponly' => true,         // Prevent JavaScript access
-            'samesite' => 'None'        // Required for cross-site requests on Render
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
         ]);
 
-        // Garbage collection settings
         ini_set('session.gc_maxlifetime', 86400);
         ini_set('session.use_strict_mode', 0);
         ini_set('session.use_cookies', 1);
         ini_set('session.use_only_cookies', 1);
         
-        // Start the session
         session_start();
         
-        // Regenerate session ID periodically for security
-        if (!isset($_SESSION['created'])) {
-            $_SESSION['created'] = time();
-        } elseif (time() - $_SESSION['created'] > 3600) {
-            session_regenerate_id(true);
-            $_SESSION['created'] = time();
+        // Fallback: If session is empty but we have auth cookies, restore from cookies
+        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
+            $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
+            $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
+            $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
+            $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
         }
     }
+}
+
+/**
+ * Set persistent auth cookies as backup for sessions
+ */
+function setAuthCookies($userId, $name, $email, $role) {
+    $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
+               || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
+    
+    $cookieParams = [
+        'expires' => time() + 86400, // 24 hours
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ];
+    
+    setcookie('auth_user_id', $userId, $cookieParams);
+    setcookie('auth_name', $name, $cookieParams);
+    setcookie('auth_email', $email, $cookieParams);
+    setcookie('auth_role', $role, $cookieParams);
+}
+
+/**
+ * Clear auth cookies on logout
+ */
+function clearAuthCookies() {
+    setcookie('auth_user_id', '', time() - 3600, '/');
+    setcookie('auth_name', '', time() - 3600, '/');
+    setcookie('auth_email', '', time() - 3600, '/');
+    setcookie('auth_role', '', time() - 3600, '/');
 }

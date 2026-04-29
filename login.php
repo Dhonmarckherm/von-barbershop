@@ -32,9 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['login_time'] = time();
+            
+            // Set backup cookies for Render compatibility
+            require_once 'config/session.php';
+            setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
 
             // Redirect admin to dashboard, customers to index
-            if ($user['role'] === 'admin') {
+            if ($user['role'] === 'admin' || $user['role'] === 'barber') {
                 header('Location: admin_dashboard.php');
             } else {
                 header('Location: index.php');

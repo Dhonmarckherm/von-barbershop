@@ -28,5 +28,9 @@ if (isset($_COOKIE[session_name()])) {
     unset($_COOKIE[session_name()]);
 }
 
+// Clear auth cookies
+require_once 'config/session.php';
+clearAuthCookies();
+
 header('Location: index.php');
 exit;
