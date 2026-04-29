@@ -89,12 +89,39 @@ try {
             try {
                 require_once __DIR__ . '/../config/mailer.php';
                 
+                // Fetch barber email for notifications
+                $barberStmt = $pdo->query("SELECT email FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
+                $barberUser = $barberStmt->fetch();
+                $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
+                
                 if ($status === 'accepted' && $appt['current_status'] !== 'accepted') {
                     $emailResult = sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Acceptance email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
                 } elseif ($status === 'cancelled' && $appt['current_status'] !== 'cancelled') {
+                    // Send cancellation email to customer
                     $emailResult = sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Cancellation email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                    
+                    // Notify barber about cancellation
+                    try {
+                        $mail = getMailer();
+                        $mail->addAddress($barberEmail, 'Barber');
+                        $mail->isHTML(true);
+                        $mail->Subject = 'Appointment Cancelled - ' . $appt['customer_name'];
+                        $mail->Body = "
+                            <h2>Appointment Cancelled</h2>
+                            <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
+                            <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
+                            <p><strong>Location:</strong> {$appt['location']}</p>
+                            <p><strong>Date:</strong> {$appt['appointment_date']}</p>
+                            <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                            <p>This appointment has been cancelled.</p>
+                        ";
+                        $mail->send();
+                        error_log('Barber notification sent for cancellation');
+                    } catch (Exception $e) {
+                        error_log('Barber cancellation notification failed: ' . $e->getMessage());
+                    }
                 }
             } catch (Exception $e) {
                 error_log('Email notification failed: ' . $e->getMessage());

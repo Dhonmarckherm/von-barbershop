@@ -93,8 +93,35 @@ if ($stmt->rowCount() > 0) {
     // Send email after response
     try {
         require_once __DIR__ . '/../config/mailer.php';
+        
+        // Send reschedule email to customer
         $emailResult = sendRescheduleEmail($appt['customer_email'], $appt['customer_name'], $details);
         error_log('Reschedule email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+        
+        // Notify barber about reschedule
+        try {
+            $barberStmt = $pdo->query("SELECT email FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
+            $barberUser = $barberStmt->fetch();
+            $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
+            
+            $mail = getMailer();
+            $mail->addAddress($barberEmail, 'Barber');
+            $mail->isHTML(true);
+            $mail->Subject = 'Appointment Rescheduled - ' . $appt['customer_name'];
+            $mail->Body = "
+                <h2>Appointment Rescheduled</h2>
+                <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
+                <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
+                <p><strong>Location:</strong> {$appt['location']}</p>
+                <hr>
+                <p><strong>Old Date/Time:</strong> {$appt['appointment_date']} at {$appt['appointment_time']}</p>
+                <p><strong>New Date/Time:</strong> {$newDate} at {$newTime}</p>
+            ";
+            $mail->send();
+            error_log('Barber notification sent for reschedule');
+        } catch (Exception $e) {
+            error_log('Barber reschedule notification failed: ' . $e->getMessage());
+        }
     } catch (Exception $e) {
         error_log('Reschedule email failed: ' . $e->getMessage());
     } catch (Error $e) {
