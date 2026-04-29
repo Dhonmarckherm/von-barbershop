@@ -41,7 +41,11 @@ function getMailer(): PHPMailer {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
     $mail->SMTPDebug  = 0; // Disable debug output
-    $mail->Timeout    = 10; // 10 second timeout to prevent hanging
+    $mail->Debugoutput = function($str, $level) {
+        error_log("PHPMailer Debug [$level]: $str");
+    };
+    $mail->Timeout    = 15; // 15 second timeout
+    $mail->SMTPKeepAlive = false;
 
     // Sender
     $siteName = getSetting('barbershop_name', 'V.O.N Barbershop');

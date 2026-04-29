@@ -82,8 +82,14 @@ if ($user) {
     // Send emails via PHPMailer (with error handling)
     try {
         $emailSent = sendBookingEmails($user['email'], $user['name'], $appointmentDetails, $barberEmail);
+        if ($emailSent) {
+            error_log('Booking emails SENT successfully to customer and barber');
+        } else {
+            error_log('Booking emails returned false - sendBookingEmails failed');
+        }
     } catch (Exception $e) {
-        error_log('Booking email failed: ' . $e->getMessage());
+        error_log('Booking email FAILED with exception: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
         $emailSent = false;
     }
 }
