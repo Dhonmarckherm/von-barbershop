@@ -28,11 +28,17 @@ foreach ($appointments as $appt) {
     elseif ($appt['status'] === 'cancelled') $cancelledCount++;
 }
 
-// Fetch reviewed appointment IDs
-$stmt = $pdo->prepare("SELECT appointment_id FROM reviews WHERE user_id = ?");
-$stmt->execute([$_SESSION['user_id']]);
-while ($row = $stmt->fetch()) {
-    $reviewedAppointments[] = $row['appointment_id'];
+// Fetch reviewed appointment IDs (handle if table doesn't exist yet)
+$reviewedAppointments = [];
+try {
+    $stmt = $pdo->prepare("SELECT appointment_id FROM reviews WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    while ($row = $stmt->fetch()) {
+        $reviewedAppointments[] = $row['appointment_id'];
+    }
+} catch (PDOException $e) {
+    // Table doesn't exist yet, no reviews
+    error_log("Reviews table not found in my_appointments: " . $e->getMessage());
 }
 
 require_once 'includes/header.php';
