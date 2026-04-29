@@ -18,10 +18,21 @@ $greeting = 'Good Day'; // Updated greeting
 $pendingCount = 0;
 $acceptedCount = 0;
 $completedCount = 0;
+$cancelledCount = 0;
+$reviewedAppointments = [];
+
 foreach ($appointments as $appt) {
     if ($appt['status'] === 'pending') $pendingCount++;
-    if ($appt['status'] === 'accepted') $acceptedCount++;
-    if ($appt['status'] === 'completed') $completedCount++;
+    elseif ($appt['status'] === 'accepted') $acceptedCount++;
+    elseif ($appt['status'] === 'completed') $completedCount++;
+    elseif ($appt['status'] === 'cancelled') $cancelledCount++;
+}
+
+// Fetch reviewed appointment IDs
+$stmt = $pdo->prepare("SELECT appointment_id FROM reviews WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+while ($row = $stmt->fetch()) {
+    $reviewedAppointments[] = $row['appointment_id'];
 }
 
 require_once 'includes/header.php';
@@ -116,6 +127,7 @@ require_once 'includes/header.php';
                     <th>Time</th>
                     <th>Status</th>
                     <th>Booked On</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -140,11 +152,164 @@ require_once 'includes/header.php';
                             </span>
                         </td>
                         <td><?php echo htmlspecialchars(date('M j, Y', strtotime($appt['created_at']))); ?></td>
+                        <td>
+                            <?php if ($appt['status'] === 'completed' && !in_array($appt['id'], $reviewedAppointments)): ?>
+                                <button class="btn btn-sm btn-success" onclick="openReviewModal(<?php echo $appt['id']; ?>, '<?php echo htmlspecialchars($appt['haircut_description'], ENT_QUOTES); ?>')">
+                                    <i class="bi bi-star-fill"></i> Leave Review
+                                </button>
+                            <?php elseif ($appt['status'] === 'completed' && in_array($appt['id'], $reviewedAppointments)): ?>
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Reviewed</span>
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 <?php endif; ?>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--barber-dark); color: var(--barber-gold);">
+                <h5 class="modal-title">Leave a Review</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm">
+                    <input type="hidden" id="reviewAppointmentId" name="appointment_id">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Haircut: <strong id="reviewHaircut"></strong></label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Rating *</label>
+                        <div class="star-rating" id="starRating">
+                            <i class="bi bi-star" data-rating="1"></i>
+                            <i class="bi bi-star" data-rating="2"></i>
+                            <i class="bi bi-star" data-rating="3"></i>
+                            <i class="bi bi-star" data-rating="4"></i>
+                            <i class="bi bi-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="ratingValue" name="rating" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Comment (Optional)</label>
+                        <textarea class="form-control" id="reviewComment" name="comment" rows="3" placeholder="Share your experience..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 2.5rem;
+    cursor: pointer;
+}
+
+.star-rating i {
+    color: #ddd;
+    transition: color 0.2s ease;
+}
+
+.star-rating i.active,
+.star-rating i:hover,
+.star-rating i:hover ~ i {
+    color: #ffc107;
+}
+
+.star-rating i.active {
+    color: #ffc107;
+}
+</style>
+
+<script>
+let selectedRating = 0;
+
+function openReviewModal(appointmentId, haircut) {
+    document.getElementById('reviewAppointmentId').value = appointmentId;
+    document.getElementById('reviewHaircut').textContent = haircut;
+    selectedRating = 0;
+    updateStars(0);
+    
+    const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+    modal.show();
+}
+
+function updateStars(rating) {
+    const stars = document.querySelectorAll('#starRating i');
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.remove('bi-star');
+            star.classList.add('bi-star-fill');
+            star.classList.add('active');
+        } else {
+            star.classList.remove('bi-star-fill');
+            star.classList.add('bi-star');
+            star.classList.remove('active');
+        }
+    });
+    document.getElementById('ratingValue').value = rating;
+}
+
+document.querySelectorAll('#starRating i').forEach(star => {
+    star.addEventListener('click', function() {
+        selectedRating = parseInt(this.getAttribute('data-rating'));
+        updateStars(selectedRating);
+    });
+    
+    star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.getAttribute('data-rating'));
+        updateStars(rating);
+    });
+});
+
+document.getElementById('starRating').addEventListener('mouseleave', function() {
+    updateStars(selectedRating);
+});
+
+document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (selectedRating === 0) {
+        alert('Please select a rating.');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('api/submit_review.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            location.reload();
+        } else {
+            alert(result.error || 'Failed to submit review.');
+        }
+    } catch (error) {
+        alert('An error occurred. Please try again.');
+        console.error(error);
+    }
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

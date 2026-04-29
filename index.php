@@ -1,6 +1,23 @@
 <?php
 $pageTitle = 'Home';
+require_once 'config/db.php';
 require_once 'includes/header.php';
+
+// Fetch reviews for homepage display
+$stmt = $pdo->query("
+    SELECT r.rating, r.comment, r.created_at, u.name 
+    FROM reviews r 
+    JOIN users u ON r.user_id = u.id 
+    ORDER BY r.created_at DESC 
+    LIMIT 10
+");
+$reviews = $stmt->fetchAll();
+
+// Calculate average rating
+$stmt = $pdo->query("SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews");
+$ratingStats = $stmt->fetch();
+$averageRating = $ratingStats['avg_rating'] ? round($ratingStats['avg_rating'], 1) : 0;
+$totalReviews = $ratingStats['total_reviews'];
 ?>
 
 <div class="hero">
@@ -151,6 +168,73 @@ require_once 'includes/header.php';
                         <p style="color: var(--barber-gray);">Book your appointment online in just a few clicks.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Reviews Section -->
+<div class="row mt-5 mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">
+                        <i class="bi bi-star-fill" style="color: #ffc107;"></i> Customer Reviews
+                    </h2>
+                    
+                    <?php if ($totalReviews > 0): ?>
+                        <div class="mt-3">
+                            <div class="display-4 mb-2" style="color: var(--barber-gold); font-weight: bold;">
+                                <?php echo $averageRating; ?>
+                            </div>
+                            <div class="mb-2">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <i class="bi bi-star<?php echo ($i <= $averageRating) ? '-fill' : ''; ?>" 
+                                       style="color: <?php echo ($i <= $averageRating) ? '#ffc107' : '#ddd'; ?>; font-size: 2rem;"></i>
+                                <?php endfor; ?>
+                            </div>
+                            <p style="color: var(--barber-gray); margin: 0;">
+                                Based on <?php echo $totalReviews; ?> review<?php echo $totalReviews != 1 ? 's' : ''; ?>
+                            </p>
+                        </div>
+                    <?php else: ?>
+                        <p style="color: var(--barber-gray);" class="mt-3">Be the first to leave a review!</p>
+                    <?php endif; ?>
+                </div>
+
+                <?php if (!empty($reviews)): ?>
+                    <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
+                    <div class="row">
+                        <?php foreach ($reviews as $review): ?>
+                            <div class="col-md-6 mb-3">
+                                <div class="p-3" style="background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--barber-gold);">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <strong style="color: var(--barber-dark);">
+                                                <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($review['name']); ?>
+                                            </strong>
+                                        </div>
+                                        <small style="color: var(--barber-gray);">
+                                            <?php echo date('M d, Y', strtotime($review['created_at'])); ?>
+                                        </small>
+                                    </div>
+                                    <div class="mb-2">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="bi bi-star<?php echo ($i <= $review['rating']) ? '-fill' : ''; ?>" 
+                                               style="color: <?php echo ($i <= $review['rating']) ? '#ffc107' : '#ddd'; ?>;"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <?php if ($review['comment']): ?>
+                                        <p style="color: var(--barber-gray); margin: 0; font-size: 0.95rem;">
+                                            <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
