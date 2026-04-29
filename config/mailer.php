@@ -52,6 +52,9 @@ function getMailer(): PHPMailer {
         $mail->Password   = $mailPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+        // Increase timeout and retries for Render
+        $mail->Timeout    = 30;
+        $mail->SMTPKeepAlive = false;
         $mail->setFrom($mailUsername, 'V.O.N Barbershop');
     }
     
@@ -59,7 +62,6 @@ function getMailer(): PHPMailer {
     $mail->Debugoutput = function($str, $level) {
         error_log("PHPMailer Debug [$level]: $str");
     };
-    $mail->Timeout    = 15;
     $mail->SMTPKeepAlive = false;
 
     return $mail;
