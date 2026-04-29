@@ -77,7 +77,7 @@ if ($user) {
     // Fetch barber/admin email
     $barberStmt = $pdo->query("SELECT email FROM users WHERE role = 'admin' OR role = 'barber' ORDER BY id ASC LIMIT 1");
     $barber = $barberStmt->fetch();
-    $barberEmail = $barber ? $barber['email'] : 'dhonmarckhermosura295@gmail.com';
+    $barberEmail = $barber ? $barber['email'] : 'dhonmarck2004@gmail.com';
 
     // Send emails via PHPMailer (with error handling)
     try {
