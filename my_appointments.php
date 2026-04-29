@@ -310,6 +310,20 @@ document.getElementById('reviewForm').addEventListener('submit', async function(
         console.error(error);
     }
 });
+
+// Auto-open review modal if URL has review parameter
+window.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reviewAppointmentId = urlParams.get('review');
+    
+    if (reviewAppointmentId) {
+        // Find the appointment and open the review modal
+        const reviewButton = document.querySelector(`button[onclick*="${reviewAppointmentId}"]`);
+        if (reviewButton) {
+            reviewButton.click();
+        }
+    }
+});
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

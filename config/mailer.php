@@ -427,7 +427,12 @@ function sendCompletionEmail(string $customerEmail, string $customerName, array 
  */
 function buildCompletionEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
-    return "
+    $appointmentId = isset($details['appointment_id']) ? intval($details['appointment_id']) : 0;
+    
+    // Get the site URL dynamically
+    $siteUrl = 'https://von-barbershop.onrender.com';
+    
+    $emailBody = "
         <h2 style='color: #28a745;'>✅ Appointment Completed</h2>
         <p>Hello <strong>" . htmlspecialchars($details['customer_name']) . "</strong>,</p>
         <p>Great news! Your appointment has been <strong style='color: #28a745;'>COMPLETED</strong>.</p>
@@ -437,8 +442,27 @@ function buildCompletionEmailBody(array $details): string {
             <li><strong>Date:</strong> " . htmlspecialchars($details['date']) . "</li>
             <li><strong>Time:</strong> " . htmlspecialchars($details['time']) . "</li>
         </ul>
-        <p>Thank you for choosing V.O.N Barbershop! We hope you love your new look. 💈</p>
-        <p>Book your next appointment with us soon!</p>
+        <hr style='border-color: #eee; margin: 30px 0;'>
+        <div style='text-align: center; padding: 30px 20px; background: #f8f9fa; border-radius: 10px;'>
+            <h3 style='color: var(--barber-gold); margin-top: 0;'>Thank you for choosing RUBICUTS V.O.N! 💈</h3>
+            <p style='font-size: 16px; color: #555;'>We hope you love your new look! Your feedback helps us improve.</p>
+            <p style='font-size: 18px; font-weight: bold; color: #333;'>Please rate your experience with us:</p>
     ";
+    
+    if ($appointmentId > 0) {
+        $reviewLink = $siteUrl . '/my_appointments.php?review=' . $appointmentId;
+        $emailBody .= "
+            <a href='{$reviewLink}' style='display: inline-block; background: #C5A059; color: #1a1a2e; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 18px; margin: 20px 0;'>
+                ⭐ Rate Us Now
+            </a>
+        ";
+    }
+    
+    $emailBody .= "
+        </div>
+        <p style='margin-top: 30px; color: #666; font-size: 14px;'>Click the button above to leave a review and share your experience!</p>
+    ";
+    
+    return $emailBody;
 }
 

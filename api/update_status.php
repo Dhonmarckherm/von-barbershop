@@ -145,7 +145,8 @@ try {
                         error_log('Barber cancellation notification failed: ' . $e->getMessage());
                     }
                 } elseif ($status === 'completed' && $appt['current_status'] !== 'completed') {
-                    // Send completion email to customer
+                    // Send completion email to customer with review link
+                    $details['appointment_id'] = $appointmentId; // Add appointment ID for review link
                     $emailResult = sendCompletionEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Completion email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
                     
