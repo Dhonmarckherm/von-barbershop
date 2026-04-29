@@ -60,7 +60,7 @@ try {
 
     if ($stmt->rowCount() > 0 || $appt['current_status'] === $status) {
         // Send email notification asynchronously (non-blocking)
-        if (in_array($status, ['accepted', 'cancelled'])) {
+        if (in_array($status, ['accepted', 'cancelled', 'completed'])) {
             $details = [
                 'customer_name'  => $appt['customer_name'],
                 'customer_email' => $appt['customer_email'],
@@ -143,6 +143,51 @@ try {
                         error_log('Barber notification sent for cancellation');
                     } catch (Exception $e) {
                         error_log('Barber cancellation notification failed: ' . $e->getMessage());
+                    }
+                } elseif ($status === 'completed' && $appt['current_status'] !== 'completed') {
+                    // Send completion email to customer
+                    $emailResult = sendCompletionEmail($appt['customer_email'], $appt['customer_name'], $details);
+                    error_log('Completion email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                    
+                    // Notify barber about completion
+                    try {
+                        $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+                        
+                        if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+                            // Use Brevo HTTP API (faster)
+                            $htmlContent = "
+                                <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;'>
+                                    <h2 style='color: #28a745; font-family: Playfair Display, serif;'>✅ Appointment Completed</h2>
+                                    <p style='margin-top: 20px;'>Customer: <strong>{$appt['customer_name']}</strong> ({$appt['customer_email']})</p>
+                                    <p>Haircut: <strong>{$appt['haircut_description']}</strong></p>
+                                    <p>Location: <strong>{$appt['location']}</strong></p>
+                                    <p>Date: <strong>{$appt['appointment_date']}</strong> at <strong>{$appt['appointment_time']}</strong></p>
+                                    <p style='margin-top: 20px; color: #28a745;'>This appointment has been marked as completed.</p>
+                                    <hr style='border-color: rgba(197,160,89,0.3); margin: 30px 0;'>
+                                    <p style='color: #8A8A9A; font-size: 0.85rem;'>V.O.N Barbershop Notification System</p>
+                                </div>
+                            ";
+                            sendBrevoEmail($barberEmail, 'Barber', 'Appointment Completed - ' . $appt['customer_name'], $htmlContent);
+                        } else {
+                            // Fallback to PHPMailer SMTP
+                            $mail = getMailer();
+                            $mail->addAddress($barberEmail, 'Barber');
+                            $mail->isHTML(true);
+                            $mail->Subject = 'Appointment Completed - ' . $appt['customer_name'];
+                            $mail->Body = "
+                                <h2>Appointment Completed</h2>
+                                <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
+                                <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
+                                <p><strong>Location:</strong> {$appt['location']}</p>
+                                <p><strong>Date:</strong> {$appt['appointment_date']}</p>
+                                <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                                <p>This appointment has been marked as completed.</p>
+                            ";
+                            $mail->send();
+                        }
+                        error_log('Barber notification sent for completion');
+                    } catch (Exception $e) {
+                        error_log('Barber completion notification failed: ' . $e->getMessage());
                     }
                 }
             } catch (Exception $e) {

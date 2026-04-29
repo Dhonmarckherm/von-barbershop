@@ -388,3 +388,57 @@ function buildRescheduleEmailBody(array $details): string {
     ";
 }
 
+/**
+ * Send completion email to customer when admin marks appointment as completed.
+ *
+ * @param string $customerEmail
+ * @param string $customerName
+ * @param array  $details
+ * @return bool
+ */
+function sendCompletionEmail(string $customerEmail, string $customerName, array $details): bool {
+    $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+    
+    if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+        return sendBrevoEmail(
+            $customerEmail,
+            $customerName,
+            'Your Appointment Has Been Completed - Barbershop',
+            buildCompletionEmailBody($details)
+        );
+    }
+    
+    try {
+        $mail = getMailer();
+        $mail->addAddress($customerEmail, $customerName);
+        $mail->isHTML(true);
+        $mail->Subject = 'Your Appointment Has Been Completed - Barbershop';
+        $mail->Body    = buildCompletionEmailBody($details);
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Mailer Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Build HTML email body for completion notification.
+ */
+function buildCompletionEmailBody(array $details): string {
+    $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
+    return "
+        <h2 style='color: #28a745;'>✅ Appointment Completed</h2>
+        <p>Hello <strong>" . htmlspecialchars($details['customer_name']) . "</strong>,</p>
+        <p>Great news! Your appointment has been <strong style='color: #28a745;'>COMPLETED</strong>.</p>
+        <ul>
+            <li><strong>Haircut / Style:</strong> " . htmlspecialchars($details['service_name']) . "</li>
+            <li><strong>Location:</strong> " . $location . "</li>
+            <li><strong>Date:</strong> " . htmlspecialchars($details['date']) . "</li>
+            <li><strong>Time:</strong> " . htmlspecialchars($details['time']) . "</li>
+        </ul>
+        <p>Thank you for choosing V.O.N Barbershop! We hope you love your new look. 💈</p>
+        <p>Book your next appointment with us soon!</p>
+    ";
+}
+
