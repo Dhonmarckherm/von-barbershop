@@ -12,12 +12,19 @@ if (empty($token)) {
     $error = 'Invalid reset link.';
 } else {
     // Verify token
-    $stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE reset_token = ? AND reset_token_expires > NOW()");
+    $stmt = $pdo->prepare("SELECT id, name, email, reset_token_expires FROM users WHERE reset_token = ?");
     $stmt->execute([$token]);
     $user = $stmt->fetch();
     
     if (!$user) {
+        error_log("Password Reset: Token not found in database");
         $error = 'Invalid or expired reset link. Please request a new one.';
+    } elseif (strtotime($user['reset_token_expires']) < time()) {
+        error_log("Password Reset: Token expired. Expires: " . $user['reset_token_expires'] . ", Current: " . date('Y-m-d H:i:s'));
+        $user = null; // Clear user to prevent form display
+        $error = 'Reset link has expired. Please request a new one.';
+    } else {
+        error_log("Password Reset: Token valid for user: " . $user['email']);
     }
 }
 
