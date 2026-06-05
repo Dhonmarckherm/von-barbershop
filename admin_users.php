@@ -121,7 +121,11 @@ require_once 'includes/header.php';
 
                 <div class="mb-3">
                     <label for="editUserRole" class="form-label">Role</label>
-                    <input type="text" class="form-control" id="editUserRole" placeholder="e.g. customer, admin, barber">
+                    <select class="form-select" id="editUserRole" required>
+                        <option value="customer">Customer</option>
+                        <option value="barber">Barber</option>
+                        <option value="admin">Admin</option>
+                    </select>
                 </div>
 
                 <div class="mb-3">
@@ -195,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
             editUserId.value = this.dataset.id;
             document.getElementById('editUserName').value = this.dataset.name;
             document.getElementById('editUserRole').value = this.dataset.role;
-            document.getElementById('editUserRole').placeholder = 'Current: ' + this.dataset.role;
             editUserEmail.value = this.dataset.email;
             editUserPassword.value = '';
             editUserPasswordConfirm.value = '';
