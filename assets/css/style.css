@@ -675,25 +675,27 @@ h1, h2, h3, h4, h5, h6 {
 .hero-punchline::before {
     content: '"';
     position: absolute;
-    top: -15px;
-    left: -20px;
-    font-size: 3rem;
+    top: -20px;
+    left: -18px;
+    font-size: 2.8rem;
     color: var(--accent-gold);
-    opacity: 0.3;
+    opacity: 0.4;
     font-family: 'Playfair Display', serif;
     animation: quote-appear 0.8s ease-out 2.3s both;
+    line-height: 1;
 }
 
 .hero-punchline::after {
     content: '"';
     position: absolute;
-    bottom: -25px;
-    right: -20px;
-    font-size: 3rem;
+    bottom: -22px;
+    right: -18px;
+    font-size: 2.8rem;
     color: var(--accent-gold);
-    opacity: 0.3;
+    opacity: 0.4;
     font-family: 'Playfair Display', serif;
     animation: quote-appear 0.8s ease-out 2.5s both;
+    line-height: 1;
 }
 
 @keyframes punchline-reveal {
@@ -1699,17 +1701,17 @@ img, video, canvas, svg {
     
     .hero-punchline::before,
     .hero-punchline::after {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .hero-punchline::before {
-        top: -10px;
-        left: -15px;
+        top: -12px;
+        left: -14px;
     }
     
     .hero-punchline::after {
-        bottom: -20px;
-        right: -15px;
+        bottom: -14px;
+        right: -14px;
     }
     
     .hero-register {
@@ -1855,16 +1857,16 @@ img, video, canvas, svg {
     
     .hero-punchline::before,
     .hero-punchline::after {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
     
     .hero-punchline::before {
-        top: -8px;
+        top: -10px;
         left: -12px;
     }
     
     .hero-punchline::after {
-        bottom: -18px;
+        bottom: -12px;
         right: -12px;
     }
     
