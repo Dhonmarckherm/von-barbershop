@@ -48,7 +48,7 @@ try {
             </div>
         <?php endif; ?>
         
-        <p class="hero-subtitle">Est. 2025 — Approachable</p>
+        <p class="hero-subtitle">Est. 2025 — Approachable Barber</p>
         
         <h1 class="hero-title">
             <span class="hero-title-letter" style="--delay: 0">V</span>
@@ -64,7 +64,7 @@ try {
             <div class="hero-divider-line"></div>
         </div>
         
-        <p class="hero-description">Experience the standard of precision,style, and confidence.</p>
+        <p class="hero-description">Years of Experience in modern haircut techniques,style, and confidence.</p>
         
         <p class="hero-punchline">Ako si VON, as in <span class="punchline-highlight">V.O.N</span></p>
         
@@ -99,6 +99,38 @@ try {
             <div class="scroll-wheel"></div>
         </div>
         <p>Scroll Down</p>
+    </div>
+</div>
+
+<!-- Book an Appointment Section -->
+<div class="row mt-5 mb-5">
+    <div class="col-12">
+        <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border: 2px solid rgba(197,160,89,0.3);">
+            <div class="card-body text-center p-5">
+                <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 1rem;">
+                    <i class="bi bi-calendar-check" style="color: var(--barber-gold);"></i> Book an Appointment
+                </h2>
+                <div style="width: 80px; height: 3px; background: var(--barber-gold); margin: 0 auto 1.5rem;"></div>
+                <p style="color: #F5F0E8; font-size: 1.2rem; line-height: 1.8; max-width: 700px; margin: 0 auto 2rem; opacity: 0.9;">
+                    Choose a date and time that works for you and enjoy priority service—no waiting, no hassle.
+                </p>
+                <?php if ($isLoggedIn): ?>
+                    <?php if ($isAdmin): ?>
+                        <a href="admin_dashboard.php" class="btn btn-lg" style="background: var(--barber-gold); color: #1a1a2e; padding: 15px 50px; font-weight: bold; font-size: 1.1rem; border-radius: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(197,160,89,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="bi bi-calendar-check"></i> Go to Dashboard
+                        </a>
+                    <?php else: ?>
+                        <a href="book.php" class="btn btn-lg" style="background: var(--barber-gold); color: #1a1a2e; padding: 15px 50px; font-weight: bold; font-size: 1.1rem; border-radius: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(197,160,89,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <i class="bi bi-calendar-check"></i> Book Now
+                        </a>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <a href="login.php" class="btn btn-lg" style="background: var(--barber-gold); color: #1a1a2e; padding: 15px 50px; font-weight: bold; font-size: 1.1rem; border-radius: 5px; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(197,160,89,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <i class="bi bi-calendar-check"></i> Book Now
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </div>
 

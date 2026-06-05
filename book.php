@@ -22,7 +22,21 @@ require_once 'includes/header.php';
                     <div class="mb-3">
                         <label for="haircut_description" class="form-label">What haircut / style do you want?</label>
                         <input type="text" class="form-control" id="haircut_description" name="haircut_description" 
-                               placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, etc." required>
+                               placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, Consultation, etc." required>
+                        <div class="mt-2 d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary quick-style-btn" onclick="setStyle('Consultation')">
+                                <i class="bi bi-chat-dots"></i> Consultation
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary quick-style-btn" onclick="setStyle('Low Taper Fade')">
+                                Low Taper Fade
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary quick-style-btn" onclick="setStyle('Mid Fade')">
+                                Mid Fade
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary quick-style-btn" onclick="setStyle('Buzz Cut')">
+                                Buzz Cut
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -163,6 +177,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Quick style selection function
+function setStyle(styleName) {
+    document.getElementById('haircut_description').value = styleName;
+    
+    // Visual feedback - highlight the selected button
+    document.querySelectorAll('.quick-style-btn').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline-secondary');
+    });
+    
+    event.target.closest('.quick-style-btn').classList.remove('btn-outline-secondary');
+    event.target.closest('.quick-style-btn').classList.add('btn-primary');
+}
 </script>
 
 <?php require_once 'includes/footer.php'; ?>
