@@ -1749,7 +1749,7 @@ img, video, canvas, svg {
     .scroll-indicator {
         bottom: 5px;
         padding: 8px 14px;
-        background: rgba(26, 26, 46, 0.95);
+        background: rgba(85, 85, 98, 0.95);
     }
     
     .scroll-indicator p {
