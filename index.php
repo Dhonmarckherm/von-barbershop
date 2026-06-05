@@ -131,7 +131,7 @@ try {
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Home Service</h5>
-                <p class="card-text">RUBICUTS professional barber services at the comfort of your home. We come to you!</p>
+                <p class="card-text">Expert barber services delivered to your doorstep. Enjoy premium haircuts in the comfort of your home — we come to you!</p>
             </div>
         </div>
     </div>
