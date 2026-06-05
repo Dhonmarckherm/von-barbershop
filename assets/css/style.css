@@ -836,12 +836,18 @@ h1, h2, h3, h4, h5, h6 {
 /* Scroll Indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: 40px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     opacity: 0;
     animation: fadeIn 1s ease-out 2.5s forwards, float-scroll 2s ease-in-out infinite 3s;
+    z-index: 10;
+    background: rgba(26, 26, 46, 0.8);
+    padding: 15px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(197, 160, 89, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 @keyframes float-scroll {
@@ -887,11 +893,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .scroll-indicator p {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--barber-gold);
     margin: 0;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero::before {
@@ -1673,7 +1681,7 @@ img, video, canvas, svg {
 @media (max-width: 768px) {
     /* Fix hero section - keep animations visible */
     .hero {
-        padding: 80px 15px 60px;
+        padding: 80px 15px 80px;
         min-height: 100vh;
         min-height: -webkit-fill-available;
     }
@@ -1735,6 +1743,23 @@ img, video, canvas, svg {
     
     .hero-subtitle {
         font-size: 0.9rem;
+    }
+    
+    /* Fix scroll indicator on mobile */
+    .scroll-indicator {
+        bottom: 20px;
+        padding: 12px 18px;
+        background: rgba(26, 26, 46, 0.9);
+    }
+    
+    .scroll-indicator p {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+    }
+    
+    .scroll-mouse {
+        width: 22px;
+        height: 34px;
     }
     
     /* Fix navbar */
