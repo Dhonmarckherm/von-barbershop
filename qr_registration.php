@@ -97,6 +97,10 @@ $registerUrl = $protocol . '://' . $host . '/register.php';
                         <i class="bi bi-printer"></i> Print QR Code
                     </button>
                     
+                    <button class="btn btn-success mt-2" onclick="downloadQR()">
+                        <i class="bi bi-download"></i> Download QR Code
+                    </button>
+                    
                     <div class="mt-3">
                         <a href="admin_dashboard.php" class="btn btn-secondary">
                             <i class="bi bi-arrow-left"></i> Back to Dashboard
@@ -108,10 +112,10 @@ $registerUrl = $protocol . '://' . $host . '/register.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         // Generate QR code
-        new QRCode(document.getElementById("qrcode"), {
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
             text: "<?php echo $registerUrl; ?>",
             width: 256,
             height: 256,
@@ -119,6 +123,17 @@ $registerUrl = $protocol . '://' . $host . '/register.php';
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
+        
+        // Download QR function
+        function downloadQR() {
+            var qrCanvas = document.querySelector('#qrcode canvas');
+            if (qrCanvas) {
+                var link = document.createElement('a');
+                link.download = 'registration-qr-code.png';
+                link.href = qrCanvas.toDataURL();
+                link.click();
+            }
+        }
     </script>
 </body>
 </html>
