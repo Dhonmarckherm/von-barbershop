@@ -1,0 +1,9 @@
+{
+  "appId": "com.vonbarbershop.app",
+  "appName": "VON Barbershop",
+  "webDir": "www",
+  "server": {
+    "url": "https://von-barbershop.onrender.com",
+    "cleartext": true
+  }
+}
