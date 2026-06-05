@@ -675,7 +675,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-punchline::before {
     content: '"';
     position: absolute;
-    top: -20px;
+    top: -18px;
     left: -18px;
     font-size: 2.8rem;
     color: var(--accent-gold);
@@ -688,7 +688,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-punchline::after {
     content: '"';
     position: absolute;
-    bottom: -22px;
+    top: -18px;
     right: -18px;
     font-size: 2.8rem;
     color: var(--accent-gold);
@@ -1710,7 +1710,7 @@ img, video, canvas, svg {
     }
     
     .hero-punchline::after {
-        bottom: -14px;
+        top: -12px;
         right: -14px;
     }
     
@@ -1866,7 +1866,7 @@ img, video, canvas, svg {
     }
     
     .hero-punchline::after {
-        bottom: -12px;
+        top: -10px;
         right: -12px;
     }
     
