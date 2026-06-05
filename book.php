@@ -25,22 +25,22 @@ require_once 'includes/header.php';
                         <label for="haircut_description" class="form-label" style="color: #F5F0E8; font-weight: 600;">What haircut / style do you want?</label>
                         <input type="text" class="form-control" id="haircut_description" name="haircut_description" 
                                placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, Consultation, etc." 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;" required>
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;" required>
                         <div class="mt-2 d-flex flex-wrap gap-2">
                             <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Consultation')" 
-                                    style="background: transparent; border: 1px solid var(--barber-gold); color: var(--barber-gold);">
+                                    style="background: transparent; border: 1px solid #c0c0c0; color: #c0c0c0;">
                                 <i class="bi bi-chat-dots"></i> Consultation
                             </button>
                             <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Low Taper Fade')" 
-                                    style="background: transparent; border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;">
+                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
                                 Low Taper Fade
                             </button>
                             <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Mid Fade')" 
-                                    style="background: transparent; border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;">
+                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
                                 Mid Fade
                             </button>
                             <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Buzz Cut')" 
-                                    style="background: transparent; border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;">
+                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
                                 Buzz Cut
                             </button>
                         </div>
@@ -53,14 +53,14 @@ require_once 'includes/header.php';
                         <label for="location" class="form-label" style="color: #F5F0E8; font-weight: 600;">Location / Address</label>
                         <input type="text" class="form-control" id="location" name="location" 
                                placeholder="Enter the address where you're located" 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;" required>
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="appointment_date" class="form-label" style="color: #F5F0E8; font-weight: 600;">Select Date</label>
                         <input type="date" class="form-control" id="appointment_date" name="appointment_date" required
                                min="<?php echo date('Y-m-d'); ?>"
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;">
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
                     </div>
 
                     <div class="mb-3">

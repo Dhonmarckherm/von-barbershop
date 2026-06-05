@@ -189,9 +189,9 @@ require_once 'includes/header.php';
 <!-- Reschedule Modal -->
 <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" style="background: #1a1a2e; border: 1px solid rgba(197,160,89,0.3); border-radius: 12px;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border-bottom: 2px solid #C5A059; padding: 20px 30px;">
-                <h5 class="modal-title" style="color: #C5A059; font-family: 'Playfair Display', serif; font-weight: bold;">
+        <div class="modal-content" style="background: #000000; border: 1px solid rgba(192,192,192,0.3); border-radius: 12px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border-bottom: 2px solid #c0c0c0; padding: 20px 30px;">
+                <h5 class="modal-title" style="color: #c0c0c0; font-family: 'Playfair Display', serif; font-weight: bold;">
                     <i class="bi bi-calendar-check"></i> Reschedule Appointment
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -199,28 +199,28 @@ require_once 'includes/header.php';
             <div class="modal-body" style="padding: 30px;">
                 <input type="hidden" id="rescheduleAppointmentId">
                 <div class="mb-4">
-                    <label for="rescheduleDate" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                    <label for="rescheduleDate" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                         <i class="bi bi-calendar3"></i> New Date
                     </label>
                     <input type="text" class="form-control" id="rescheduleDate" placeholder="Select date..." 
-                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
                 </div>
                 <div class="mb-4">
-                    <label for="rescheduleTime" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                    <label for="rescheduleTime" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                         <i class="bi bi-clock"></i> New Time
                     </label>
                     <input type="text" class="form-control" id="rescheduleTime" placeholder="Select time..." 
-                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
                 </div>
                 <div id="rescheduleError" class="alert alert-danger d-none" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 8px;"></div>
             </div>
-            <div class="modal-footer" style="background: rgba(197,160,89,0.05); border-top: 1px solid rgba(197,160,89,0.3); padding: 20px 30px;">
+            <div class="modal-footer" style="background: rgba(192,192,192,0.05); border-top: 1px solid rgba(192,192,192,0.3); padding: 20px 30px;">
                 <button type="button" class="btn btn-sm" data-bs-dismiss="modal" 
-                        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #F5F0E8; padding: 10px 24px; border-radius: 8px;">
+                        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #f5f5f5; padding: 10px 24px; border-radius: 8px;">
                     <i class="bi bi-x-circle"></i> Cancel
                 </button>
                 <button type="button" class="btn btn-sm" id="confirmRescheduleBtn" 
-                        style="background: linear-gradient(135deg, #C5A059 0%, #D4AF69 100%); border: none; color: #1a1a2e; padding: 10px 24px; border-radius: 8px; font-weight: 600;">
+                        style="background: linear-gradient(135deg, #c0c0c0 0%, #d4d4d4 100%); border: none; color: #000000; padding: 10px 24px; border-radius: 8px; font-weight: 600;">
                     <i class="bi bi-check-circle"></i> Confirm Reschedule
                 </button>
             </div>

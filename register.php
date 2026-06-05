@@ -54,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $subject = 'Welcome to V.O.N Barbershop! ✂️';
             $htmlContent = "
-                <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8;'>
-                    <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 20px; text-align: center;'>
-                        <h1 style='color: #C5A059; font-family: Playfair Display, serif; font-size: 32px; margin: 0;'>Welcome to V.O.N Barbershop!</h1>
-                        <p style='color: #F5F0E8; font-size: 18px; margin-top: 10px;'>Thank you for registering, " . htmlspecialchars($name) . "! ✂️</p>
+                <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #f5f5f5;'>
+                    <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 20px; text-align: center;'>
+                        <h1 style='color: #c0c0c0; font-family: Playfair Display, serif; font-size: 32px; margin: 0;'>Welcome to V.O.N Barbershop!</h1>
+                        <p style='color: #f5f5f5; font-size: 18px; margin-top: 10px;'>Thank you for registering, " . htmlspecialchars($name) . "! ✂️</p>
                     </div>
-                    <div style='padding: 30px 20px; background: #1a1a2e;'>
+                    <div style='padding: 30px 20px; background: #000000;'>
                         <p style='font-size: 16px; line-height: 1.6;'>We're excited to have you join our community! You can now:</p>
                         <ul style='font-size: 16px; line-height: 1.8;'>
                             <li>✅ Book appointments online</li>
@@ -69,12 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <li>✅ Manage your bookings</li>
                         </ul>
                         <div style='text-align: center; margin: 30px 0;'>
-                            <a href='https://von-barbershop.onrender.com/login.php' style='background: #C5A059; color: #1a1a2e; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;'>Login Now</a>
+                            <a href='https://von-barbershop.onrender.com/login.php' style='background: #c0c0c0; color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;'>Login Now</a>
                         </div>
                         <p style='color: #8A8A9A; font-size: 14px; line-height: 1.6;'>If you have any questions, feel free to contact us. We look forward to serving you!</p>
                     </div>
-                    <hr style='border-color: rgba(197,160,89,0.3); margin: 0 20px;'>
-                    <div style='padding: 20px; text-align: center; background: #1a1a2e;'>
+                    <hr style='border-color: rgba(192,192,192,0.3); margin: 0 20px;'>
+                    <div style='padding: 20px; text-align: center; background: #000000;'>
                         <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
                         <p style='color: #8A8A9A; font-size: 0.85rem; margin: 5px 0 0 0;'>Developed by Dhon Marck V. Hermosura, IT Specialist</p>
                     </div>

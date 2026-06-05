@@ -213,7 +213,7 @@ try {
 <!-- Customer Reviews Section -->
 <div class="row mt-5 mb-4">
     <div class="col-12">
-        <div class="card" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border: 2px solid rgba(197,160,89,0.3);">
+        <div class="card" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border: 2px solid rgba(192,192,192,0.3);">
             <div class="card-body p-4">
                 <div class="text-center mb-4">
                     <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">
@@ -231,7 +231,7 @@ try {
                                        style="color: <?php echo ($i <= $averageRating) ? '#ffc107' : '#555'; ?>; font-size: 2rem;"></i>
                                 <?php endfor; ?>
                             </div>
-                            <p style="color: #F5F0E8; margin: 0; opacity: 0.8;">
+                            <p style="color: #f5f5f5; margin: 0; opacity: 0.8;">
                                 Based on <?php echo $totalReviews; ?> review<?php echo $totalReviews != 1 ? 's' : ''; ?>
                             </p>
                         </div>
@@ -252,7 +252,7 @@ try {
                                                 <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($review['name']); ?>
                                             </strong>
                                         </div>
-                                        <small style="color: #F5F0E8; opacity: 0.6;">
+                                        <small style="color: #f5f5f5; opacity: 0.6;">
                                             <?php echo date('M d, Y', strtotime($review['created_at'])); ?>
                                         </small>
                                     </div>
@@ -263,7 +263,7 @@ try {
                                         <?php endfor; ?>
                                     </div>
                                     <?php if ($review['comment']): ?>
-                                        <p style="color: #F5F0E8; margin: 0; font-size: 1rem; line-height: 1.7; font-weight: 400;">
+                                        <p style="color: #f5f5f5; margin: 0; font-size: 1rem; line-height: 1.7; font-weight: 400;">
                                             <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
                                         </p>
                                     <?php endif; ?>

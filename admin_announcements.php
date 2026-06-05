@@ -134,7 +134,7 @@ require_once 'includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="card" style="background: #1a1a2e; border: 1px solid rgba(197,160,89,0.3); border-radius: 12px;">
+        <div class="card" style="background: #000000; border: 1px solid rgba(192,192,192,0.3); border-radius: 12px;">
             <div class="card-body p-4">
                 <form method="POST" action="admin_announcements.php">
                     <div class="mb-4">
