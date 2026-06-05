@@ -118,12 +118,15 @@ require_once 'includes/header.php';
         <p class="mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Send updates or promotions to your customers</p>
 
         <?php if ($success): ?>
-            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+            <div class="alert alert-success" style="background: rgba(40,167,69,0.2); border: 1px solid #28a745; color: #90EE90; border-radius: 8px; padding: 15px 20px;">
+                <i class="bi bi-check-circle-fill"></i> <?php echo htmlspecialchars($success); ?>
+            </div>
         <?php endif; ?>
 
         <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <ul class="mb-0">
+            <div class="alert alert-danger" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 8px; padding: 15px 20px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <ul class="mb-0 mt-2" style="padding-left: 20px;">
                     <?php foreach ($errors as $e): ?>
                         <li><?php echo htmlspecialchars($e); ?></li>
                     <?php endforeach; ?>
@@ -131,50 +134,87 @@ require_once 'includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="card">
+        <div class="card" style="background: #1a1a2e; border: 1px solid rgba(197,160,89,0.3); border-radius: 12px;">
             <div class="card-body p-4">
                 <form method="POST" action="admin_announcements.php">
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Subject</label>
+                    <div class="mb-4">
+                        <label for="subject" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-envelope"></i> Subject
+                        </label>
                         <input type="text" class="form-control" id="subject" name="subject" required
                                placeholder="e.g. New Hours, Special Promotion, Holiday Closure..."
-                               value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>">
+                               value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>"
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
+                        <style>
+                            #subject::placeholder {
+                                color: rgba(245, 240, 232, 0.5);
+                                font-style: italic;
+                            }
+                        </style>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
+                    <div class="mb-4">
+                        <label for="message" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-chat-left-text"></i> Message
+                        </label>
                         <textarea class="form-control" id="message" name="message" rows="6" required
-                                  placeholder="Write your announcement here..."><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                                  placeholder="Write your announcement here..."
+                                  style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px; resize: vertical;"><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                        <style>
+                            #message::placeholder {
+                                color: rgba(245, 240, 232, 0.5);
+                                font-style: italic;
+                            }
+                        </style>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Send To</label>
+                    <div class="mb-4">
+                        <label class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-people"></i> Send To
+                        </label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="target" id="targetAll" value="all" checked>
-                            <label class="form-check-label" for="targetAll">All Customers (<?php echo count($customers); ?>)</label>
+                            <label class="form-check-label" for="targetAll" style="color: #F5F0E8;">All Customers (<?php echo count($customers); ?>)</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="target" id="targetSpecific" value="specific">
-                            <label class="form-check-label" for="targetSpecific">Specific Customer</label>
+                            <label class="form-check-label" for="targetSpecific" style="color: #F5F0E8;">Specific Customer</label>
                         </div>
                     </div>
 
-                    <div class="mb-3" id="specificEmailBox" style="display: none;">
-                        <label for="specific_email" class="form-label">Customer Email</label>
+                    <div class="mb-4" id="specificEmailBox" style="display: none;">
+                        <label for="specific_email" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-person"></i> Customer Email
+                        </label>
                         <input type="email" class="form-control" id="specific_email" name="specific_email"
-                               placeholder="customer@example.com">
-                        <div class="form-text mt-2">
-                            <strong>Registered customers:</strong>
-                            <ul class="mb-0 mt-1" style="padding-left: 1.2rem; color: var(--barber-gray);">
+                               placeholder="customer@example.com"
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
+                        <style>
+                            #specific_email::placeholder {
+                                color: rgba(245, 240, 232, 0.5);
+                                font-style: italic;
+                            }
+                        </style>
+                        <div class="form-text mt-2" style="color: #B8B8CC;">
+                            <strong style="color: #C5A059;"><i class="bi bi-info-circle"></i> Registered customers:</strong>
+                            <ul class="mb-0 mt-2" style="padding-left: 1.2rem; color: #B8B8CC; list-style-type: none;">
                                 <?php foreach ($customers as $c): ?>
-                                    <li><?php echo htmlspecialchars($c['name']); ?> &mdash; <?php echo htmlspecialchars($c['email']); ?></li>
+                                    <li style="margin-bottom: 6px; padding: 8px; background: rgba(197,160,89,0.05); border-radius: 6px; border-left: 3px solid #C5A059;">
+                                        <i class="bi bi-person-fill" style="color: #C5A059;"></i> 
+                                        <strong style="color: #F5F0E8;"><?php echo htmlspecialchars($c['name']); ?></strong> 
+                                        <span style="color: #8A8A9A;">—</span> 
+                                        <span style="color: #C5A059;"><?php echo htmlspecialchars($c['email']); ?></span>
+                                    </li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Send Announcement</button>
+                        <button type="submit" class="btn" 
+                                style="background: linear-gradient(135deg, #C5A059 0%, #D4AF69 100%); border: none; color: #1a1a2e; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                            <i class="bi bi-send"></i> Send Announcement
+                        </button>
                     </div>
                 </form>
             </div>
