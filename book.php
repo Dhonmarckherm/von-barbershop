@@ -39,6 +39,9 @@ require_once 'includes/header.php';
                                 Buzz Cut
                             </button>
                         </div>
+                        <small class="d-block mt-2" style="color: var(--barber-gold);">
+                            <i class="bi bi-info-circle"></i> Not sure what style? Just click <strong>Consultation</strong> and we'll help you choose!
+                        </small>
                     </div>
 
                     <div class="mb-3">
