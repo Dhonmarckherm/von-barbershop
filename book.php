@@ -52,7 +52,7 @@ require_once 'includes/header.php';
                     <div class="mb-3">
                         <label for="location" class="form-label" style="color: #F5F0E8; font-weight: 600;">Location / Address</label>
                         <input type="text" class="form-control" id="location" name="location" 
-                               placeholder="Enter the address where the barber should go" 
+                               placeholder="Enter the address where you're located" 
                                style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8;" required>
                     </div>
 
