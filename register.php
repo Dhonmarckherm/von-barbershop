@@ -114,8 +114,8 @@ require_once 'includes/header.php';
     <div class="col-md-6 col-lg-5">
         <div class="card">
             <div class="card-body p-4">
-                <h2 class="text-center mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Join the Club</h2>
-                <p class="text-center mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Create your account</p>
+                <h2 class="text-center mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Your Best Look Starts Here</h2>
+                <p class="text-center mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Create your account and book your first appointment</p>
 
                 <?php if (!empty($errors)): ?>
                     <div class="alert alert-danger">
