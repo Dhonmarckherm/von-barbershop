@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <hr style='border-color: rgba(197,160,89,0.3); margin: 0 20px;'>
                     <div style='padding: 20px; text-align: center; background: #1a1a2e;'>
-                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barbershop - Premium Grooming Experience</p>
+                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
                         <p style='color: #8A8A9A; font-size: 0.85rem; margin: 5px 0 0 0;'>Developed by Dhon Marck V. Hermosura, IT Specialist</p>
                     </div>
                 </div>

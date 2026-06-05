@@ -48,7 +48,7 @@ try {
             </div>
         <?php endif; ?>
         
-        <p class="hero-subtitle">Est. 2025 — Premium Grooming</p>
+        <p class="hero-subtitle">Est. 2025 — Approachable</p>
         
         <h1 class="hero-title">
             <span class="hero-title-letter" style="--delay: 0">V</span>
@@ -64,7 +64,7 @@ try {
             <div class="hero-divider-line"></div>
         </div>
         
-        <p class="hero-description">Where tradition meets style. Expert cuts, classic shaves, and the finest grooming experience.</p>
+        <p class="hero-description">Experience the standard of precision,style, and confidence.</p>
         
         <p class="hero-punchline">Ako si VON, as in <span class="punchline-highlight">V.O.N</span></p>
         
@@ -106,11 +106,12 @@ try {
     <div class="col-12 text-center mb-4">
         <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Our Services</h2>
         <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
+        <p class="mt-3" style="color: var(--barber-gray);">RUBICUTS - Professional Barber Services</p>
     </div>
 </div>
 
 <div class="row text-center">
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Haircut</h5>
@@ -118,7 +119,7 @@ try {
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Beard Trim</h5>
@@ -126,11 +127,46 @@ try {
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-4">
+    <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Home Service</h5>
-                <p class="card-text">Professional barber services at the comfort of your home. We come to you!</p>
+                <p class="card-text">RUBICUTS professional barber services at the comfort of your home. We come to you!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Consultation</h5>
+                <p class="card-text">Expert advice on hairstyle, grooming tips, and personalized recommendations.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Eyebrow Trim</h5>
+                <p class="card-text">Clean and precise eyebrow shaping for a polished, refined look.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Hair Design</h5>
+                <p class="card-text">Custom hair art and creative designs to express your unique personality.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Tattoo</h5>
+                <p class="card-text">Professional tattoo services with artistic precision and safety standards.</p>
             </div>
         </div>
     </div>
