@@ -58,11 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Use Brevo HTTP API (faster)
                         error_log("Announcement: Using Brevo HTTP API");
                         $htmlContent = '
-                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
-                                <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
+                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000; color: #f5f5f5; border: 1px solid #c0c0c0;">
+                                <h2 style="color: #c0c0c0; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
                                 <div style="margin-top: 20px; line-height: 1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
-                                <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
-                                <p style="color: #8A8A9A; font-size: 0.85rem;">This message was sent by your barber.</p>
+                                <hr style="border-color: rgba(192,192,192,0.3); margin: 30px 0;">
+                                <p style="color: #808080; font-size: 0.85rem;">This message was sent by your barber.</p>
                             </div>
                         ';
                         
@@ -80,11 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $mail->isHTML(true);
                         $mail->Subject = $subject;
                         $mail->Body = '
-                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #F5F0E8; border: 1px solid #C5A059;">
-                                <h2 style="color: #C5A059; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
+                            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #000000; color: #f5f5f5; border: 1px solid #c0c0c0;">
+                                <h2 style="color: #c0c0c0; font-family: Playfair Display, serif;">' . htmlspecialchars($subject) . '</h2>
                                 <div style="margin-top: 20px; line-height: 1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
-                                <hr style="border-color: rgba(197,160,89,0.3); margin: 30px 0;">
-                                <p style="color: #8A8A9A; font-size: 0.85rem;">This message was sent by your barber.</p>
+                                <hr style="border-color: rgba(192,192,192,0.3); margin: 30px 0;">
+                                <p style="color: #808080; font-size: 0.85rem;">This message was sent by your barber.</p>
                             </div>
                         ';
                         $mail->send();
@@ -138,72 +138,70 @@ require_once 'includes/header.php';
             <div class="card-body p-4">
                 <form method="POST" action="admin_announcements.php">
                     <div class="mb-4">
-                        <label for="subject" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <label for="subject" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                             <i class="bi bi-envelope"></i> Subject
                         </label>
-                        <input type="text" class="form-control" id="subject" name="subject" required
-                               placeholder="e.g. New Hours, Special Promotion, Holiday Closure..."
+                        <input type="text" class="form-control" id="subject" name="subject" required placeholder="e.g. New Hours, Special Promotion, Holiday Closure..."
                                value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>"
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
+                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
                         <style>
                             #subject::placeholder {
-                                color: rgba(245, 240, 232, 0.5);
+                                color: rgba(245, 245, 245, 0.5);
                                 font-style: italic;
                             }
                         </style>
                     </div>
 
                     <div class="mb-4">
-                        <label for="message" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <label for="message" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                             <i class="bi bi-chat-left-text"></i> Message
                         </label>
-                        <textarea class="form-control" id="message" name="message" rows="6" required
-                                  placeholder="Write your announcement here..."
-                                  style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px; resize: vertical;"><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="6" required placeholder="Write your announcement here..."
+                                  style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px; resize: vertical;"><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
                         <style>
                             #message::placeholder {
-                                color: rgba(245, 240, 232, 0.5);
+                                color: rgba(245, 245, 245, 0.5);
                                 font-style: italic;
                             }
                         </style>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <label class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                             <i class="bi bi-people"></i> Send To
                         </label>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="target" id="targetAll" value="all" checked>
-                            <label class="form-check-label" for="targetAll" style="color: #F5F0E8;">All Customers (<?php echo count($customers); ?>)</label>
+                            <label class="form-check-label" for="targetAll" style="color: #f5f5f5;">All Customers (<?php echo count($customers); ?>)</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="target" id="targetSpecific" value="specific">
-                            <label class="form-check-label" for="targetSpecific" style="color: #F5F0E8;">Specific Customer</label>
+                            <label class="form-check-label" for="targetSpecific" style="color: #f5f5f5;">Specific Customer</label>
                         </div>
                     </div>
 
                     <div class="mb-4" id="specificEmailBox" style="display: none;">
-                        <label for="specific_email" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <label for="specific_email" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
                             <i class="bi bi-person"></i> Customer Email
                         </label>
                         <input type="email" class="form-control" id="specific_email" name="specific_email"
                                placeholder="customer@example.com"
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
+                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;">
                         <style>
                             #specific_email::placeholder {
-                                color: rgba(245, 240, 232, 0.5);
+                                color: rgba(245, 245, 245, 0.5);
                                 font-style: italic;
                             }
                         </style>
-                        <div class="form-text mt-2" style="color: #B8B8CC;">
-                            <strong style="color: #C5A059;"><i class="bi bi-info-circle"></i> Registered customers:</strong>
-                            <ul class="mb-0 mt-2" style="padding-left: 1.2rem; color: #B8B8CC; list-style-type: none;">
+                        <div class="form-text mt-2" style="color: #b0b0b0;">
+                            <strong style="color: #c0c0c0;"><i class="bi bi-info-circle"></i> Registered customers:</strong>
+                            <ul class="mb-0 mt-2" style="padding-left: 1.2rem; color: #b0b0b0; list-style-type: none;">
                                 <?php foreach ($customers as $c): ?>
-                                    <li style="margin-bottom: 6px; padding: 8px; background: rgba(197,160,89,0.05); border-radius: 6px; border-left: 3px solid #C5A059;">
-                                        <i class="bi bi-person-fill" style="color: #C5A059;"></i> 
-                                        <strong style="color: #F5F0E8;"><?php echo htmlspecialchars($c['name']); ?></strong> 
-                                        <span style="color: #8A8A9A;">—</span> 
-                                        <span style="color: #C5A059;"><?php echo htmlspecialchars($c['email']); ?></span>
+                                    <li style="margin-bottom: 6px; padding: 8px; background: rgba(192,192,192,0.05); border-radius: 6px; border-left: 3px solid #c0c0c0;">
+                                        <i class="bi bi-person-fill" style="color: #c0c0c0;"></i> 
+                                        <strong style="color: #f5f5f5;"><?php echo htmlspecialchars($c['name']); ?></strong> 
+                                        <span style="color: #808080;">—</span> 
+                                        <span style="color: #c0c0c0;"><?php echo htmlspecialchars($c['email']); ?></span>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -212,7 +210,7 @@ require_once 'includes/header.php';
 
                     <div class="d-grid">
                         <button type="submit" class="btn" 
-                                style="background: linear-gradient(135deg, #C5A059 0%, #D4AF69 100%); border: none; color: #1a1a2e; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                style="background: linear-gradient(135deg, #c0c0c0 0%, #d4d4d4 100%); border: none; color: #000000; padding: 14px 24px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                             <i class="bi bi-send"></i> Send Announcement
                         </button>
                     </div>
