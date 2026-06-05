@@ -114,6 +114,14 @@ try {
     <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
+                <h5 class="card-title">Consultation</h5>
+                <p class="card-text">Expert advice on hairstyle, grooming tips, and personalized recommendations.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
                 <h5 class="card-title">Haircut</h5>
                 <p class="card-text">Classic and modern haircuts tailored to your unique style and face shape.</p>
             </div>
@@ -130,30 +138,14 @@ try {
     <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">Home Service</h5>
-                <p class="card-text">Expert barber services delivered to your doorstep. Enjoy premium haircuts in the comfort of your home — we come to you!</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Consultation</h5>
-                <p class="card-text">Expert advice on hairstyle, grooming tips, and personalized recommendations.</p>
+                <h5 class="card-title">Eyebrow Trim</h5>
+                <p class="card-text">Clean and precise eyebrow shaping for a polished, refined look.</p>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row text-center">
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Eyebrow Trim</h5>
-                <p class="card-text">Clean and precise eyebrow shaping for a polished, refined look.</p>
-            </div>
-        </div>
-    </div>
     <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
@@ -165,8 +157,8 @@ try {
     <div class="col-md-3 mb-4">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">Tattoo</h5>
-                <p class="card-text">Professional tattoo services with artistic precision and safety standards.</p>
+                <h5 class="card-title">Home Service</h5>
+                <p class="card-text">Expert barber services delivered to your doorstep. Enjoy premium haircuts in the comfort of your home — we come to you!</p>
             </div>
         </div>
     </div>
