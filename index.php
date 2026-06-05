@@ -106,7 +106,7 @@ try {
     <div class="col-12 text-center mb-4">
         <h2 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Our Services</h2>
         <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
-        <p class="mt-3" style="color: var(--barber-gray);">RUBICUTS - Professional Barber Services</p>
+        <p class="mt-3" style="color: var(--barber-gray);">Barber Services</p>
     </div>
 </div>
 
