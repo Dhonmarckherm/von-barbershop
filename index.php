@@ -48,7 +48,7 @@ try {
             </div>
         <?php endif; ?>
         
-        <p class="hero-subtitle">Est. 2025 — Approachable Barber</p>
+        <p class="hero-subtitle">Est. 2025 — BARBER STUDIO</p>
         
         <h1 class="hero-title">
             <span class="hero-title-letter" style="--delay: 0">V</span>
