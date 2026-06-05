@@ -26,7 +26,6 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="assets/images/rubiks.jpg" alt="Logo" style="height: 40px; width: auto; margin-right: 10px; border-radius: 8px;">
                 <?php echo htmlspecialchars($siteName); ?>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
