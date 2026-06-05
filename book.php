@@ -16,7 +16,9 @@ require_once 'includes/header.php';
         <div class="card">
             <div class="card-body p-4">
                 <h2 class="text-center mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Book an Appointment</h2>
-                <p class="text-center mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Tell us what you want and where to meet</p>
+                <p class="text-center mb-4" style="color: #F5F0E8; font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 0 auto 1.5rem;">
+                    Choose a date and time that works for you and enjoy priority service—no waiting, no hassle.
+                </p>
 
                 <form method="POST" action="process_booking.php" id="bookingForm">
                     <div class="mb-3">
