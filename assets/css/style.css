@@ -836,17 +836,17 @@ h1, h2, h3, h4, h5, h6 {
 /* Scroll Indicator */
 .scroll-indicator {
     position: absolute;
-    bottom: 15px;
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     opacity: 0;
     animation: fadeIn 1s ease-out 2.5s forwards, float-scroll 2s ease-in-out infinite 3s;
-    z-index: 10;
-    background: rgba(26, 26, 46, 0.85);
-    padding: 12px 18px;
-    border-radius: 30px;
-    border: 1px solid rgba(197, 160, 89, 0.4);
+    z-index: 5;
+    background: rgba(26, 26, 46, 0.9);
+    padding: 10px 16px;
+    border-radius: 25px;
+    border: 1px solid rgba(197, 160, 89, 0.3);
     backdrop-filter: blur(10px);
 }
 
@@ -1681,7 +1681,7 @@ img, video, canvas, svg {
 @media (max-width: 768px) {
     /* Fix hero section - keep animations visible */
     .hero {
-        padding: 80px 15px 80px;
+        padding: 80px 15px 100px;
         min-height: 100vh;
         min-height: -webkit-fill-available;
     }
@@ -1747,8 +1747,8 @@ img, video, canvas, svg {
     
     /* Fix scroll indicator on mobile */
     .scroll-indicator {
-        bottom: 10px;
-        padding: 10px 16px;
+        bottom: 5px;
+        padding: 8px 14px;
         background: rgba(26, 26, 46, 0.95);
     }
     
@@ -1839,7 +1839,7 @@ img, video, canvas, svg {
 @media (max-width: 576px) {
     /* Further reduce hero size but keep animations */
     .hero {
-        padding: 70px 15px 50px;
+        padding: 70px 15px 80px;
         min-height: 100vh;
         min-height: -webkit-fill-available;
     }
