@@ -1931,12 +1931,29 @@ img, video, canvas, svg {
     }
     
     .hero {
-        padding: 30px 10px;
+        padding: 30px 10px 90px;
     }
     
     .container {
         padding-left: 10px !important;
         padding-right: 10px !important;
+    }
+    
+    .scroll-indicator {
+        bottom: 3px;
+        padding: 6px 12px;
+        font-size: 0.6rem;
+    }
+    
+    .scroll-indicator p {
+        font-size: 0.6rem;
+        letter-spacing: 1.5px;
+    }
+    
+    .scroll-mouse {
+        width: 18px;
+        height: 28px;
+        margin: 0 auto 6px;
     }
 }
 
@@ -1962,6 +1979,44 @@ img, video, canvas, svg {
     
     .hero-title {
         font-size: 2rem !important;
+    }
+    
+    .scroll-indicator {
+        display: none;
+    }
+}
+
+/* Fix for iPhone and small viewport heights */
+@media (max-height: 700px) and (max-width: 430px) {
+    .hero {
+        padding: 60px 15px 110px !important;
+    }
+    
+    .hero-register {
+        margin-top: 0.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .scroll-indicator {
+        bottom: 3px;
+        padding: 6px 12px;
+    }
+    
+    .scroll-indicator p {
+        font-size: 0.55rem;
+        letter-spacing: 1.5px;
+    }
+    
+    .scroll-mouse {
+        width: 16px;
+        height: 24px;
+        margin: 0 auto 5px;
+    }
+    
+    .scroll-wheel {
+        width: 3px;
+        height: 6px;
+        top: 5px;
     }
 }
 
