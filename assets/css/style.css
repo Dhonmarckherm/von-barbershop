@@ -1,7 +1,7 @@
 /* ==========================================
-   BARBERSHOP BOOKING SYSTEM - BEARD X STYLE
-   Premium barbershop design: dark elegant
-   theme with gold accents & serif fonts
+   BARBERSHOP BOOKING SYSTEM - MODERN SILVER
+   Premium modern design: silver, black & white
+   theme with sleek accents & clean fonts
    ========================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
@@ -98,20 +98,20 @@ body {
 
 /* --- CSS Variables --- */
 :root {
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #141414;
-    --bg-tertiary: #1a1a1a;
-    --bg-card: #1c1c1c;
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-tertiary: #111111;
+    --bg-card: #1a1a1a;
     --text-primary: #ffffff;
-    --text-secondary: #e5e5e5;
-    --text-muted: #a3a3a3;
-    --text-gray: #737373;
-    --accent-gold: #c9a961;
-    --accent-gold-light: #d4b978;
-    --accent-gold-dark: #b8944f;
+    --text-secondary: #f5f5f5;
+    --text-muted: #b0b0b0;
+    --text-gray: #808080;
+    --accent-gold: #c0c0c0;
+    --accent-gold-light: #d4d4d4;
+    --accent-gold-dark: #a8a8a8;
     --border-color: #2a2a2a;
     --border-light: #333333;
-    --accent-success: #22c55e;
+    --accent-success: #10b981;
     --accent-danger: #ef4444;
     --accent-warning: #f59e0b;
 }

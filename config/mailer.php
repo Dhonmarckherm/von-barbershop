@@ -298,11 +298,11 @@ function sendRescheduleEmail(string $customerEmail, string $customerName, array 
 function buildCustomerEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
     return "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #C5A059;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #c0c0c0;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>✂️</div>
-                <h1 style='color: #C5A059; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Confirmed!</h1>
+                <h1 style='color: #c0c0c0; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Confirmed!</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your booking is all set</p>
             </div>
             
@@ -313,23 +313,23 @@ function buildCustomerEmailBody(array $details): string {
                 <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>Great news! Your appointment has been <strong style='color: #28a745; font-size: 18px;'>BOOKED SUCCESSFULLY</strong>. We're looking forward to seeing you!</p>
                 
                 <!-- Appointment Details Card -->
-                <div style='background: rgba(197, 160, 89, 0.1); border-left: 4px solid #C5A059; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
+                <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
                     <h3 style='color: #C5A059; margin: 0 0 15px 0; font-size: 18px;'>📋 Appointment Details</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -339,8 +339,8 @@ function buildCustomerEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
-                <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for choosing V.O.N Barbershop!</p>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
+                <p style='color: #c0c0c0; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for choosing V.O.N Barbershop!</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
         </div>
@@ -353,9 +353,9 @@ function buildCustomerEmailBody(array $details): string {
 function buildAdminEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
     return "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #C5A059;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #c0c0c0;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>🔔</div>
                 <h1 style='color: #C5A059; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>New Booking Alert!</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>A new appointment has been made</p>
@@ -373,23 +373,23 @@ function buildAdminEmailBody(array $details): string {
                 </div>
                 
                 <!-- Appointment Details Card -->
-                <div style='background: rgba(197, 160, 89, 0.1); border-left: 4px solid #C5A059; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
+                <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
                     <h3 style='color: #C5A059; margin: 0 0 15px 0; font-size: 18px;'>📋 Appointment Details</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -399,7 +399,7 @@ function buildAdminEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>V.O.N Barbershop Admin Dashboard</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
@@ -413,9 +413,9 @@ function buildAdminEmailBody(array $details): string {
 function buildAcceptanceEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
     return "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #28a745;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #28a745;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>✅</div>
                 <h1 style='color: #28a745; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Accepted!</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your booking has been confirmed</p>
@@ -432,19 +432,19 @@ function buildAcceptanceEmailBody(array $details): string {
                     <h3 style='color: #28a745; margin: 0 0 15px 0; font-size: 18px;'>📋 Appointment Details</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -454,7 +454,7 @@ function buildAcceptanceEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>See you soon at V.O.N Barbershop!</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
@@ -468,9 +468,9 @@ function buildAcceptanceEmailBody(array $details): string {
 function buildCancellationEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
     return "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #dc3545;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #dc3545;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>❌</div>
                 <h1 style='color: #dc3545; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Cancelled</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your booking has been cancelled</p>
@@ -487,19 +487,19 @@ function buildCancellationEmailBody(array $details): string {
                     <h3 style='color: #dc3545; margin: 0 0 15px 0; font-size: 18px;'>📋 Cancelled Appointment Details</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -509,7 +509,7 @@ function buildCancellationEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Book your next appointment anytime!</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
@@ -525,9 +525,9 @@ function buildRescheduleEmailBody(array $details): string {
     $oldDate = isset($details['old_date']) ? htmlspecialchars($details['old_date']) : 'Previous date';
     $oldTime = isset($details['old_time']) ? htmlspecialchars($details['old_time']) : 'Previous time';
     return "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #C5A059;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #c0c0c0;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>🔄</div>
                 <h1 style='color: #C5A059; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Rescheduled</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your appointment time has been changed</p>
@@ -547,23 +547,23 @@ function buildRescheduleEmailBody(array $details): string {
                 </div>
                 
                 <!-- New Appointment Details Card -->
-                <div style='background: rgba(197, 160, 89, 0.1); border-left: 4px solid #C5A059; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
+                <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
                     <h3 style='color: #C5A059; margin: 0 0 15px 0; font-size: 18px;'>✨ New Schedule</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -573,7 +573,7 @@ function buildRescheduleEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for your flexibility!</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
@@ -626,9 +626,9 @@ function buildCompletionEmailBody(array $details): string {
     $siteUrl = 'https://von-barbershop.onrender.com';
     
     $emailBody = "
-        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1a1a2e; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
-            <div style='background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #28a745;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #28a745;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>✅</div>
                 <h1 style='color: #28a745; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Completed!</h1>
                 <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your service has been completed</p>
@@ -645,19 +645,19 @@ function buildCompletionEmailBody(array $details): string {
                     <h3 style='color: #28a745; margin: 0 0 15px 0; font-size: 18px;'>📋 Appointment Details</h3>
                     <table style='width: 100%; border-collapse: collapse;'>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059; width: 140px;'>💈 Style:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 140px;'>💈 Style:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['service_name']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📍 Location:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📍 Location:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . $location . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>📅 Date:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>📅 Date:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['date']) . "</td>
                         </tr>
                         <tr>
-                            <td style='padding: 8px 0; font-weight: bold; color: #C5A059;'>⏰ Time:</td>
+                            <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
                             <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
                         </tr>
                     </table>
@@ -668,10 +668,10 @@ function buildCompletionEmailBody(array $details): string {
         $reviewLink = $siteUrl . '/my_appointments.php?review=' . $appointmentId;
         $emailBody .= "
                 <!-- Review CTA -->
-                <div style='background: rgba(197, 160, 89, 0.1); padding: 30px 20px; border-radius: 8px; text-align: center; margin-bottom: 25px; border: 2px solid #C5A059;'>
+                <div style='background: rgba(192, 192, 192, 0.1); padding: 30px 20px; border-radius: 8px; text-align: center; margin-bottom: 25px; border: 2px solid #C5A059;'>
                     <h3 style='color: #C5A059; margin: 0 0 10px 0; font-size: 20px;'>⭐ Thank you for choosing RUBICUTS V.O.N! 💈</h3>
                     <p style='font-size: 16px; color: #F5F0E8; margin-bottom: 20px;'>We hope you love your new look! Your feedback helps us improve.</p>
-                    <p style='font-size: 18px; font-weight: bold; color: #C5A059; margin-bottom: 20px;'>Please rate your experience with us:</p>
+                    <p style='font-size: 18px; font-weight: bold; color: #c0c0c0; margin-bottom: 20px;'>Please rate your experience with us:</p>
                     <a href='{$reviewLink}' style='display: inline-block; background: #C5A059; color: #1a1a2e; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px; transition: all 0.3s;'>
                         ⭐ Rate Us Now
                     </a>
@@ -684,7 +684,7 @@ function buildCompletionEmailBody(array $details): string {
             </div>
             
             <!-- Footer -->
-            <div style='background: rgba(197, 160, 89, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(197, 160, 89, 0.3);'>
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Book your next appointment anytime!</p>
                 <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
             </div>
