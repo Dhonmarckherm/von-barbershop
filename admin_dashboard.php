@@ -189,26 +189,40 @@ require_once 'includes/header.php';
 <!-- Reschedule Modal -->
 <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Reschedule Appointment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content" style="background: #1a1a2e; border: 1px solid rgba(197,160,89,0.3); border-radius: 12px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%); border-bottom: 2px solid #C5A059; padding: 20px 30px;">
+                <h5 class="modal-title" style="color: #C5A059; font-family: 'Playfair Display', serif; font-weight: bold;">
+                    <i class="bi bi-calendar-check"></i> Reschedule Appointment
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 30px;">
                 <input type="hidden" id="rescheduleAppointmentId">
-                <div class="mb-3">
-                    <label for="rescheduleDate" class="form-label">New Date</label>
-                    <input type="date" class="form-control" id="rescheduleDate" min="<?php echo date('Y-m-d'); ?>">
+                <div class="mb-4">
+                    <label for="rescheduleDate" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <i class="bi bi-calendar3"></i> New Date
+                    </label>
+                    <input type="text" class="form-control" id="rescheduleDate" placeholder="Select date..." 
+                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
                 </div>
-                <div class="mb-3">
-                    <label for="rescheduleTime" class="form-label">New Time</label>
-                    <input type="time" class="form-control" id="rescheduleTime" step="1800" min="09:00" max="17:00">
+                <div class="mb-4">
+                    <label for="rescheduleTime" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 14px;">
+                        <i class="bi bi-clock"></i> New Time
+                    </label>
+                    <input type="text" class="form-control" id="rescheduleTime" placeholder="Select time..." 
+                           style="background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
                 </div>
-                <div id="rescheduleError" class="alert alert-danger d-none"></div>
+                <div id="rescheduleError" class="alert alert-danger d-none" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 8px;"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-warning btn-sm" id="confirmRescheduleBtn">Reschedule</button>
+            <div class="modal-footer" style="background: rgba(197,160,89,0.05); border-top: 1px solid rgba(197,160,89,0.3); padding: 20px 30px;">
+                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" 
+                        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #F5F0E8; padding: 10px 24px; border-radius: 8px;">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-sm" id="confirmRescheduleBtn" 
+                        style="background: linear-gradient(135deg, #C5A059 0%, #D4AF69 100%); border: none; color: #1a1a2e; padding: 10px 24px; border-radius: 8px; font-weight: 600;">
+                    <i class="bi bi-check-circle"></i> Confirm Reschedule
+                </button>
             </div>
         </div>
     </div>
@@ -324,12 +338,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const rescheduleTime = document.getElementById('rescheduleTime');
     const rescheduleError = document.getElementById('rescheduleError');
 
+    // Initialize Flatpickr for date picker
+    const datepicker = flatpickr('#rescheduleDate', {
+        minDate: 'today',
+        dateFormat: 'Y-m-d',
+        altInput: false,
+        disableMobile: false,
+        theme: 'dark',
+        animate: true,
+        static: true
+    });
+
+    // Initialize Flatpickr for time picker
+    const timepicker = flatpickr('#rescheduleTime', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: 'h:i K',
+        time_24hr: false,
+        minTime: '09:00',
+        maxTime: '17:00',
+        minuteIncrement: 30,
+        theme: 'dark',
+        animate: true,
+        static: true,
+        defaultHour: 9,
+        defaultMinute: 0
+    });
+
     // Reschedule buttons
     document.querySelectorAll('.action-reschedule').forEach(btn => {
         btn.addEventListener('click', function() {
             rescheduleAppointmentId.value = this.dataset.id;
-            rescheduleDate.value = this.dataset.date;
-            rescheduleTime.value = this.dataset.time;
+            
+            // Set Flatpickr values
+            const originalDate = this.dataset.date;
+            const originalTime = this.dataset.time;
+            
+            datepicker.setDate(originalDate);
+            timepicker.setDate(originalTime);
+            
             rescheduleError.classList.add('d-none');
             rescheduleModal.show();
         });
@@ -339,12 +386,26 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('confirmRescheduleBtn').addEventListener('click', function() {
         const id = rescheduleAppointmentId.value;
         const date = rescheduleDate.value;
-        const time = rescheduleTime.value;
+        const timeValue = rescheduleTime.value;
 
-        if (!date || !time) {
+        if (!date || !timeValue) {
             rescheduleError.textContent = 'Please select both date and time.';
             rescheduleError.classList.remove('d-none');
             return;
+        }
+
+        // Convert time from "h:i K" format to "HH:MM:SS" for backend
+        let time = timeValue;
+        const timeParts = timeValue.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (timeParts) {
+            let hours = parseInt(timeParts[1]);
+            const minutes = timeParts[2];
+            const ampm = timeParts[3].toUpperCase();
+            
+            if (ampm === 'PM' && hours < 12) hours += 12;
+            if (ampm === 'AM' && hours === 12) hours = 0;
+            
+            time = String(hours).padStart(2, '0') + ':' + minutes + ':00';
         }
 
         rescheduleError.classList.add('d-none');

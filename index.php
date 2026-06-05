@@ -180,8 +180,8 @@ try {
                 <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto 2rem;"></div>
                 <div class="row">
                     <div class="col-md-4">
-                        <h5 style="color: var(--barber-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px;">Expert Barbers</h5>
-                        <p style="color: var(--barber-gray);">Years of experience in classic and modern grooming techniques.</p>
+                        <h5 style="color: var(--barber-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px;">Approachable Barbers</h5>
+                        <p style="color: var(--barber-gray);">Years of experience in classic and modern haircut techniques.</p>
                     </div>
                     <div class="col-md-4">
                         <h5 style="color: var(--barber-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px;">Follow Us</h5>
