@@ -2,36 +2,31 @@
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
-// Debug logging
-error_log("=== Header.php Debug ===");
-error_log("Page: " . (basename($_SERVER['PHP_SELF']) ?? 'unknown'));
-error_log("Session user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
-error_log("Session role: " . ($_SESSION['role'] ?? 'NOT SET'));
-error_log("Cookie auth_user_id: " . ($_COOKIE['auth_user_id'] ?? 'NOT SET'));
-error_log("Cookie auth_role: " . ($_COOKIE['auth_role'] ?? 'NOT SET'));
-error_log("Cookie auth_name: " . ($_COOKIE['auth_name'] ?? 'NOT SET'));
-
-// Check session first, fallback to auth cookies (but NOT on login/register pages)
-$isLoggedIn = isset($_SESSION['user_id']);
-
-$current_page = basename($_SERVER['PHP_SELF']);
-$auth_pages = ['login.php', 'register.php'];
-
-// If not logged in via session, check auth cookies (skip on auth pages)
-if (!$isLoggedIn && isset($_COOKIE['auth_user_id']) && !in_array($current_page, $auth_pages)) {
-    error_log("⚠️ Session not found, restoring from cookies...");
+// ALWAYS check auth cookies FIRST as primary authentication (sessions are unreliable on Render)
+if (isset($_COOKIE['auth_user_id']) && !isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
     $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
     $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
     $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
     $_SESSION['login_time'] = time();
-    $isLoggedIn = true;
-    error_log("✅ Session restored - user_id: {$_SESSION['user_id']}, role: {$_SESSION['role']}");
 }
 
-error_log("Final isLoggedIn: " . ($isLoggedIn ? 'TRUE' : 'FALSE'));
-error_log("Final isAdmin: " . (($isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber')) ? 'TRUE' : 'FALSE'));
-error_log("=======================");
+// Check if logged in
+$isLoggedIn = isset($_SESSION['user_id']);
+
+// Skip cookie fallback on login/register pages
+$current_page = basename($_SERVER['PHP_SELF']);
+$auth_pages = ['login.php', 'register.php'];
+
+if (in_array($current_page, $auth_pages) && isset($_SESSION['user_id'])) {
+    // Clear session on auth pages so users can log in fresh
+    $_SESSION = array();
+    if (session_id()) {
+        session_destroy();
+    }
+    session_start();
+    $isLoggedIn = false;
+}
 
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber');
 

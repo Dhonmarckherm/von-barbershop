@@ -40,8 +40,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == '1') {
     session_start();
 }
 
-// Redirect if already logged in (ONLY if NOT logging out)
-if (!isset($_GET['logout']) && isset($_SESSION['user_id'])) {
+// Redirect if already logged in (ONLY if NOT logging out and NOT just cleared session)
+if (!isset($_GET['logout']) && isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
         header('Location: admin_dashboard.php');
     } else {
