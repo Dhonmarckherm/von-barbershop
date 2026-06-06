@@ -1,6 +1,6 @@
 {
-  "name": "VON Barbershop - Book Your Appointment",
-  "short_name": "VON Barbershop",
+  "name": "VON BARBER STUDIO - Book Your Appointment",
+  "short_name": "VON BARBER STUDIO",
   "description": "Professional barbershop booking system - Book appointments, manage schedules, and get premium grooming services",
   "start_url": "/index.php",
   "display": "standalone",

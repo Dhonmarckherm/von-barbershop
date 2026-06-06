@@ -63,10 +63,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             e.preventDefault();
             // Stash the event so it can be triggered later.
             deferredPrompt = e;
-            // Update UI notify the user they can add to home screen
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) {
-                banner.style.display = 'block';
+            // Only show banner on mobile devices
+            if (window.innerWidth <= 768) {
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) {
+                    banner.style.display = 'block';
+                }
             }
         });
 
@@ -102,7 +104,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         <div class="banner-content">
             <img src="assets/images/rubiks.jpg" alt="VON BARBER STUDIO">
             <div class="banner-text">
-                <h6>Install VON Barbershop</h6>
+                <h6>Install VON BARBER STUDIO</h6>
                 <p>Book your next cut faster!</p>
             </div>
             <div class="banner-btns">
@@ -117,7 +119,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         <button class="btn-close" onclick="closePWABanner()">&times;</button>
         <div class="hint-content">
             <i class="bi bi-box-arrow-up"></i>
-            <p>To install <b>VON Barbershop</b> on your iPhone:</p>
+            <p>To install <b>VON BARBER STUDIO</b> on your iPhone:</p>
             <p>Tap the <b>Share</b> button and select <b>"Add to Home Screen"</b></p>
         </div>
     </div>
