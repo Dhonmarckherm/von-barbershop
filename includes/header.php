@@ -14,7 +14,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?><?php echo htmlspecialchars($siteName); ?></title>
-    <link rel="icon" type="image/jpeg" href="assets/images/rubiks.jpg">
+    <link rel="icon" type="image/jpeg" href="/assets/images/rubiks.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Oswald:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -22,12 +22,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 
     <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="assets/images/rubiks.jpg">
+    <link rel="apple-touch-icon" href="/assets/images/rubiks.jpg">
     <script>
         let deferredPrompt;
 
