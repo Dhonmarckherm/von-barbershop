@@ -165,6 +165,10 @@ require_once 'includes/header.php';
                                 </button>
                             <?php elseif ($appt['status'] === 'completed' && in_array($appt['id'], $reviewedAppointments)): ?>
                                 <span class="badge bg-success"><i class="bi bi-check-circle"></i> Reviewed</span>
+                            <?php elseif (in_array($appt['status'], ['pending', 'accepted'])): ?>
+                                <button class="btn btn-sm btn-warning" onclick="openRescheduleModal(<?php echo $appt['id']; ?>, '<?php echo $appt['appointment_date']; ?>', '<?php echo substr($appt['appointment_time'], 0, 5); ?>')">
+                                    <i class="bi bi-calendar-check"></i> Reschedule
+                                </button>
                             <?php else: ?>
                                 -
                             <?php endif; ?>
@@ -218,6 +222,50 @@ require_once 'includes/header.php';
     </div>
 </div>
 
+<!-- Reschedule Modal -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border-bottom: 2px solid #c0c0c0; padding: 20px 30px;">
+                <h5 class="modal-title" style="color: #c0c0c0; font-family: 'Playfair Display', serif; font-weight: bold;">
+                    <i class="bi bi-calendar-check"></i> Reschedule Appointment
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 30px;">
+                <form id="rescheduleForm">
+                    <input type="hidden" id="rescheduleAppointmentId">
+                    <div class="mb-4">
+                        <label for="rescheduleDate" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-calendar3"></i> New Date
+                        </label>
+                        <input type="text" class="form-control" id="rescheduleDate" placeholder="Select date..." 
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label for="rescheduleTime" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
+                            <i class="bi bi-clock"></i> New Time
+                        </label>
+                        <input type="text" class="form-control" id="rescheduleTime" placeholder="Select time..." 
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                    </div>
+                    <div id="rescheduleError" class="alert alert-danger d-none" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 8px;"></div>
+                </form>
+            </div>
+            <div class="modal-footer" style="background: rgba(192,192,192,0.05); border-top: 1px solid rgba(192,192,192,0.3); padding: 20px 30px;">
+                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" 
+                        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #f5f5f5; padding: 10px 24px; border-radius: 8px;">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-sm" id="confirmRescheduleBtn" 
+                        style="background: linear-gradient(135deg, #c0c0c0 0%, #d4d4d4 100%); border: none; color: #000000; padding: 10px 24px; border-radius: 8px; font-weight: 600;">
+                    <i class="bi bi-check-circle"></i> Confirm Reschedule
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .star-rating {
     display: flex;
@@ -242,8 +290,37 @@ require_once 'includes/header.php';
 }
 </style>
 
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 let selectedRating = 0;
+let rescheduleModal;
+
+// Initialize Flatpickers
+const datepicker = flatpickr('#rescheduleDate', {
+    minDate: 'today',
+    dateFormat: 'Y-m-d',
+    theme: 'dark',
+    animate: true
+});
+
+const timepicker = flatpickr('#rescheduleTime', {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: 'H:i',
+    time_24hr: true,
+    minTime: '09:00',
+    maxTime: '17:00',
+    minuteIncrement: 30,
+    theme: 'dark',
+    animate: true,
+    static: true,
+    defaultHour: 9,
+    defaultMinute: 0
+});
 
 function openReviewModal(appointmentId, haircut) {
     document.getElementById('reviewAppointmentId').value = appointmentId;
@@ -253,6 +330,21 @@ function openReviewModal(appointmentId, haircut) {
     
     const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
     modal.show();
+}
+
+function openRescheduleModal(appointmentId, date, time) {
+    document.getElementById('rescheduleAppointmentId').value = appointmentId;
+    
+    // Set Flatpickr values
+    datepicker.setDate(date);
+    timepicker.setDate(time);
+    
+    document.getElementById('rescheduleError').classList.add('d-none');
+    
+    if (!rescheduleModal) {
+        rescheduleModal = new bootstrap.Modal(document.getElementById('rescheduleModal'));
+    }
+    rescheduleModal.show();
 }
 
 function updateStars(rating) {
@@ -313,6 +405,50 @@ document.getElementById('reviewForm').addEventListener('submit', async function(
         }
     } catch (error) {
         alert('An error occurred. Please try again.');
+        console.error(error);
+    }
+});
+
+// Reschedule button
+document.getElementById('confirmRescheduleBtn').addEventListener('click', async function() {
+    const id = document.getElementById('rescheduleAppointmentId').value;
+    const date = document.getElementById('rescheduleDate').value;
+    const timeValue = document.getElementById('rescheduleTime').value;
+    
+    if (!date || !timeValue) {
+        document.getElementById('rescheduleError').textContent = 'Please select both date and time.';
+        document.getElementById('rescheduleError').classList.remove('d-none');
+        return;
+    }
+    
+    // Time is already in HH:MM format (24-hour)
+    let time = timeValue;
+    if (time && !time.includes(':00')) {
+        time = time + ':00';
+    }
+    
+    document.getElementById('rescheduleError').classList.add('d-none');
+    
+    try {
+        const response = await fetch('api/customer_reschedule.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'appointment_id=' + encodeURIComponent(id) + '&new_date=' + encodeURIComponent(date) + '&new_time=' + encodeURIComponent(time)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            rescheduleModal.hide();
+            location.reload();
+        } else {
+            document.getElementById('rescheduleError').textContent = result.error || 'Failed to reschedule.';
+            document.getElementById('rescheduleError').classList.remove('d-none');
+        }
+    } catch (error) {
+        document.getElementById('rescheduleError').textContent = 'An error occurred. Please try again.';
+        document.getElementById('rescheduleError').classList.remove('d-none');
         console.error(error);
     }
 });
