@@ -303,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Confirm delete
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
         const id = deleteUserId.value;
+        console.log('Attempting to delete user ID:', id);
 
         deleteUserError.classList.add('d-none');
         deleteUserSuccess.classList.add('d-none');
@@ -312,8 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'user_id=' + encodeURIComponent(id)
         })
-        .then(r => r.json())
+        .then(r => {
+            console.log('Response status:', r.status);
+            return r.json();
+        })
         .then(data => {
+            console.log('Response data:', data);
             if (data.success) {
                 deleteUserSuccess.textContent = 'User deleted successfully!';
                 deleteUserSuccess.classList.remove('d-none');
@@ -322,13 +327,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     location.reload();
                 }, 1000);
             } else {
+                console.error('Delete failed:', data.error);
                 deleteUserError.textContent = data.error || 'Failed to delete user.';
                 deleteUserError.classList.remove('d-none');
             }
         })
         .catch(err => {
-            console.error(err);
-            deleteUserError.textContent = 'An error occurred while deleting.';
+            console.error('Fetch error:', err);
+            deleteUserError.textContent = 'An error occurred while deleting: ' + err.message;
             deleteUserError.classList.remove('d-none');
         });
     });
