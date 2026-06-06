@@ -1,4 +1,9 @@
 <?php
+// Prevent browser caching - always get fresh content
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 $pageTitle = 'Register';
 require_once 'config/db.php';
 require_once 'config/session.php';
