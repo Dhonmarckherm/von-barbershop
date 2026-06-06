@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 $pageTitle = 'Login';
 require_once 'config/db.php';
 require_once 'config/session.php';
@@ -24,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
+            error_log('LOGIN DEBUG: Password verified for ' . $email);
             // Regenerate session ID to prevent session fixation
             session_regenerate_id(true);
             
@@ -33,11 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
             $_SESSION['login_time'] = time();
             
-            error_log('Login successful for: ' . $email . ' (ID: ' . $user['id'] . ')');
+            error_log('Login successful for: ' . $email . ' (ID: ' . $user['id'] . ', Role: ' . $user['role'] . ')');
             
             // Set backup cookies for Render compatibility
             require_once 'config/session.php';
             setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
+            
+            error_log('LOGIN DEBUG: Cookies set, redirecting to ' . ($user['role'] === 'admin' || $user['role'] === 'barber' ? 'admin_dashboard.php' : 'index.php'));
 
             // Redirect admin to dashboard, customers to index
             if ($user['role'] === 'admin' || $user['role'] === 'barber') {
