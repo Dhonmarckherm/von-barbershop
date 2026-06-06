@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
             $_SESSION['login_time'] = time();
             
+            error_log('Login successful for: ' . $email . ' (ID: ' . $user['id'] . ')');
+            
             // Set backup cookies for Render compatibility
             require_once 'config/session.php';
             setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
@@ -45,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit;
         } else {
+            error_log('Login failed for: ' . $email . ' - User exists: ' . ($user ? 'YES' : 'NO'));
             $error = 'Invalid email or password.';
         }
     }
