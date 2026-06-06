@@ -353,8 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const timepicker = flatpickr('#rescheduleTime', {
         enableTime: true,
         noCalendar: true,
-        dateFormat: 'h:i K',
-        time_24hr: false,
+        dateFormat: 'H:i',
+        time_24hr: true,
         minTime: '09:00',
         maxTime: '17:00',
         minuteIncrement: 30,
@@ -394,18 +394,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Convert time from "h:i K" format to "HH:MM:SS" for backend
+        // Time is already in HH:MM format (24-hour)
         let time = timeValue;
-        const timeParts = timeValue.match(/(\d+):(\d+)\s*(AM|PM)/i);
-        if (timeParts) {
-            let hours = parseInt(timeParts[1]);
-            const minutes = timeParts[2];
-            const ampm = timeParts[3].toUpperCase();
-            
-            if (ampm === 'PM' && hours < 12) hours += 12;
-            if (ampm === 'AM' && hours === 12) hours = 0;
-            
-            time = String(hours).padStart(2, '0') + ':' + minutes + ':00';
+        // Ensure seconds are added
+        if (time && !time.includes(':00')) {
+            time = time + ':00';
         }
 
         rescheduleError.classList.add('d-none');
