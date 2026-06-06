@@ -28,6 +28,8 @@ if (isset($_SESSION['user_id'])) {
     ];
     foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
         setcookie($cookieName, '', $clearParams);
+        // Also remove from $_COOKIE array so header.php cookie fallback won't find them
+        unset($_COOKIE[$cookieName]);
     }
     
     // Start fresh session
