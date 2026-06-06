@@ -15,7 +15,7 @@ function initializeSession() {
             'lifetime' => 86400,        // 24 hours
             'path' => '/',
             'domain' => '',
-            'secure' => $isHttps,
+            'secure' => false,  // Allow both HTTP and HTTPS for compatibility
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
@@ -29,11 +29,12 @@ function initializeSession() {
         
         // Fallback: If session is empty but we have auth cookies, restore from cookies
         // Skip restore if user just logged out
-        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id']) && !isset($_GET['logged_out'])) {
+        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
             $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
             $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
             $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
             $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
+            error_log('Session restored from cookie for user: ' . $_SESSION['user_id']);
         }
     }
 }
@@ -48,7 +49,7 @@ function setAuthCookies(int $userId, string $name, string $email, string $role):
     $cookieParams = [
         'expires' => time() + 86400, // 24 hours
         'path' => '/',
-        'secure' => $isHttps,
+        'secure' => false,  // Allow both HTTP and HTTPS for compatibility
         'httponly' => true,
         'samesite' => 'Lax'
     ];
