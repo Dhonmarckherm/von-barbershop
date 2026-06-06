@@ -21,12 +21,30 @@ header('Content-Type: application/json');
 // Debug logging (only to server logs, not output)
 error_log("Delete User API called");
 error_log("POST data: " . print_r($_POST, true));
+error_log("Session ID: " . session_id());
 error_log("Session data: " . print_r($_SESSION, true));
+error_log("Cookies: " . print_r($_COOKIE, true));
 
-// Admin check
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
+// Admin check - try session first, fallback to auth cookies
+$isAdmin = false;
+if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber')) {
+    $isAdmin = true;
+    error_log("Admin verified via session. Role: " . $_SESSION['role']);
+} elseif (isset($_COOKIE['auth_role']) && ($_COOKIE['auth_role'] === 'admin' || $_COOKIE['auth_role'] === 'barber')) {
+    // Fallback to auth cookies if session is not available
+    $isAdmin = true;
+    error_log("Admin verified via auth cookies. Role: " . $_COOKIE['auth_role']);
+    
+    // Restore session from cookies
+    $_SESSION['user_id'] = $_COOKIE['auth_user_id'] ?? 0;
+    $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
+    $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
+    $_SESSION['role'] = $_COOKIE['auth_role'] ?? '';
+}
+
+if (!$isAdmin) {
     http_response_code(403);
-    error_log("Delete failed: Not admin/barber. Role: " . ($_SESSION['role'] ?? 'not set'));
+    error_log("Delete failed: Not admin/barber. Session role: " . ($_SESSION['role'] ?? 'not set') . ", Cookie role: " . ($_COOKIE['auth_role'] ?? 'not set'));
     echo json_encode(['error' => 'Forbidden. Admin access required.']);
     exit;
 }
