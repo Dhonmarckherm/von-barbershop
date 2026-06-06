@@ -28,7 +28,8 @@ function initializeSession() {
         session_start();
         
         // Fallback: If session is empty but we have auth cookies, restore from cookies
-        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
+        // Skip restore if user just logged out
+        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id']) && !isset($_GET['logged_out'])) {
             $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
             $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
             $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
