@@ -5,6 +5,35 @@ require_once 'config/session.php';
 require_once 'config/mailer.php';
 initializeSession();
 
+// ALWAYS clear session and cookies on register page to allow new registration
+// This prevents logged-in users from being stuck seeing their old account
+if (isset($_SESSION['user_id'])) {
+    // Clear session
+    $_SESSION = array();
+    if (session_id()) {
+        session_destroy();
+    }
+    
+    // Clear auth cookies
+    $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+               || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+               || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    
+    $clearParams = [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ];
+    foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
+        setcookie($cookieName, '', $clearParams);
+    }
+    
+    // Start fresh session
+    session_start();
+}
+
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

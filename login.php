@@ -9,6 +9,31 @@ require_once 'config/db.php';
 require_once 'config/session.php';
 initializeSession();
 
+// Check for logout parameter - clear session if logging out first
+if (isset($_GET['logout']) && $_GET['logout'] == '1') {
+    $_SESSION = array();
+    if (session_id()) {
+        session_destroy();
+    }
+    
+    $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+               || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+               || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    
+    $clearParams = [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ];
+    foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
+        setcookie($cookieName, '', $clearParams);
+    }
+    
+    session_start();
+}
+
 // Redirect if already logged in (even if session is old)
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
