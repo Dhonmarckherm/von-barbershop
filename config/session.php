@@ -46,8 +46,10 @@ function initializeSession() {
             error_log('CRITICAL: Session could not be started! Login will fail.');
         }
         
-        // Restore session from cookies ONLY if there's no active session
-        // This fixes the redirect loop while preventing role mismatch
+        // DISABLED: Cookie session restore was causing auto-login bugs
+        // Users must manually login - no automatic session from cookies
+        // This prevents old admin cookies from auto-logging in customers
+        /*
         if (!isset($_SESSION['user_id']) && !isset($_SESSION['login_time']) && isset($_COOKIE['auth_user_id'])) {
             $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
             $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
@@ -55,6 +57,7 @@ function initializeSession() {
             $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
             error_log('Session restored from cookie for user: ' . $_SESSION['user_id'] . ' with role: ' . $_SESSION['role']);
         }
+        */
     }
 }
 
