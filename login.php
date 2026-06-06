@@ -9,9 +9,14 @@ require_once 'config/db.php';
 require_once 'config/session.php';
 initializeSession();
 
-// Redirect if already logged in
-if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+// Redirect if already logged in - check for login_time to ensure fresh login
+if (isset($_SESSION['user_id']) && !isset($_GET['redirect'])) {
+    // User is already logged in, redirect based on role
+    if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
+        header('Location: admin_dashboard.php');
+    } else {
+        header('Location: index.php');
+    }
     exit;
 }
 
