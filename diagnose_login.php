@@ -54,8 +54,50 @@ try {
     echo "<pre>Error: " . htmlspecialchars($e->getMessage()) . "</pre>";
 }
 
+// Auto-test with provided credentials
+$autoTestEmail = 'dhondump@gmail.com';
+$autoTestPassword = 'lalala123';
+
+echo "<h2>🧪 Auto-Test Results for: $autoTestEmail</h2>";
+echo "<pre>";
+
+// Step 3a: Find user
+echo "1. Looking up user by email: $autoTestEmail\n";
+$stmt = $pdo->prepare("SELECT id, name, email, password_hash, role FROM users WHERE email = ?");
+$stmt->execute([$autoTestEmail]);
+$user = $stmt->fetch();
+
+if (!$user) {
+    echo "   ❌ User NOT FOUND in database!\n";
+    echo "</pre>";
+    echo "<p class='error'>The email '$autoTestEmail' does not exist in the database.</p>";
+} else {
+    echo "   ✅ User found: ID={$user['id']}, Name={$user['name']}, Role={$user['role']}\n";
+    echo "   Password hash length: " . strlen($user['password_hash']) . "\n";
+    echo "   Hash preview: " . substr($user['password_hash'], 0, 20) . "...\n\n";
+    
+    // Step 3b: Verify password
+    echo "2. Verifying password '$autoTestPassword'...\n";
+    $verifyResult = password_verify($autoTestPassword, $user['password_hash']);
+    
+    if ($verifyResult) {
+        echo "   ✅ Password verification SUCCESSFUL!\n";
+        echo "</pre>";
+        echo "<p class='success'>✅ LOGIN SHOULD WORK! The password is correct.</p>";
+        echo "<p>If users still can't login, the issue is with sessions/cookies. Check Step 4 below.</p>";
+    } else {
+        echo "   ❌ Password verification FAILED!\n";
+        echo "</pre>";
+        echo "<p class='error'>❌ <strong>THIS IS THE PROBLEM!</strong> The password in the database doesn't match 'lalala123'.</p>";
+        echo "<p><strong>Solution:</strong> Reset all user passwords. See the form below to test other accounts.</p>";
+    }
+}
+
+echo "<hr>";
+
 // Step 3: Test Password Verification
-echo "<h2>Step 3: Test Password Verification</h2>";
+echo "<h2>Step 3: Manual Password Verification Test</h2>";
+echo "<p>Use this form to test other user accounts:</p>";
 echo "<form method='POST'>";
 echo "<p>Email: <input type='email' name='test_email' required style='width:300px;padding:5px;'></p>";
 echo "<p>Password: <input type='password' name='test_password' required style='width:300px;padding:5px;'></p>";
