@@ -16,18 +16,10 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 try {
-    require_once __DIR__ . '/../config/db.php';
-    require_once __DIR__ . '/../config/session.php';
-    initializeSession();
-
-    header('Content-Type: application/json');
+    require_once __DIR__ . '/auth_helper.php';
 
     // Admin check
-    if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Forbidden. Admin access required.']);
-        exit;
-    }
+    requireAdminAuth();
 
     // Validate inputs
     $userId = filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);

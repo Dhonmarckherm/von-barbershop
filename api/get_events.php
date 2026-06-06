@@ -6,18 +6,13 @@
  * Admin access only.
  */
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/session.php';
-initializeSession();
+error_reporting(0);
+ini_set('display_errors', 0);
 
-header('Content-Type: application/json');
+require_once __DIR__ . '/auth_helper.php';
 
 // Admin check
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Forbidden. Admin access required.']);
-    exit;
-}
+requireAdminAuth();
 
 // Fetch all appointments with customer details
 $stmt = $pdo->query("SELECT a.id, a.appointment_date, a.appointment_time, a.status, a.haircut_description, a.location, u.name AS customer_name FROM appointments a JOIN users u ON a.user_id = u.id ORDER BY a.appointment_date, a.appointment_time");

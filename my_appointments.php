@@ -483,7 +483,8 @@ document.getElementById('reviewForm').addEventListener('submit', async function(
     try {
         const response = await fetch('api/submit_review.php', {
             method: 'POST',
-            body: formData
+            body: formData,
+            credentials: 'include'
         });
         
         const result = await response.json();
@@ -524,7 +525,8 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
         const response = await fetch('api/customer_reschedule.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + encodeURIComponent(id) + '&new_date=' + encodeURIComponent(date) + '&new_time=' + encodeURIComponent(time)
+            body: 'appointment_id=' + encodeURIComponent(id) + '&new_date=' + encodeURIComponent(date) + '&new_time=' + encodeURIComponent(time),
+            credentials: 'include'
         });
         
         const result = await response.json();
@@ -597,7 +599,8 @@ function cancelAppointment(appointmentId) {
         fetch('api/customer_cancel.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + encodeURIComponent(appointmentId)
+            body: 'appointment_id=' + encodeURIComponent(appointmentId),
+            credentials: 'include'
         })
         .then(response => response.json())
         .then(result => {

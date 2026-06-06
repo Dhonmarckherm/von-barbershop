@@ -124,7 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         slotsContainer.innerHTML = '<p style="color: var(--text-secondary);">Loading slots...</p>';
 
-        fetch('api/get_slots.php?date=' + encodeURIComponent(date))
+        fetch('api/get_slots.php?date=' + encodeURIComponent(date), {
+            credentials: 'include'
+        })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

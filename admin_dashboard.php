@@ -300,7 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/update_status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + encodeURIComponent(id) + '&status=' + encodeURIComponent(status)
+            body: 'appointment_id=' + encodeURIComponent(id) + '&status=' + encodeURIComponent(status),
+            credentials: 'include'
         })
         .then(r => r.json())
         .then(data => {
@@ -406,7 +407,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/reschedule.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'appointment_id=' + encodeURIComponent(id) + '&new_date=' + encodeURIComponent(date) + '&new_time=' + encodeURIComponent(time)
+            body: 'appointment_id=' + encodeURIComponent(id) + '&new_date=' + encodeURIComponent(date) + '&new_time=' + encodeURIComponent(time),
+            credentials: 'include'
         })
         .then(r => r.json())
         .then(data => {
@@ -485,7 +487,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch('api/delete_appointments.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'ids[]=' + selectedIds.join('&ids[]=')
+                    body: 'ids[]=' + selectedIds.join('&ids[]='),
+                    credentials: 'include'
                 })
                 .then(r => r.json())
                 .then(data => {

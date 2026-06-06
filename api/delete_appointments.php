@@ -8,18 +8,13 @@
  * Admin access only. Permanently deletes selected appointments.
  */
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/session.php';
-initializeSession();
+error_reporting(0);
+ini_set('display_errors', 0);
 
-header('Content-Type: application/json');
+require_once __DIR__ . '/auth_helper.php';
 
 // Admin check
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Forbidden. Admin access required.']);
-    exit;
-}
+requireAdminAuth();
 
 // Check if IDs are provided
 if (!isset($_POST['ids']) || !is_array($_POST['ids']) || empty($_POST['ids'])) {

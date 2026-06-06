@@ -9,10 +9,8 @@ require_once 'config/db.php';
 require_once 'config/session.php';
 initializeSession();
 
-// Redirect if already logged in with a FRESH session (recent login)
-// This prevents redirect loop but still allows users to access login page
-if (isset($_SESSION['user_id']) && isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] < 30)) {
-    // User logged in recently, redirect based on role
+// Redirect if already logged in (even if session is old)
+if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
         header('Location: admin_dashboard.php');
     } else {
@@ -35,20 +33,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Clear ALL cookies first to prevent any stale session/cookie issues
-            if (isset($_COOKIE['auth_user_id'])) {
-                // Clear old auth cookies with multiple expiration methods
-                foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
-                    setcookie($cookieName, '', time() - 3600, '/');
-                    setcookie($cookieName, '', time() - 3600, '/', '', false, true);
-                }
+            // Check if we're on HTTPS for cookie security
+            $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                       || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+                       || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+            // Clear old auth cookies safely
+            $clearParams = [
+                'expires' => time() - 3600,
+                'path' => '/',
+                'secure' => $isHttps,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ];
+            foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
+                setcookie($cookieName, '', $clearParams);
             }
             
-            // Destroy any existing session to start fresh
-            session_destroy();
+            // Clear current session data without destroying the session entirely
+            // This is more reliable for keeping cookie parameters intact
+            $_SESSION = array();
             
-            // Start a completely fresh session
-            session_start();
+            // Regenerate ID to prevent session fixation and start fresh
             session_regenerate_id(true);
             
             $_SESSION['user_id'] = $user['id'];
@@ -91,15 +97,15 @@ require_once 'includes/header.php';
                     <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
                 <?php endif; ?>
 
-                <form method="POST" action="login.php" novalidate>
+                <form method="POST" action="login.php" novalidate autocomplete="off">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" required autofocus>
+                        <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
                             <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
                                 <i class="bi bi-eye"></i>
                             </button>

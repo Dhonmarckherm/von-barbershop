@@ -10,18 +10,13 @@
  * Customer can only reschedule their own appointments with status 'pending' or 'accepted'.
  */
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/session.php';
-initializeSession();
+error_reporting(0);
+ini_set('display_errors', 0);
 
-header('Content-Type: application/json');
+require_once __DIR__ . '/auth_helper.php';
 
 // Customer check
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Unauthorized.']);
-    exit;
-}
+requireCustomerAuth();
 
 // Validate inputs
 $appointmentId = filter_input(INPUT_POST, 'appointment_id', FILTER_VALIDATE_INT);

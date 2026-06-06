@@ -12,21 +12,10 @@
 error_reporting(0);
 ini_set('display_errors', 0);
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/session.php';
-initializeSession();
-
-header('Content-Type: application/json');
-
-// Debug: Log session data
-error_log('Session data: ' . print_r($_SESSION, true));
+require_once __DIR__ . '/auth_helper.php';
 
 // Admin check
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'barber')) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Forbidden. Admin access required. Please log in as admin. Session role: ' . ($_SESSION['role'] ?? 'not set')]);
-    exit;
-}
+requireAdminAuth();
 
 // Validate inputs
 $appointmentId = filter_input(INPUT_POST, 'appointment_id', FILTER_VALIDATE_INT);
