@@ -60,14 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
+            $_SESSION['role'] = strtolower($user['role']); // Normalize to lowercase
             $_SESSION['login_time'] = time();
             
             // Set fresh auth cookies
-            setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
+            setAuthCookies($user['id'], $user['name'], $user['email'], strtolower($user['role']));
 
             // Redirect admin to dashboard, customers to index
-            if ($user['role'] === 'admin' || $user['role'] === 'barber') {
+            $role = strtolower($user['role']); // Normalize to lowercase
+            if ($role === 'admin' || $role === 'barber') {
                 header('Location: admin_dashboard.php');
             } else {
                 header('Location: index.php');

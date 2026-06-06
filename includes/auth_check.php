@@ -6,6 +6,15 @@
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
+// Check session first, fallback to auth cookies
+if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
+    $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
+    $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
+    $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
+    $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
+    $_SESSION['login_time'] = time();
+}
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
