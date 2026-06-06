@@ -2058,3 +2058,123 @@ img, video, canvas, svg {
         font-size: 1rem;
     }
 }
+
+/* PWA Install Banner */
+#pwa-install-banner {
+    display: none;
+    background: #1a1a1a;
+    color: white;
+    padding: 12px 20px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 10000;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+#pwa-install-banner .banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+#pwa-install-banner img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+#pwa-install-banner .banner-text {
+    flex-grow: 1;
+}
+
+#pwa-install-banner h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#pwa-install-banner p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+#pwa-install-banner .banner-btns {
+    display: flex;
+    gap: 10px;
+}
+
+#pwa-install-banner .btn-install {
+    background: white;
+    color: black;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* iOS Specific Hint */
+#ios-install-hint {
+    display: none;
+    background: #1a1a1a;
+    color: white;
+    padding: 15px 20px;
+    position: fixed;
+    bottom: 30px;
+    left: 20px;
+    right: 20px;
+    z-index: 10000;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+#ios-install-hint .hint-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#ios-install-hint i {
+    font-size: 24px;
+    color: #007aff;
+}
+
+#ios-install-hint p {
+    margin: 0;
+    font-size: 14px;
+}
+
+#ios-install-hint b {
+    color: var(--accent-gold);
+}
+
+#ios-install-hint .btn-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+}
+
+#pwa-install-banner .btn-close {
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}

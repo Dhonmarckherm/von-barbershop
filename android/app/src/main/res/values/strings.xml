@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">VON Barbershop</string>
+    <string name="title_activity_main">VON Barbershop</string>
+    <string name="package_name">com.vonbarbershop.app</string>
+    <string name="custom_url_scheme">com.vonbarbershop.app</string>
+</resources>

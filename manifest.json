@@ -1,0 +1,26 @@
+{
+  "name": "VON Barbershop - Book Your Appointment",
+  "short_name": "VON Barbershop",
+  "description": "Professional barbershop booking system - Book appointments, manage schedules, and get premium grooming services",
+  "start_url": "/index.php",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#c0c0c0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/images/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "business"],
+  "lang": "en-US"
+}
