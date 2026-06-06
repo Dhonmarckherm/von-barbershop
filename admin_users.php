@@ -259,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/update_user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: body
+            body: body,
+            credentials: 'include'
         })
         .then(r => r.json())
         .then(data => {
@@ -311,7 +312,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('api/delete_user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'user_id=' + encodeURIComponent(id)
+            body: 'user_id=' + encodeURIComponent(id),
+            credentials: 'include'
         })
         .then(r => {
             console.log('Response status:', r.status);
