@@ -2,30 +2,33 @@
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
-// ALWAYS check auth cookies FIRST as primary authentication (sessions are unreliable on Render)
-if (isset($_COOKIE['auth_user_id']) && !isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
-    $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
-    $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
-    $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
-    $_SESSION['login_time'] = time();
-}
-
-// Check if logged in
-$isLoggedIn = isset($_SESSION['user_id']);
-
-// Skip cookie fallback on login/register pages
 $current_page = basename($_SERVER['PHP_SELF']);
 $auth_pages = ['login.php', 'register.php'];
 
-if (in_array($current_page, $auth_pages) && isset($_SESSION['user_id'])) {
-    // Clear session on auth pages so users can log in fresh
-    $_SESSION = array();
-    if (session_id()) {
-        session_destroy();
+// ONLY clear session on login/register pages
+if (in_array($current_page, $auth_pages)) {
+    // Check if user explicitly logged out
+    if (isset($_GET['logout']) && $_GET['logout'] == '1') {
+        $_SESSION = array();
+        if (session_id()) {
+            session_destroy();
+        }
+        session_start();
     }
-    session_start();
+    // Don't restore from cookies on auth pages - let them log in fresh
     $isLoggedIn = false;
+} else {
+    // On all OTHER pages, restore session from cookies if needed
+    if (isset($_COOKIE['auth_user_id']) && !isset($_SESSION['user_id'])) {
+        $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
+        $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
+        $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
+        $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
+        $_SESSION['login_time'] = time();
+    }
+    
+    // Check if logged in
+    $isLoggedIn = isset($_SESSION['user_id']);
 }
 
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber');
