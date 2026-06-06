@@ -46,16 +46,18 @@ function initializeSession() {
             error_log('CRITICAL: Session could not be started! Login will fail.');
         }
         
-        // Fallback: If session is empty but we have auth cookies, restore from cookies
-        // Skip restore if user just logged out or if there's a fresh login timestamp
-        $hasFreshLogin = isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] < 5);
-        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id']) && !$hasFreshLogin) {
+        // DISABLED: Cookie-based session restore - was causing role mismatch bugs
+        // Old admin cookies were overriding customer sessions
+        // Users must login again if session is lost
+        /*
+        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
             $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
             $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
             $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
             $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
             error_log('Session restored from cookie for user: ' . $_SESSION['user_id'] . ' with role: ' . $_SESSION['role']);
         }
+        */
     }
 }
 
