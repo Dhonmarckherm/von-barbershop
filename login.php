@@ -29,7 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Regenerate session ID to prevent session fixation
+            // Clear ALL cookies first to prevent any stale session/cookie issues
+            if (isset($_COOKIE['auth_user_id'])) {
+                // Clear old auth cookies with multiple expiration methods
+                foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
+                    setcookie($cookieName, '', time() - 3600, '/');
+                    setcookie($cookieName, '', time() - 3600, '/', '', false, true);
+                }
+            }
+            
+            // Destroy any existing session to start fresh
+            session_destroy();
+            
+            // Start a completely fresh session
+            session_start();
             session_regenerate_id(true);
             
             $_SESSION['user_id'] = $user['id'];
@@ -38,9 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
             $_SESSION['login_time'] = time();
             
-            // Clear old auth cookies first to prevent role mismatch
-            clearAuthCookies();
-            // Set fresh auth cookies for Render compatibility
+            // Set fresh auth cookies
             setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
 
             // Redirect admin to dashboard, customers to index
