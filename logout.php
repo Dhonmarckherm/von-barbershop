@@ -43,5 +43,5 @@ unset($_COOKIE['auth_name']);
 unset($_COOKIE['auth_email']);
 unset($_COOKIE['auth_role']);
 
-header('Location: index.php?logged_out=1');
+header('Location: login.php?logout=1');
 exit;

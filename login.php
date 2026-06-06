@@ -34,13 +34,14 @@ if (isset($_GET['logout']) && $_GET['logout'] == '1') {
     ];
     foreach (['auth_user_id', 'auth_name', 'auth_email', 'auth_role'] as $cookieName) {
         setcookie($cookieName, '', $clearParams);
+        unset($_COOKIE[$cookieName]);
     }
     
     session_start();
 }
 
-// Redirect if already logged in (even if session is old)
-if (isset($_SESSION['user_id'])) {
+// Redirect if already logged in (ONLY if NOT logging out)
+if (!isset($_GET['logout']) && isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
         header('Location: admin_dashboard.php');
     } else {
