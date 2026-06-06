@@ -669,7 +669,7 @@ function buildCompletionEmailBody(array $details): string {
         $emailBody .= "
                 <!-- Review CTA -->
                 <div style='background: rgba(192, 192, 192, 0.1); padding: 30px 20px; border-radius: 8px; text-align: center; margin-bottom: 25px; border: 2px solid #C5A059;'>
-                    <h3 style='color: #C5A059; margin: 0 0 10px 0; font-size: 20px;'>⭐ Thank you for choosing RUBICUTS V.O.N! 💈</h3>
+                    <h3 style='color: #c0c0c0; margin: 0 0 10px 0; font-size: 20px;'>⭐ Thank you for choosing VON BARBER STUDIO! 💈</h3>
                     <p style='font-size: 16px; color: #F5F0E8; margin-bottom: 20px;'>We hope you love your new look! Your feedback helps us improve.</p>
                     <p style='font-size: 18px; font-weight: bold; color: #c0c0c0; margin-bottom: 20px;'>Please rate your experience with us:</p>
                     <a href='{$reviewLink}' style='display: inline-block; background: #C5A059; color: #1a1a2e; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px; transition: all 0.3s;'>
