@@ -4,9 +4,9 @@
  * Edit barbershop name and other site settings.
  */
 $pageTitle = 'Settings';
+require_once 'config/db.php';
 require_once 'includes/auth_check.php';
 require_once 'includes/admin_check.php';
-require_once 'config/db.php';
 
 $success = '';
 $errors = [];

@@ -34,6 +34,10 @@ self.addEventListener('fetch', event => {
           if (!response || response.status !== 200) {
             return response;
           }
+          // Only cache GET requests
+          if (event.request.method !== 'GET') {
+            return response;
+          }
           // Clone the response
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
