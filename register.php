@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'customer')");
         $stmt->execute([$name, $email, $hash]);
         
+        // Get the new user ID
+        $newUserId = $pdo->lastInsertId();
+        
         // Send welcome email to new user
         try {
             $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
@@ -102,7 +105,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log("Welcome email stack trace: " . $e->getTraceAsString());
         }
         
-        header('Location: login.php?registered=1');
+        // Auto-login the newly registered user
+        // Clear old session
+        $_SESSION = array();
+        session_regenerate_id(true);
+        
+        // Set new session for the registered user
+        $_SESSION['user_id'] = $newUserId;
+        $_SESSION['name'] = $name;
+        $_SESSION['email'] = $email;
+        $_SESSION['role'] = 'customer';
+        $_SESSION['login_time'] = time();
+        
+        // Set auth cookies
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                   || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+                   || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+        
+        setcookie('auth_user_id', $newUserId, time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_name', $name, time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_email', $email, time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_role', 'customer', time() + (86400 * 30), '/', '', $isHttps, true);
+        
+        // Redirect to home page as the new user
+        header('Location: index.php?registered=1');
         exit;
     }
 }

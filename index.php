@@ -3,6 +3,16 @@ $pageTitle = 'Home';
 require_once 'config/db.php';
 require_once 'includes/header.php';
 
+// Show success message if user just registered
+if (isset($_GET['registered']) && $_GET['registered'] == '1'):
+?>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill"></i> <strong>Registration successful!</strong> Welcome, <?php echo htmlspecialchars($_SESSION['name'] ?? 'new user'); ?>! You are now logged in.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<?php endif; ?>
+
+<?php
 // Fetch reviews for homepage display (handle if table doesn't exist yet)
 $reviews = [];
 $averageRating = 0;
