@@ -166,8 +166,11 @@ require_once 'includes/header.php';
                             <?php elseif ($appt['status'] === 'completed' && in_array($appt['id'], $reviewedAppointments)): ?>
                                 <span class="badge bg-success"><i class="bi bi-check-circle"></i> Reviewed</span>
                             <?php elseif (in_array($appt['status'], ['pending', 'accepted'])): ?>
-                                <button class="btn btn-sm btn-warning" onclick="openRescheduleModal(<?php echo $appt['id']; ?>, '<?php echo $appt['appointment_date']; ?>', '<?php echo substr($appt['appointment_time'], 0, 5); ?>')">
+                                <button class="btn btn-sm btn-warning me-1" onclick="openRescheduleModal(<?php echo $appt['id']; ?>, '<?php echo $appt['appointment_date']; ?>', '<?php echo substr($appt['appointment_time'], 0, 5); ?>')">
                                     <i class="bi bi-calendar-check"></i> Reschedule
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="cancelAppointment(<?php echo $appt['id']; ?>)">
+                                    <i class="bi bi-x-circle"></i> Cancel
                                 </button>
                             <?php else: ?>
                                 -
@@ -452,6 +455,30 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
         console.error(error);
     }
 });
+
+// Cancel appointment
+function cancelAppointment(appointmentId) {
+    if (confirm('Are you sure you want to cancel this appointment?')) {
+        fetch('api/customer_cancel.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'appointment_id=' + encodeURIComponent(appointmentId)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert(result.error || 'Failed to cancel appointment.');
+            }
+        })
+        .catch(error => {
+            alert('An error occurred. Please try again.');
+            console.error(error);
+        });
+    }
+}
 
 // Auto-open review modal if URL has review parameter
 window.addEventListener('DOMContentLoaded', function() {
