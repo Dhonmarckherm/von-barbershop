@@ -1,4 +1,4 @@
-const CACHE_NAME = 'von-barbershop-v2';
+const CACHE_NAME = 'von-barbershop-v3';
 const urlsToCache = [
   '/',
   '/index.php',
