@@ -530,6 +530,11 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
         const result = await response.json();
         
         if (result.success) {
+            // Show push notification if in Capacitor app
+            if (result.notification && typeof showNotification === 'function' && isCapacitorNative()) {
+                showNotification(result.notification.title, result.notification.body, result.notification.id);
+            }
+            
             alert(result.message);
             rescheduleModal.hide();
             location.reload();
@@ -597,6 +602,11 @@ function cancelAppointment(appointmentId) {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
+                // Show push notification if in Capacitor app
+                if (result.notification && typeof showNotification === 'function' && isCapacitorNative()) {
+                    showNotification(result.notification.title, result.notification.body, result.notification.id);
+                }
+                
                 // Show success message
                 showSuccessMessage('Appointment cancelled successfully!');
                 setTimeout(() => location.reload(), 1500);
@@ -628,6 +638,17 @@ window.addEventListener('DOMContentLoaded', function() {
             reviewButton.click();
         }
     }
+    
+    // Show push notification if exists in session (passed via PHP)
+    <?php if (isset($_SESSION['push_notification'])): ?>
+    const notification = <?php echo json_encode($_SESSION['push_notification']); ?>;
+    if (typeof showNotification === 'function' && isCapacitorNative()) {
+        setTimeout(() => {
+            showNotification(notification.title, notification.body, notification.id);
+        }, 1000); // Delay to ensure page is loaded
+    }
+    <?php unset($_SESSION['push_notification']); ?>
+    <?php endif; ?>
 });
 </script>
 

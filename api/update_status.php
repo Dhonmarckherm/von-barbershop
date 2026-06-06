@@ -199,7 +199,33 @@ try {
             exit;
         }
 
-        echo json_encode(['success' => true, 'message' => 'Status updated successfully']);
+        // Build notification payload
+        $notification = null;
+        if ($status === 'accepted') {
+            $notification = [
+                'title' => '✅ Appointment Accepted',
+                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been accepted!",
+                'id' => $appointmentId
+            ];
+        } elseif ($status === 'declined') {
+            $notification = [
+                'title' => '❌ Appointment Declined',
+                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been declined.",
+                'id' => $appointmentId + 1000
+            ];
+        } elseif ($status === 'completed') {
+            $notification = [
+                'title' => '⭐ Appointment Completed',
+                'body' => "Your appointment has been completed. Thank you for choosing VON BARBER STUDIO!",
+                'id' => $appointmentId + 2000
+            ];
+        }
+
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Status updated successfully',
+            'notification' => $notification
+        ]);
     } else {
         echo json_encode(['error' => 'No changes made. Appointment may not exist.']);
     }

@@ -95,4 +95,12 @@ if ($user) {
 }
 
 header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
+
+// Store notification for display in app
+$_SESSION['push_notification'] = [
+    'title' => '✅ Booking Confirmed',
+    'body' => "Your appointment on {$date} at " . substr($time, 0, 5) . " has been booked!",
+    'id' => $pdo->lastInsertId()
+];
+
 exit;

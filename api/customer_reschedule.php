@@ -135,6 +135,14 @@ if ($stmt->rowCount() > 0) {
     }
     exit;
 } else {
-    echo json_encode(['error' => 'No changes made.']);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Appointment rescheduled successfully',
+        'notification' => [
+            'title' => '📅 Appointment Rescheduled',
+            'body' => "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5) . ".",
+            'id' => $appointmentId + 4000
+        ]
+    ]);
 }
 exit;

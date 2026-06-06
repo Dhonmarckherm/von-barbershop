@@ -24,6 +24,10 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
     <link rel="stylesheet" href="/assets/css/style.css">
 
+    <!-- Capacitor Push Notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/@capacitor/core@latest/dist/capacitor.js"></script>
+    <script src="/www/js/push-notifications.js"></script>
+
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#000000">

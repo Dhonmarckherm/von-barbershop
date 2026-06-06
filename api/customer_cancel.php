@@ -111,6 +111,14 @@ if ($stmt->rowCount() > 0) {
     }
     exit;
 } else {
-    echo json_encode(['error' => 'No changes made.']);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Appointment cancelled successfully',
+        'notification' => [
+            'title' => '❌ Appointment Cancelled',
+            'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been cancelled.",
+            'id' => $appointmentId + 3000
+        ]
+    ]);
 }
 exit;
