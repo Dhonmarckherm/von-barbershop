@@ -154,9 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['login_time'] = time();
         
         // Set auth cookies
-        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-                   || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-                   || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+        $isHttps = true; // Render always serves over HTTPS
         
         setcookie('auth_user_id', $newUserId, time() + (86400 * 30), '/', '', $isHttps, true);
         setcookie('auth_name', $name, time() + (86400 * 30), '/', '', $isHttps, true);

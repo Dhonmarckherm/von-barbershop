@@ -64,15 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Check if we're on HTTPS for cookie security
-            $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-                       || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-                       || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+            // Always use secure cookies for production
+            $isHttps = true; // Render always serves over HTTPS
 
             // Clear old auth cookies safely
             $clearParams = [
                 'expires' => time() - 3600,
                 'path' => '/',
+                'domain' => '',
                 'secure' => $isHttps,
                 'httponly' => true,
                 'samesite' => 'Lax'

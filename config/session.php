@@ -49,13 +49,13 @@ function initializeSession() {
  * Set persistent auth cookies as backup for sessions
  */
 function setAuthCookies(int $userId, string $name, string $email, string $role): void {
-    $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-               || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-               || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    // ALWAYS use secure=true for production (Render uses HTTPS with reverse proxy)
+    $isHttps = true; // Render always serves over HTTPS
     
     $cookieParams = [
         'expires' => time() + (86400 * 30), // 30 days
         'path' => '/',
+        'domain' => '',
         'secure' => $isHttps,
         'httponly' => true,
         'samesite' => 'Lax'
