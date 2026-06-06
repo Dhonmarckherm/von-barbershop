@@ -124,9 +124,8 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.php" style="display: flex; align-items: center; gap: 10px;">
-                <img src="/assets/images/von-barber-logo.png" alt="VON BARBER STUDIO" style="height: 40px; width: auto;">
-                <span><?php echo htmlspecialchars($siteName); ?></span>
+            <a class="navbar-brand" href="index.php">
+                <?php echo htmlspecialchars($siteName); ?>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
