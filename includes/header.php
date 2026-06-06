@@ -2,11 +2,14 @@
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
-// Check session first, fallback to auth cookies
+// Check session first, fallback to auth cookies (but NOT on login/register pages)
 $isLoggedIn = isset($_SESSION['user_id']);
 
-// If not logged in via session, check auth cookies
-if (!$isLoggedIn && isset($_COOKIE['auth_user_id'])) {
+$current_page = basename($_SERVER['PHP_SELF']);
+$auth_pages = ['login.php', 'register.php'];
+
+// If not logged in via session, check auth cookies (skip on auth pages)
+if (!$isLoggedIn && isset($_COOKIE['auth_user_id']) && !in_array($current_page, $auth_pages)) {
     $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
     $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
     $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
