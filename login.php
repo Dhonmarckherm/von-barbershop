@@ -38,7 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
             $_SESSION['login_time'] = time();
             
-            // Set backup cookies for Render compatibility
+            // Clear old auth cookies first to prevent role mismatch
+            clearAuthCookies();
+            // Set fresh auth cookies for Render compatibility
             setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
 
             // Redirect admin to dashboard, customers to index

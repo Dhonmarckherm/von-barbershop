@@ -47,13 +47,14 @@ function initializeSession() {
         }
         
         // Fallback: If session is empty but we have auth cookies, restore from cookies
-        // Skip restore if user just logged out
-        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
+        // Skip restore if user just logged out or if there's a fresh login timestamp
+        $hasFreshLogin = isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] < 5);
+        if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id']) && !$hasFreshLogin) {
             $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
             $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
             $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
             $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
-            error_log('Session restored from cookie for user: ' . $_SESSION['user_id']);
+            error_log('Session restored from cookie for user: ' . $_SESSION['user_id'] . ' with role: ' . $_SESSION['role']);
         }
     }
 }
