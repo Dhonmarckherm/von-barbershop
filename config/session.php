@@ -10,12 +10,19 @@ function initializeSession() {
         $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' 
                    || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
         
+        // Set session save path for Render compatibility
+        $sessionPath = sys_get_temp_dir() . '/sessions';
+        if (!is_dir($sessionPath)) {
+            @mkdir($sessionPath, 0777, true);
+        }
+        ini_set('session.save_path', $sessionPath);
+        
         // Session cookie parameters
         session_set_cookie_params([
             'lifetime' => 86400,        // 24 hours
             'path' => '/',
             'domain' => '',
-            'secure' => false,  // Allow both HTTP and HTTPS for compatibility
+            'secure' => $isHttps,  // Use HTTPS in production for security
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
@@ -25,7 +32,19 @@ function initializeSession() {
         ini_set('session.use_cookies', 1);
         ini_set('session.use_only_cookies', 1);
         
-        session_start();
+        // Start session with error handling
+        $sessionStarted = @session_start();
+        
+        if (!$sessionStarted) {
+            // If session fails, try to start it anyway without custom settings
+            error_log('Session failed with custom settings, trying default...');
+            session_start();
+        }
+        
+        // Verify session is actually active
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            error_log('CRITICAL: Session could not be started! Login will fail.');
+        }
         
         // Fallback: If session is empty but we have auth cookies, restore from cookies
         // Skip restore if user just logged out
@@ -49,7 +68,7 @@ function setAuthCookies(int $userId, string $name, string $email, string $role):
     $cookieParams = [
         'expires' => time() + 86400, // 24 hours
         'path' => '/',
-        'secure' => false,  // Allow both HTTP and HTTPS for compatibility
+        'secure' => $isHttps,  // Use HTTPS in production for security
         'httponly' => true,
         'samesite' => 'Lax'
     ];
