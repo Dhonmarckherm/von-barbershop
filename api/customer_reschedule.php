@@ -18,22 +18,25 @@ require_once __DIR__ . '/auth_helper.php';
 // Customer check
 requireCustomerAuth();
 
-// Validate inputs
-$appointmentId = filter_input(INPUT_POST, 'appointment_id', FILTER_VALIDATE_INT);
+// Validate inputs - use $_POST directly for reliability
+$appointmentId = isset($_POST['appointment_id']) ? (int)$_POST['appointment_id'] : 0;
 $newDate = $_POST['new_date'] ?? '';
 $newTime = $_POST['new_time'] ?? '';
 
-if (!$appointmentId) {
+if ($appointmentId <= 0) {
+    error_log("Reschedule failed: Invalid appointment ID. Received: " . ($_POST['appointment_id'] ?? 'null'));
     echo json_encode(['error' => 'Invalid appointment ID.']);
     exit;
 }
 
 if (empty($newDate) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $newDate)) {
+    error_log("Reschedule failed: Invalid date format. Received: {$newDate}");
     echo json_encode(['error' => 'Invalid date format.']);
     exit;
 }
 
 if (empty($newTime) || !preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $newTime)) {
+    error_log("Reschedule failed: Invalid time format. Received: {$newTime}");
     echo json_encode(['error' => 'Invalid time format.']);
     exit;
 }
@@ -44,13 +47,15 @@ $stmt->execute([$appointmentId, $_SESSION['user_id']]);
 $appt = $stmt->fetch();
 
 if (!$appt) {
+    error_log("Reschedule failed: Appointment not found or access denied. ID: {$appointmentId}, User: " . $_SESSION['user_id']);
     echo json_encode(['error' => 'Appointment not found or access denied.']);
     exit;
 }
 
 // Only allow rescheduling pending or accepted appointments
 if (!in_array($appt['status'], ['pending', 'accepted'])) {
-    echo json_encode(['error' => 'Cannot reschedule this appointment.']);
+    error_log("Reschedule failed: Invalid status '{$appt['status']}' for appointment {$appointmentId}");
+    echo json_encode(['error' => 'Cannot reschedule this appointment. Current status: ' . ucfirst($appt['status'])]);
     exit;
 }
 

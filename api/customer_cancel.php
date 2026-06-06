@@ -16,10 +16,11 @@ require_once __DIR__ . '/auth_helper.php';
 // Customer check
 requireCustomerAuth();
 
-// Validate input
-$appointmentId = filter_input(INPUT_POST, 'appointment_id', FILTER_VALIDATE_INT);
+// Validate input - use $_POST directly for reliability
+$appointmentId = isset($_POST['appointment_id']) ? (int)$_POST['appointment_id'] : 0;
 
-if (!$appointmentId) {
+if ($appointmentId <= 0) {
+    error_log("Cancel failed: Invalid appointment ID. Received: " . ($_POST['appointment_id'] ?? 'null'));
     echo json_encode(['error' => 'Invalid appointment ID.']);
     exit;
 }
@@ -30,13 +31,15 @@ $stmt->execute([$appointmentId, $_SESSION['user_id']]);
 $appt = $stmt->fetch();
 
 if (!$appt) {
+    error_log("Cancel failed: Appointment not found or access denied. ID: {$appointmentId}, User: " . $_SESSION['user_id']);
     echo json_encode(['error' => 'Appointment not found or access denied.']);
     exit;
 }
 
 // Only allow cancelling pending or accepted appointments
 if (!in_array($appt['status'], ['pending', 'accepted'])) {
-    echo json_encode(['error' => 'Cannot cancel this appointment.']);
+    error_log("Cancel failed: Invalid status '{$appt['status']}' for appointment {$appointmentId}");
+    echo json_encode(['error' => 'Cannot cancel this appointment. Current status: ' . ucfirst($appt['status'])]);
     exit;
 }
 
