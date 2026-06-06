@@ -26,7 +26,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
     <!-- Capacitor Push Notifications -->
     <script src="https://cdn.jsdelivr.net/npm/@capacitor/core@latest/dist/capacitor.js"></script>
-    <script src="/www/js/push-notifications.js"></script>
+    <script src="/www/js/push-notifications.js?v=2"></script>
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
