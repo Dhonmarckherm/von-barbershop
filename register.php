@@ -127,21 +127,21 @@ require_once 'includes/header.php';
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="register.php" novalidate>
+                <form method="POST" action="register.php" novalidate autocomplete="off">
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required
+                        <input type="text" class="form-control" id="name" name="name" required autocomplete="off"
                                value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" required
+                        <input type="email" class="form-control" id="email" name="email" required autocomplete="off"
                                value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6" autocomplete="new-password">
                             <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
                                 <i class="bi bi-eye"></i>
                             </button>
@@ -151,7 +151,7 @@ require_once 'includes/header.php';
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">Confirm Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
                             <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword" tabindex="-1">
                                 <i class="bi bi-eye"></i>
                             </button>
