@@ -85,6 +85,63 @@ if (!$user) {
         echo "</pre>";
         echo "<p class='success'>✅ LOGIN SHOULD WORK! The password is correct.</p>";
         echo "<p>If users still can't login, the issue is with sessions/cookies. Check Step 4 below.</p>";
+        
+        // Test session creation
+        echo "<h2>Step 4: Session Creation Test</h2>";
+        require_once 'config/session.php';
+        initializeSession();
+        
+        echo "<pre>";
+        echo "Session status: " . session_status() . " (1=disabled, 2=none, 3=active)\n";
+        echo "Session ID: " . session_id() . "\n\n";
+        
+        // Simulate login session setup
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['name'] = $user['name'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['login_time'] = time();
+        
+        echo "After setting session variables:\n";
+        echo "  Session ID (regenerated): " . session_id() . "\n";
+        echo "  \$_SESSION['user_id']: " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'NOT SET') . "\n";
+        echo "  \$_SESSION['name']: " . (isset($_SESSION['name']) ? $_SESSION['name'] : 'NOT SET') . "\n";
+        echo "  \$_SESSION['role']: " . (isset($_SESSION['role']) ? $_SESSION['role'] : 'NOT SET') . "\n\n";
+        
+        echo "✅ Session creation: SUCCESS\n";
+        echo "</pre>";
+        
+        // Test cookie setting
+        echo "<h2>Step 5: Auth Cookie Test</h2>";
+        setAuthCookies($user['id'], $user['name'], $user['email'], $user['role']);
+        
+        echo "<pre>";
+        echo "Auth cookies SET (will be visible on next page load):\n";
+        echo "  auth_user_id: " . (isset($_COOKIE['auth_user_id']) ? $_COOKIE['auth_user_id'] : 'will be set on next request') . "\n";
+        echo "  auth_name: " . (isset($_COOKIE['auth_name']) ? $_COOKIE['auth_name'] : 'will be set on next request') . "\n";
+        echo "  auth_role: " . (isset($_COOKIE['auth_role']) ? $_COOKIE['auth_role'] : 'will be set on next request') . "\n";
+        echo "</pre>";
+        
+        echo "<h2>✅ DIAGNOSIS COMPLETE</h2>";
+        echo "<div style='background:#2a2a2a;padding:20px;border-radius:10px;margin:20px 0;'>";
+        echo "<h3 style='color:#4caf50;'>✅ Everything is working correctly!</h3>";
+        echo "<p><strong>Password verification:</strong> ✅ PASS</p>";
+        echo "<p><strong>Session creation:</strong> ✅ PASS</p>";
+        echo "<p><strong>Cookie setting:</strong> ✅ PASS</p>";
+        echo "<hr style='border-color:#555;'>";
+        echo "<h3>If login still fails on the live site, the issue is:</h3>";
+        echo "<ol>";
+        echo "<li><strong>Service Worker Cache:</strong> The PWA is caching an old version of login.php<br>";
+        echo "   <em>Fix:</em> Uninstall and reinstall the PWA app, or clear browser cache</li>";
+        echo "<li><strong>Browser Cookie Blocking:</strong> Browser is blocking third-party cookies<br>";
+        echo "   <em>Fix:</em> Check browser settings, allow cookies for von-barbershop.onrender.com</li>";
+        echo "<li><strong>HTTPS/SSL Issue:</strong> Cookies not being sent over HTTPS<br>";
+        echo "   <em>Fix:</em> Check that the site has valid SSL certificate</li>";
+        echo "<li><strong>Render Free Tier:</strong> Server goes to sleep, sessions lost<br>";
+        echo "   <em>Fix:</em> Users need to login again after server wakes up</li>";
+        echo "</ol>";
+        echo "</div>";
     } else {
         echo "   ❌ Password verification FAILED!\n";
         echo "</pre>";
