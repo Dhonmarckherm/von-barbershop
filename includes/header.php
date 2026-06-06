@@ -14,7 +14,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?><?php echo htmlspecialchars($siteName); ?></title>
-    <link rel="icon" type="image/jpeg" href="/assets/images/rubiks.jpg">
+    <link rel="icon" type="image/png" href="/assets/images/rubiks.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Oswald:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -100,7 +100,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <!-- PWA Install Banner (Android) -->
     <div id="pwa-install-banner">
         <div class="banner-content">
-            <img src="assets/images/rubiks.jpg" alt="Logo">
+            <img src="assets/images/rubiks.jpg" alt="VON BARBER STUDIO">
             <div class="banner-text">
                 <h6>Install VON Barbershop</h6>
                 <p>Book your next cut faster!</p>
