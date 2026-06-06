@@ -2,15 +2,38 @@
  * Push Notification Module for VON BARBER STUDIO
  * Uses Capacitor Local Notifications plugin
  * Color scheme: silver-black-white theme
+ * 
+ * NOTE: Push notifications only work in native mobile apps (Android/iOS)
+ * In web browsers, this module gracefully disables itself.
  */
 
-// Initialize Capacitor Local Notifications
-const { LocalNotifications } = Capacitor.Plugins;
+// Check if running in native Capacitor app
+function isCapacitorNative() {
+  return typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform && Capacitor.isNativePlatform();
+}
+
+// Initialize Capacitor plugins ONLY in native mode
+let LocalNotifications = null;
+
+if (isCapacitorNative()) {
+  try {
+    LocalNotifications = Capacitor.Plugins.LocalNotifications;
+  } catch (error) {
+    console.warn('Capacitor LocalNotifications plugin not available:', error.message);
+  }
+}
 
 /**
  * Initialize push notifications on app launch
+ * Only works in native mobile apps, skipped in web browsers
  */
 async function initPushNotifications() {
+  // Skip if not in native mode
+  if (!isCapacitorNative() || !LocalNotifications) {
+    console.log('Push notifications disabled (web browser mode)');
+    return;
+  }
+  
   try {
     // Request notification permission
     const granted = await LocalNotifications.requestPermissions();
@@ -34,6 +57,11 @@ async function initPushNotifications() {
  * @param {string} iconColor - Icon color (default: silver #c0c0c0)
  */
 async function scheduleNotification(title, body, id, iconColor = '#c0c0c0') {
+  if (!isCapacitorNative() || !LocalNotifications) {
+    console.log('Notification skipped (web browser):', title);
+    return;
+  }
+  
   try {
     await LocalNotifications.schedule({
       notifications: [{
@@ -58,6 +86,10 @@ async function scheduleNotification(title, body, id, iconColor = '#c0c0c0') {
  * Setup notification event listeners
  */
 function setupNotificationListeners() {
+  if (!isCapacitorNative() || !LocalNotifications) {
+    return;
+  }
+  
   // Listen for notification received while app is in foreground
   LocalNotifications.addListener('localNotificationReceived', (notification) => {
     console.log('Notification received:', notification);
@@ -80,21 +112,16 @@ function setupNotificationListeners() {
 function showNotification(title, body, id) {
   if (isCapacitorNative()) {
     scheduleNotification(title, body, id);
+  } else {
+    console.log('Push notification skipped (browser):', title);
   }
-}
-
-/**
- * Check if running in native Capacitor app
- */
-function isCapacitorNative() {
-  return typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform && Capacitor.isNativePlatform();
 }
 
 // Make functions available globally
 window.showNotification = showNotification;
 window.isCapacitorNative = isCapacitorNative;
 
-// Initialize on DOM ready
-if (typeof Capacitor !== 'undefined') {
+// Initialize on DOM ready - only in native mode
+if (isCapacitorNative()) {
   document.addEventListener('DOMContentLoaded', initPushNotifications);
 }
