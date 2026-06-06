@@ -5,30 +5,25 @@ initializeSession();
 $current_page = basename($_SERVER['PHP_SELF']);
 $auth_pages = ['login.php', 'register.php'];
 
-// ONLY clear session on login/register pages
+// On login/register pages, clear everything to allow fresh login
 if (in_array($current_page, $auth_pages)) {
-    // Check if user explicitly logged out
     if (isset($_GET['logout']) && $_GET['logout'] == '1') {
-        $_SESSION = array();
-        if (session_id()) {
-            session_destroy();
-        }
-        session_start();
+        $_SESSION = [];
+        session_regenerate_id(true);
     }
-    // Don't restore from cookies on auth pages - let them log in fresh
     $isLoggedIn = false;
 } else {
-    // On all OTHER pages, restore session from cookies if needed
-    if (isset($_COOKIE['auth_user_id']) && !isset($_SESSION['user_id'])) {
+    // On ALL other pages, ALWAYS restore from cookies
+    if (isset($_COOKIE['auth_user_id'])) {
         $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
         $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
         $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
         $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
         $_SESSION['login_time'] = time();
+        $isLoggedIn = true;
+    } else {
+        $isLoggedIn = isset($_SESSION['user_id']);
     }
-    
-    // Check if logged in
-    $isLoggedIn = isset($_SESSION['user_id']);
 }
 
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber');
