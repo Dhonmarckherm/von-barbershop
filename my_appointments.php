@@ -227,42 +227,58 @@ require_once 'includes/header.php';
 
 <!-- Reschedule Modal -->
 <div class="modal fade" id="rescheduleModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border-bottom: 2px solid #c0c0c0; padding: 20px 30px;">
-                <h5 class="modal-title" style="color: #c0c0c0; font-family: 'Playfair Display', serif; font-weight: bold;">
-                    <i class="bi bi-calendar-check"></i> Reschedule Appointment
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #000000; border: 1px solid rgba(192,192,192,0.3); border-radius: 16px; overflow: hidden;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); border-bottom: 2px solid #c0c0c0; padding: 25px 30px 20px;">
+                <div style="text-align: center; width: 100%;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 10px;">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <path d="M8 14h.01"></path>
+                        <path d="M12 14h.01"></path>
+                        <path d="M16 14h.01"></path>
+                        <path d="M8 18h.01"></path>
+                        <path d="M12 18h.01"></path>
+                    </svg>
+                    <h5 class="modal-title" style="color: #c0c0c0; font-family: 'Playfair Display', serif; font-weight: bold; margin: 0;">
+                        Reschedule Appointment
+                    </h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
             </div>
-            <div class="modal-body" style="padding: 30px;">
+            <div class="modal-body" style="padding: 25px 30px;">
                 <form id="rescheduleForm">
                     <input type="hidden" id="rescheduleAppointmentId">
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="rescheduleDate" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
-                            <i class="bi bi-calendar3"></i> New Date
+                            <i class="bi bi-calendar3" style="color: #c0c0c0;"></i> New Date
                         </label>
                         <input type="text" class="form-control" id="rescheduleDate" placeholder="Select date..." 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 10px; font-size: 15px;" readonly>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="rescheduleTime" class="form-label" style="color: #f5f5f5; font-weight: 600; font-size: 14px;">
-                            <i class="bi bi-clock"></i> New Time
+                            <i class="bi bi-clock" style="color: #c0c0c0;"></i> New Time
                         </label>
                         <input type="text" class="form-control" id="rescheduleTime" placeholder="Select time..." 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 8px; font-size: 15px;" readonly>
+                               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 10px; font-size: 15px;" readonly>
                     </div>
-                    <div id="rescheduleError" class="alert alert-danger d-none" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 8px;"></div>
+                    <div class="alert alert-info" style="background: rgba(192,192,192,0.1); border: 1px solid rgba(192,192,192,0.3); color: #c0c0c0; border-radius: 10px; padding: 12px 15px; font-size: 13px; margin-bottom: 0;">
+                        <i class="bi bi-info-circle"></i> The barber will be notified of this change via email.
+                    </div>
+                    <div id="rescheduleError" class="alert alert-danger d-none" style="background: rgba(220,53,69,0.2); border: 1px solid #dc3545; color: #ff6b6b; border-radius: 10px; margin-top: 12px; margin-bottom: 0;"></div>
                 </form>
             </div>
-            <div class="modal-footer" style="background: rgba(192,192,192,0.05); border-top: 1px solid rgba(192,192,192,0.3); padding: 20px 30px;">
-                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" 
-                        style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #f5f5f5; padding: 10px 24px; border-radius: 8px;">
+            <div class="modal-footer" style="background: rgba(192,192,192,0.05); border-top: 1px solid rgba(192,192,192,0.3); padding: 20px 30px; justify-content: center; gap: 12px;">
+                <button type="button" class="btn" data-bs-dismiss="modal" 
+                        style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #f5f5f5; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px;">
                     <i class="bi bi-x-circle"></i> Cancel
                 </button>
-                <button type="button" class="btn btn-sm" id="confirmRescheduleBtn" 
-                        style="background: linear-gradient(135deg, #c0c0c0 0%, #d4d4d4 100%); border: none; color: #000000; padding: 10px 24px; border-radius: 8px; font-weight: 600;">
-                    <i class="bi bi-check-circle"></i> Confirm Reschedule
+                <button type="button" class="btn" id="confirmRescheduleBtn" 
+                        style="flex: 1; background: linear-gradient(135deg, #c0c0c0 0%, #d4d4d4 100%); border: none; color: #000000; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px;">
+                    <i class="bi bi-check-circle"></i> Confirm
                 </button>
             </div>
         </div>
@@ -291,6 +307,28 @@ require_once 'includes/header.php';
 .star-rating i.active {
     color: #ffc107;
 }
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
 </style>
 
 <!-- Flatpickr -->
@@ -301,6 +339,56 @@ require_once 'includes/header.php';
 <script>
 let selectedRating = 0;
 let rescheduleModal;
+
+// Show success message
+function showSuccessMessage(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${message}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Show error message
+function showErrorMessage(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(239,68,68,0.3);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="bi bi-x-circle-fill"></i> ${message}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
 
 // Initialize Flatpickers
 const datepicker = flatpickr('#rescheduleDate', {
@@ -458,7 +546,49 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
 
 // Cancel appointment
 function cancelAppointment(appointmentId) {
-    if (confirm('Are you sure you want to cancel this appointment?')) {
+    // Create custom modal
+    const modalHtml = `
+        <div class="modal fade" id="confirmCancelModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background: #000000; border: 1px solid rgba(192,192,192,0.3); border-radius: 16px; overflow: hidden;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border: none; padding: 30px 30px 20px; text-align: center;">
+                        <div style="margin: 0 auto;">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="modal-body" style="padding: 30px; text-align: center;">
+                        <h4 style="color: #f5f5f5; font-family: 'Playfair Display', serif; margin-bottom: 15px;">Cancel Appointment?</h4>
+                        <p style="color: #b0b0b0; font-size: 15px; margin-bottom: 0;">This action cannot be undone. The barber will be notified of this cancellation.</p>
+                    </div>
+                    <div class="modal-footer" style="background: rgba(192,192,192,0.05); border-top: 1px solid rgba(192,192,192,0.3); padding: 20px 30px; justify-content: center; gap: 12px;">
+                        <button type="button" class="btn" data-bs-dismiss="modal" 
+                                style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #f5f5f5; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px;">
+                            <i class="bi bi-x-circle"></i> Keep It
+                        </button>
+                        <button type="button" class="btn" id="confirmCancelBtn" 
+                                style="flex: 1; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border: none; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px;">
+                            <i class="bi bi-check-circle"></i> Yes, Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    const modal = new bootstrap.Modal(document.getElementById('confirmCancelModal'));
+    modal.show();
+    
+    // Handle confirm
+    document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+        modal.hide();
+        
         fetch('api/customer_cancel.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -467,17 +597,23 @@ function cancelAppointment(appointmentId) {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                alert(result.message);
-                location.reload();
+                // Show success message
+                showSuccessMessage('Appointment cancelled successfully!');
+                setTimeout(() => location.reload(), 1500);
             } else {
-                alert(result.error || 'Failed to cancel appointment.');
+                showErrorMessage(result.error || 'Failed to cancel appointment.');
             }
         })
         .catch(error => {
-            alert('An error occurred. Please try again.');
+            showErrorMessage('An error occurred. Please try again.');
             console.error(error);
         });
-    }
+    });
+    
+    // Remove modal after hidden
+    document.getElementById('confirmCancelModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
 }
 
 // Auto-open review modal if URL has review parameter
