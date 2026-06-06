@@ -9,9 +9,10 @@ require_once 'config/db.php';
 require_once 'config/session.php';
 initializeSession();
 
-// Redirect if already logged in - check for login_time to ensure fresh login
-if (isset($_SESSION['user_id']) && !isset($_GET['redirect'])) {
-    // User is already logged in, redirect based on role
+// Redirect if already logged in with a FRESH session (recent login)
+// This prevents redirect loop but still allows users to access login page
+if (isset($_SESSION['user_id']) && isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] < 30)) {
+    // User logged in recently, redirect based on role
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
         header('Location: admin_dashboard.php');
     } else {
