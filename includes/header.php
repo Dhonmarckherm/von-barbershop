@@ -2,6 +2,11 @@
 require_once __DIR__ . '/../config/session.php';
 initializeSession();
 
+// Debug logging
+error_log("Header.php loaded on page: " . (basename($_SERVER['PHP_SELF']) ?? 'unknown'));
+error_log("Session user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
+error_log("Cookie auth_user_id: " . ($_COOKIE['auth_user_id'] ?? 'NOT SET'));
+
 // Check session first, fallback to auth cookies (but NOT on login/register pages)
 $isLoggedIn = isset($_SESSION['user_id']);
 
@@ -10,13 +15,17 @@ $auth_pages = ['login.php', 'register.php'];
 
 // If not logged in via session, check auth cookies (skip on auth pages)
 if (!$isLoggedIn && isset($_COOKIE['auth_user_id']) && !in_array($current_page, $auth_pages)) {
+    error_log("Restoring session from cookies for user: " . $_COOKIE['auth_user_id']);
     $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
     $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
     $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
     $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
     $_SESSION['login_time'] = time();
     $isLoggedIn = true;
+    error_log("Session restored. isLoggedIn: true");
 }
+
+error_log("Final isLoggedIn status: " . ($isLoggedIn ? 'TRUE' : 'FALSE'));
 
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber');
 
