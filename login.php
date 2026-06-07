@@ -45,7 +45,7 @@ if (!isset($_GET['logout']) && isset($_SESSION['user_id']) && isset($_COOKIE['au
     if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber') {
         header('Location: admin_dashboard.php');
     } else {
-        header('Location: index.php');
+        header('Location: my_appointments.php');
     }
     exit;
 }
@@ -96,12 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set fresh auth cookies
             setAuthCookies($user['id'], $user['name'], $user['email'], strtolower($user['role']));
 
-            // Redirect admin to dashboard, customers to index
+            // Redirect admin to dashboard, customers to my_appointments
             $role = strtolower($user['role']); // Normalize to lowercase
             if ($role === 'admin' || $role === 'barber') {
                 header('Location: admin_dashboard.php');
             } else {
-                header('Location: index.php');
+                header('Location: my_appointments.php');
             }
             exit;
         } else {
