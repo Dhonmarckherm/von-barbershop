@@ -125,19 +125,62 @@ if ($stmt->rowCount() > 0) {
             
             // Use sendBrevoEmail for reliable delivery
             $barberEmailBody = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
-                    <h2 style='color: #C5A059;'>🔄 Customer Rescheduled Appointment</h2>
-                    <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
-                    <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
-                    <p><strong>Location:</strong> {$appt['location']}</p>
-                    <hr>
-                    <div style='background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;'>
-                        <p style='color: #6c757d; margin: 5px 0;'><strong>Old Schedule:</strong></p>
-                        <p style='margin: 5px 0;'>{$appt['appointment_date']} at {$oldTime12}</p>
+                <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+                    <!-- Header -->
+                    <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #C5A059;'>
+                        <div style='font-size: 48px; margin-bottom: 10px;'>🔄</div>
+                        <h1 style='color: #C5A059; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Customer Rescheduled Appointment</h1>
+                        <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Appointment schedule has been changed</p>
                     </div>
-                    <div style='background: #e8f5e9; padding: 15px; border-radius: 8px;'>
-                        <p style='color: #28a745; margin: 5px 0;'><strong>New Schedule:</strong></p>
-                        <p style='margin: 5px 0;'>{$newDate} at {$newTime12}</p>
+                    
+                    <!-- Content -->
+                    <div style='padding: 30px;'>
+                        <!-- Customer Info -->
+                        <div style='background: rgba(197, 160, 89, 0.1); border-left: 4px solid #C5A059; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
+                            <h3 style='color: #C5A059; margin: 0 0 10px 0; font-size: 18px;'>👤 Customer Information</h3>
+                            <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Name:</strong> {$appt['customer_name']}</p>
+                            <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Email:</strong> <a href='mailto:{$appt['customer_email']}' style='color: #C5A059; text-decoration: none;'>{$appt['customer_email']}</a></p>
+                            <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Haircut:</strong> {$appt['haircut_description']}</p>
+                            <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Location:</strong> {$appt['location']}</p>
+                        </div>
+                        
+                        <!-- Old Schedule -->
+                        <div style='background: rgba(108, 117, 125, 0.15); border-left: 4px solid #6c757d; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
+                            <h3 style='color: #6c757d; margin: 0 0 15px 0; font-size: 18px;'>📅 Previous Schedule</h3>
+                            <table style='width: 100%; border-collapse: collapse;'>
+                                <tr>
+                                    <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 100px;'>Date:</td>
+                                    <td style='padding: 8px 0; color: #F5F0E8;'>{$appt['appointment_date']}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>Time:</td>
+                                    <td style='padding: 8px 0; color: #F5F0E8;'>{$oldTime12}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- New Schedule -->
+                        <div style='background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
+                            <h3 style='color: #28a745; margin: 0 0 15px 0; font-size: 18px;'>✨ New Schedule</h3>
+                            <table style='width: 100%; border-collapse: collapse;'>
+                                <tr>
+                                    <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0; width: 100px;'>Date:</td>
+                                    <td style='padding: 8px 0; color: #F5F0E8;'>{$newDate}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>Time:</td>
+                                    <td style='padding: 8px 0; color: #F5F0E8; font-size: 20px; font-weight: bold;'>{$newTime12}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p style='font-size: 15px; line-height: 1.6; color: #B8B8CC;'>Please update your calendar accordingly. If you have any conflicts with the new time, please contact the customer directly.</p>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
+                        <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>V.O.N Barber Studio Admin Dashboard</p>
+                        <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
                     </div>
                 </div>
             ";
