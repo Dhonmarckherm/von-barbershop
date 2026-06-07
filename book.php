@@ -175,23 +175,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.type = 'button';
                     
                     if (slot.available) {
-                        // Available slot - modern styling
+                        // Available slot - modern styling with better visibility
                         btn.className = 'btn time-slot';
                         btn.textContent = formatTime(slot.time);
-                        btn.style.cssText = 'background: rgba(197,160,89,0.1); border: 2px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 10px 18px; border-radius: 20px; font-weight: 500; font-size: 14px; transition: all 0.3s ease;';
+                        btn.style.cssText = 'background: rgba(255,255,255,0.95); border: 2px solid rgba(192,192,192,0.6); color: #1a1a2e; padding: 10px 18px; border-radius: 20px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;';
                         
                         btn.addEventListener('click', function() {
                             document.querySelectorAll('.time-slot:not(.booked)').forEach(b => {
                                 b.classList.remove('selected');
-                                b.style.background = 'rgba(197,160,89,0.1)';
-                                b.style.borderColor = 'rgba(197,160,89,0.5)';
-                                b.style.color = '#F5F0E8';
+                                b.style.background = 'rgba(255,255,255,0.95)';
+                                b.style.borderColor = 'rgba(192,192,192,0.6)';
+                                b.style.color = '#1a1a2e';
+                                b.style.fontWeight = '600';
                             });
                             btn.classList.add('selected');
-                            btn.style.background = 'var(--barber-gold)';
-                            btn.style.borderColor = 'var(--barber-gold)';
-                            btn.style.color = '#1a1a2e';
+                            btn.style.background = 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%)';
+                            btn.style.borderColor = '#FFFFFF';
+                            btn.style.color = '#FFFFFF';
                             btn.style.fontWeight = '700';
+                            btn.style.boxShadow = '0 4px 15px rgba(255,255,255,0.3)';
                             timeInput.value = slot.time;
                             submitBtn.disabled = false;
                             slotError.classList.add('d-none');
