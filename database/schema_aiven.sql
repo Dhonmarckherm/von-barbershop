@@ -65,4 +65,4 @@ INSERT IGNORE INTO services (name, price, duration) VALUES
 
 -- Insert default settings
 INSERT IGNORE INTO settings (setting_key, setting_value) VALUES
-('site_name', 'V.O.N Barbershop');
+('site_name', 'V.O.N Barber Studio');

@@ -34,10 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $resetLink = "$protocol://$host/reset_password.php?token=$token";
             
             // Send email with reset link
-            $subject = "V.O.N Barbershop - Password Reset Request";
+            $subject = "V.O.N Barber Studio - Password Reset Request";
             $message = "<html><body style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>";
             $message .= "<div style='background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; text-align: center;'>";
-            $message .= "<h1 style='color: #d4af37; margin: 0; font-size: 28px;'>V.O.N Barbershop</h1>";
+            $message .= "<h1 style='color: #d4af37; margin: 0; font-size: 28px;'>V.O.N Barber Studio</h1>";
             $message .= "<p style='color: #b0b0b0; margin: 5px 0 0; font-size: 14px;'>Professional Grooming Services</p>";
             $message .= "</div>";
             $message .= "<div style='background: white; padding: 30px;'>";
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message .= "<p style='color: #999; font-size: 12px; text-align: center; word-break: break-all;'>$resetLink</p>";
             $message .= "</div>";
             $message .= "<div style='background: #f5f5f5; padding: 20px; text-align: center;'>";
-            $message .= "<p style='color: #999; font-size: 12px; margin: 0;'>© " . date('Y') . " V.O.N Barbershop. All rights reserved.</p>";
+            $message .= "<p style='color: #999; font-size: 12px; margin: 0;'>© " . date('Y') . " V.O.N Barber Studio. All rights reserved.</p>";
             $message .= "</div>";
             $message .= "</body></html>";
             

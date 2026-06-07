@@ -91,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("Welcome Email: Key starts with: " . substr($brevoKey, 0, 10) . "...");
             }
             
-            $subject = 'Welcome to V.O.N Barbershop! ✂️';
+            $subject = 'Welcome to V.O.N Barber Studio! ✂️';
             $htmlContent = "
                 <div style='font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #f5f5f5;'>
                     <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 20px; text-align: center;'>
-                        <h1 style='color: #c0c0c0; font-family: Playfair Display, serif; font-size: 32px; margin: 0;'>Welcome to V.O.N Barbershop!</h1>
+                        <h1 style='color: #c0c0c0; font-family: Playfair Display, serif; font-size: 32px; margin: 0;'>Welcome to V.O.N Barber Studio!</h1>
                         <p style='color: #f5f5f5; font-size: 18px; margin-top: 10px;'>Thank you for registering, " . htmlspecialchars($name) . "! ✂️</p>
                     </div>
                     <div style='padding: 30px 20px; background: #000000;'>
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <hr style='border-color: rgba(192,192,192,0.3); margin: 0 20px;'>
                     <div style='padding: 20px; text-align: center; background: #000000;'>
-                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                        <p style='color: #8A8A9A; font-size: 0.85rem; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
                         <p style='color: #8A8A9A; font-size: 0.85rem; margin: 5px 0 0 0;'>Developed by Dhon Marck V. Hermosura, IT Specialist</p>
                     </div>
                 </div>

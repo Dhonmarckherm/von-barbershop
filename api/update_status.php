@@ -154,7 +154,7 @@ try {
                                     <p>Date: <strong>{$appt['appointment_date']}</strong> at <strong>{$appt['appointment_time']}</strong></p>
                                     <p style='margin-top: 20px; color: #28a745;'>This appointment has been marked as completed.</p>
                                     <hr style='border-color: rgba(197,160,89,0.3); margin: 30px 0;'>
-                                    <p style='color: #8A8A9A; font-size: 0.85rem;'>V.O.N Barbershop Notification System</p>
+                                    <p style='color: #8A8A9A; font-size: 0.85rem;'>V.O.N Barber Studio Notification System</p>
                                 </div>
                             ";
                             sendBrevoEmail($barberEmail, 'Barber', 'Appointment Completed - ' . $appt['customer_name'], $htmlContent);

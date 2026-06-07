@@ -34,7 +34,7 @@ function getMailer(): PHPMailer {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         $mail->Timeout    = 10; // Shorter timeout for API
-        $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barbershop');
+        $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barber Studio');
     } else {
         // Fallback to Gmail
         $mailUsername = 'dhonmarck2004@gmail.com';
@@ -55,7 +55,7 @@ function getMailer(): PHPMailer {
         $mail->Port       = 587;
         $mail->Timeout    = 30;
         $mail->SMTPKeepAlive = false;
-        $mail->setFrom($mailUsername, 'V.O.N Barbershop');
+        $mail->setFrom($mailUsername, 'V.O.N Barber Studio');
     }
     
     $mail->SMTPDebug  = 0;
@@ -91,7 +91,7 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
     
     $data = [
         'sender' => [
-            'name' => 'V.O.N Barbershop',
+            'name' => 'V.O.N Barber Studio',
             'email' => 'dhonmarck2004@gmail.com'
         ],
         'to' => [
@@ -340,8 +340,8 @@ function buildCustomerEmailBody(array $details): string {
             
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
-                <p style='color: #c0c0c0; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for choosing V.O.N Barbershop!</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #c0c0c0; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for choosing V.O.N Barber Studio!</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
@@ -400,8 +400,8 @@ function buildAdminEmailBody(array $details): string {
             
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
-                <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>V.O.N Barbershop Admin Dashboard</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>V.O.N Barber Studio Admin Dashboard</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
@@ -455,8 +455,8 @@ function buildAcceptanceEmailBody(array $details): string {
             
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
-                <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>See you soon at V.O.N Barbershop!</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>See you soon at V.O.N Barber Studio!</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
@@ -511,7 +511,7 @@ function buildCancellationEmailBody(array $details): string {
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Book your next appointment anytime!</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
@@ -575,7 +575,7 @@ function buildRescheduleEmailBody(array $details): string {
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Thank you for your flexibility!</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
@@ -686,7 +686,7 @@ function buildCompletionEmailBody(array $details): string {
             <!-- Footer -->
             <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
                 <p style='color: #C5A059; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Book your next appointment anytime!</p>
-                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barbershop - Barber Studio</p>
+                <p style='color: #8A8A9A; font-size: 13px; margin: 0;'>V.O.N Barber Studio - Barber Studio</p>
             </div>
         </div>
     ";
