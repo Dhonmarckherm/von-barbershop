@@ -88,11 +88,8 @@ if ($stmt->rowCount() > 0) {
                 $time12 = $hours . ':' . $minutes . ' ' . $period;
             }
             
-            $mail = getMailer();
-            $mail->addAddress($barberEmail, $barberName);
-            $mail->isHTML(true);
-            $mail->Subject = '❌ Appointment Cancelled - ' . $appt['customer_name'];
-            $mail->Body = "
+            // Use sendBrevoEmail for reliable delivery
+            $barberEmailBody = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
                     <h2 style='color: #dc3545;'>❌ Appointment Cancelled</h2>
                     <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
@@ -104,8 +101,19 @@ if ($stmt->rowCount() > 0) {
                     <p style='color: #dc3545; font-weight: bold;'>Status: CANCELLED</p>
                 </div>
             ";
-            $mail->send();
-            error_log('✓ Barber cancellation notification sent successfully to ' . $barberEmail);
+            
+            $barberSent = sendBrevoEmail(
+                $barberEmail,
+                $barberName,
+                '❌ Appointment Cancelled - ' . $appt['customer_name'],
+                $barberEmailBody
+            );
+            
+            if ($barberSent) {
+                error_log('✓ Barber cancellation notification sent successfully to ' . $barberEmail);
+            } else {
+                error_log('✗ Barber cancellation notification failed (Brevo API)');
+            }
         } catch (Exception $e) {
             error_log('✗ Barber cancellation notification failed: ' . $e->getMessage());
         }

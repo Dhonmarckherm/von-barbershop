@@ -119,11 +119,8 @@ if ($stmt->rowCount() > 0) {
             $oldTime12 = formatTime12Hour($appt['appointment_time']);
             $newTime12 = formatTime12Hour($newTime);
             
-            $mail = getMailer();
-            $mail->addAddress($barberEmail, $barberName);
-            $mail->isHTML(true);
-            $mail->Subject = '🔄 Customer Rescheduled Appointment - ' . $appt['customer_name'];
-            $mail->Body = "
+            // Use sendBrevoEmail for reliable delivery
+            $barberEmailBody = "
                 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
                     <h2 style='color: #C5A059;'>🔄 Customer Rescheduled Appointment</h2>
                     <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
@@ -140,8 +137,19 @@ if ($stmt->rowCount() > 0) {
                     </div>
                 </div>
             ";
-            $mail->send();
-            error_log('✓ Barber reschedule notification sent successfully to ' . $barberEmail);
+            
+            $barberSent = sendBrevoEmail(
+                $barberEmail,
+                $barberName,
+                '🔄 Customer Rescheduled Appointment - ' . $appt['customer_name'],
+                $barberEmailBody
+            );
+            
+            if ($barberSent) {
+                error_log('✓ Barber reschedule notification sent successfully to ' . $barberEmail);
+            } else {
+                error_log('✗ Barber reschedule notification failed (Brevo API)');
+            }
         } catch (Exception $e) {
             error_log('✗ Barber reschedule notification failed: ' . $e->getMessage());
         }
