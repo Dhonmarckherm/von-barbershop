@@ -10,6 +10,11 @@ require_once 'config/db.php';
 $success = '';
 $errors = [];
 
+// Show success message after redirect
+if (isset($_GET['updated']) && $_GET['updated'] == '1') {
+    $success = 'Profile updated successfully!';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -44,7 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         setcookie('auth_name', $name, time() + (86400 * 30), '/', '', $isHttps, true);
         setcookie('auth_email', $email, time() + (86400 * 30), '/', '', $isHttps, true);
         
-        $success = 'Profile updated successfully!';
+        // Reload page to reflect changes in navbar immediately
+        header('Location: profile.php?updated=1');
+        exit;
     }
 }
 
