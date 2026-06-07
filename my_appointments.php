@@ -112,11 +112,17 @@ require_once 'includes/header.php';
 <p class="mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Your grooming history</p>
 
 <?php if (isset($_GET['booked'])): ?>
-    <div class="alert alert-success">Your appointment has been booked successfully!</div>
+    <div class="alert alert-success booking-success-alert" id="bookingSuccessAlert" style="animation: fadeSlideIn 0.5s ease;">
+        <i class="bi bi-check-circle-fill"></i> Your appointment has been booked successfully!
+    </div>
     <?php if (isset($_GET['email']) && $_GET['email'] === 'sent'): ?>
-        <div class="alert alert-info">A confirmation email has been sent to your Gmail.</div>
+        <div class="alert alert-info booking-email-alert" id="bookingEmailAlert" style="animation: fadeSlideIn 0.5s ease 0.2s both;">
+            <i class="bi bi-envelope-fill"></i> A confirmation email has been sent to your Gmail.
+        </div>
     <?php elseif (isset($_GET['email']) && $_GET['email'] === 'failed'): ?>
-        <div class="alert alert-warning">Booking saved, but the confirmation email failed to send. Please contact the barber directly.</div>
+        <div class="alert alert-warning booking-email-alert" id="bookingEmailAlert" style="animation: fadeSlideIn 0.5s ease 0.2s both;">
+            <i class="bi bi-exclamation-triangle-fill"></i> Booking saved, but the confirmation email failed to send. Please contact the barber directly.
+        </div>
     <?php endif; ?>
 <?php endif; ?>
 
@@ -328,6 +334,28 @@ require_once 'includes/header.php';
     }
     to {
         transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeSlideOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-20px);
         opacity: 0;
     }
 }
@@ -680,6 +708,28 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     <?php unset($_SESSION['push_notification']); ?>
     <?php endif; ?>
+    
+    // Auto-dismiss booking success alerts after 5 seconds
+    const successAlert = document.getElementById('bookingSuccessAlert');
+    const emailAlert = document.getElementById('bookingEmailAlert');
+    
+    if (successAlert || emailAlert) {
+        setTimeout(() => {
+            // Fade out email alert first
+            if (emailAlert) {
+                emailAlert.style.animation = 'fadeSlideOut 0.5s ease forwards';
+                setTimeout(() => emailAlert.remove(), 500);
+            }
+            
+            // Then fade out success alert
+            if (successAlert) {
+                setTimeout(() => {
+                    successAlert.style.animation = 'fadeSlideOut 0.5s ease forwards';
+                    setTimeout(() => successAlert.remove(), 500);
+                }, 300);
+            }
+        }, 5000); // 5 seconds
+    }
 });
 </script>
 
