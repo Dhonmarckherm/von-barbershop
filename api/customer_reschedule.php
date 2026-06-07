@@ -112,27 +112,55 @@ if ($stmt->rowCount() > 0) {
         
         // Notify barber about reschedule
         try {
-            $barberStmt = $pdo->query("SELECT email FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
+            $barberStmt = $pdo->query("SELECT email, name FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
             $barberUser = $barberStmt->fetch();
             $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
+            $barberName = $barberUser ? $barberUser['name'] : 'Barber';
+            
+            error_log("Sending barber reschedule notification to: {$barberEmail}");
+            
+            require_once __DIR__ . '/../config/mailer.php';
+            
+            // Helper function to convert time to 12-hour format
+            function formatTime12Hour($time24) {
+                if (empty($time24)) return $time24;
+                $time24 = preg_replace('/:\d{2}$/', '', $time24);
+                list($hours, $minutes) = explode(':', $time24);
+                $hours = (int)$hours;
+                $period = $hours >= 12 ? 'PM' : 'AM';
+                if ($hours > 12) $hours -= 12;
+                else if ($hours == 0) $hours = 12;
+                return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+            }
+            
+            $oldTime12 = formatTime12Hour($appt['appointment_time']);
+            $newTime12 = formatTime12Hour($newTime);
             
             $mail = getMailer();
-            $mail->addAddress($barberEmail, 'Barber');
+            $mail->addAddress($barberEmail, $barberName);
             $mail->isHTML(true);
-            $mail->Subject = 'Customer Rescheduled Appointment - ' . $appt['customer_name'];
+            $mail->Subject = '🔄 Customer Rescheduled Appointment - ' . $appt['customer_name'];
             $mail->Body = "
-                <h2>Customer Rescheduled Appointment</h2>
-                <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
-                <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
-                <p><strong>Location:</strong> {$appt['location']}</p>
-                <hr>
-                <p><strong>Old Date/Time:</strong> {$appt['appointment_date']} at {$appt['appointment_time']}</p>
-                <p><strong>New Date/Time:</strong> {$newDate} at {$newTime}</p>
+                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                    <h2 style='color: #C5A059;'>🔄 Customer Rescheduled Appointment</h2>
+                    <p><strong>Customer:</strong> {$appt['customer_name']} ({$appt['customer_email']})</p>
+                    <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
+                    <p><strong>Location:</strong> {$appt['location']}</p>
+                    <hr>
+                    <div style='background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;'>
+                        <p style='color: #6c757d; margin: 5px 0;'><strong>Old Schedule:</strong></p>
+                        <p style='margin: 5px 0;'>{$appt['appointment_date']} at {$oldTime12}</p>
+                    </div>
+                    <div style='background: #e8f5e9; padding: 15px; border-radius: 8px;'>
+                        <p style='color: #28a745; margin: 5px 0;'><strong>New Schedule:</strong></p>
+                        <p style='margin: 5px 0;'>{$newDate} at {$newTime12}</p>
+                    </div>
+                </div>
             ";
             $mail->send();
-            error_log('Barber notification sent for customer reschedule');
+            error_log('✓ Barber reschedule notification sent successfully to ' . $barberEmail);
         } catch (Exception $e) {
-            error_log('Barber reschedule notification failed: ' . $e->getMessage());
+            error_log('✗ Barber reschedule notification failed: ' . $e->getMessage());
         }
     } catch (Exception $e) {
         error_log('Reschedule email failed: ' . $e->getMessage());
