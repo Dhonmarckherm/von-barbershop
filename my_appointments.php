@@ -256,6 +256,7 @@ require_once 'includes/header.php';
                             <i class="bi bi-calendar3" style="color: #c0c0c0;"></i> New Date
                         </label>
                         <input type="text" class="form-control" id="rescheduleDate" placeholder="Select date..." 
+                               aria-label="Select new appointment date"
                                style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 10px; font-size: 15px;" readonly>
                     </div>
                     <div class="mb-3">
@@ -263,6 +264,7 @@ require_once 'includes/header.php';
                             <i class="bi bi-clock" style="color: #c0c0c0;"></i> New Time
                         </label>
                         <input type="text" class="form-control" id="rescheduleTime" placeholder="Select time..." 
+                               aria-label="Select new appointment time"
                                style="background: rgba(255,255,255,0.08); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5; padding: 12px 15px; border-radius: 10px; font-size: 15px;" readonly>
                     </div>
                     <div class="alert alert-info" style="background: rgba(192,192,192,0.1); border: 1px solid rgba(192,192,192,0.3); color: #c0c0c0; border-radius: 10px; padding: 12px 15px; font-size: 13px; margin-bottom: 0;">
