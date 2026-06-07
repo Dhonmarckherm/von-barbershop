@@ -34,8 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
         $stmt->execute([$name, $email, $_SESSION['user_id']]);
+        
+        // Update session
         $_SESSION['name'] = $name;
         $_SESSION['email'] = $email;
+        
+        // Update auth cookies to reflect new name immediately
+        $isHttps = true; // Render always serves over HTTPS
+        setcookie('auth_name', $name, time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_email', $email, time() + (86400 * 30), '/', '', $isHttps, true);
+        
         $success = 'Profile updated successfully!';
     }
 }
