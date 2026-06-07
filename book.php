@@ -93,7 +93,10 @@ require_once 'includes/header.php';
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>Confirm Booking</button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled 
+                                style="background: linear-gradient(135deg, #FFFFFF 0%, #C0C0C0 100%); border: none; color: #1a1a2e; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 16px; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(192,192,192,0.3);">
+                            <i class="bi bi-check-circle"></i> Confirm Booking
+                        </button>
                     </div>
                 </form>
             </div>
@@ -247,5 +250,25 @@ function setStyle(styleName) {
     selectedBtn.style.fontWeight = '700';
 }
 </script>
+
+<style>
+/* Confirm Booking button hover effect */
+#submitBtn:not(:disabled):hover {
+    background: linear-gradient(135deg, #F5F5F5 0%, #A8A8A8 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(192,192,192,0.5) !important;
+}
+
+#submitBtn:not(:disabled):active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(192,192,192,0.3) !important;
+}
+
+#submitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(135deg, #E0E0E0 0%, #B0B0B0 100%) !important;
+}
+</style>
 
 <?php require_once 'includes/footer.php'; ?>
