@@ -102,10 +102,8 @@ if ($stmt->rowCount() > 0) {
             $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
             $barberName = $barberUser ? $barberUser['name'] : 'Barber';
             
-            error_log("Sending barber reschedule notification to: {$barberEmail}");
-            
             // Helper function to convert time to 12-hour format
-            function formatTime12Hour($time24) {
+            function formatTime12HourResched($time24) {
                 if (empty($time24)) return $time24;
                 $time24 = preg_replace('/:\d{2}$/', '', $time24);
                 list($hours, $minutes) = explode(':', $time24);
@@ -116,8 +114,14 @@ if ($stmt->rowCount() > 0) {
                 return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
             }
             
-            $oldTime12 = formatTime12Hour($appt['appointment_time']);
-            $newTime12 = formatTime12Hour($newTime);
+            $oldTime12 = formatTime12HourResched($appt['appointment_time']);
+            $newTime12 = formatTime12HourResched($newTime);
+            
+            error_log("=== BARBER RESCHEDULE NOTIFICATION DEBUG ===");
+            error_log("Barber email: {$barberEmail}");
+            error_log("Barber name: {$barberName}");
+            error_log("Customer: {$appt['customer_name']}");
+            error_log("Old time: {$oldTime12}, New time: {$newTime12}");
             
             // Use sendBrevoEmail for reliable delivery
             $barberEmailBody = "
@@ -138,12 +142,16 @@ if ($stmt->rowCount() > 0) {
                 </div>
             ";
             
+            error_log("Calling sendBrevoEmail for barber notification...");
+            
             $barberSent = sendBrevoEmail(
                 $barberEmail,
                 $barberName,
                 '🔄 Customer Rescheduled Appointment - ' . $appt['customer_name'],
                 $barberEmailBody
             );
+            
+            error_log("sendBrevoEmail returned: " . ($barberSent ? 'TRUE' : 'FALSE'));
             
             if ($barberSent) {
                 error_log('✓ Barber reschedule notification sent successfully to ' . $barberEmail);
