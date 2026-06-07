@@ -15,63 +15,74 @@ require_once 'includes/header.php';
     <div class="col-md-8 col-lg-6">
         <div class="card">
             <div class="card-body p-4">
-                <h2 class="text-center mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">Book an Appointment</h2>
-                <p class="text-center mb-4" style="color: #F5F0E8; font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin: 0 auto 1.5rem;">
+                <h2 class="text-center mb-3" style="color: var(--barber-gold); font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: bold;">Book an Appointment</h2>
+                <p class="text-center mb-4" style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; opacity: 0.9;">
                     Choose a date and time that works for you and enjoy priority service—no waiting, no hassle.
                 </p>
 
                 <form method="POST" action="process_booking.php" id="bookingForm">
-                    <div class="mb-3">
-                        <label for="haircut_description" class="form-label" style="color: #F5F0E8; font-weight: 600;">What haircut / style do you want?</label>
+                    <div class="mb-4">
+                        <label for="haircut_description" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
+                            <i class="bi bi-scissors" style="color: var(--barber-gold);"></i> What haircut / style do you want?
+                        </label>
                         <input type="text" class="form-control" id="haircut_description" name="haircut_description" 
                                placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, Consultation, etc." 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;" required>
-                        <div class="mt-2 d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Consultation')" 
-                                    style="background: transparent; border: 1px solid #c0c0c0; color: #c0c0c0;">
-                                <i class="bi bi-chat-dots"></i> Consultation
-                            </button>
-                            <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Low Taper Fade')" 
-                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
-                                Low Taper Fade
-                            </button>
-                            <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Mid Fade')" 
-                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
-                                Mid Fade
-                            </button>
-                            <button type="button" class="btn btn-sm quick-style-btn" onclick="setStyle('Buzz Cut')" 
-                                    style="background: transparent; border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
-                                Buzz Cut
-                            </button>
+                               style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
+                        <div class="mt-3">
+                            <p style="color: #B8B8CC; font-size: 13px; margin-bottom: 10px; font-weight: 500;">Quick select:</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn quick-style-btn" onclick="setStyle('Consultation')" 
+                                        style="background: rgba(197,160,89,0.15); border: 2px solid var(--barber-gold); color: var(--barber-gold); padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 13px; transition: all 0.3s ease;">
+                                    <i class="bi bi-chat-dots"></i> Consultation
+                                </button>
+                                <button type="button" class="btn quick-style-btn" onclick="setStyle('Low Taper Fade')" 
+                                        style="background: rgba(255,255,255,0.05); border: 2px solid rgba(192,192,192,0.4); color: #F5F0E8; padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 13px; transition: all 0.3s ease;">
+                                    Low Taper Fade
+                                </button>
+                                <button type="button" class="btn quick-style-btn" onclick="setStyle('Mid Fade')" 
+                                        style="background: rgba(255,255,255,0.05); border: 2px solid rgba(192,192,192,0.4); color: #F5F0E8; padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 13px; transition: all 0.3s ease;">
+                                    Mid Fade
+                                </button>
+                                <button type="button" class="btn quick-style-btn" onclick="setStyle('Buzz Cut')" 
+                                        style="background: rgba(255,255,255,0.05); border: 2px solid rgba(192,192,192,0.4); color: #F5F0E8; padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 13px; transition: all 0.3s ease;">
+                                    Buzz Cut
+                                </button>
+                            </div>
                         </div>
-                        <small class="d-block mt-2" style="color: var(--barber-gold);">
-                            <i class="bi bi-info-circle"></i> Not sure what style? Just click <strong>Consultation</strong> and we'll help you choose!
+                        <small class="d-block mt-3" style="color: var(--barber-gold); font-size: 13px; background: rgba(197,160,89,0.1); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--barber-gold);">
+                            <i class="bi bi-lightbulb"></i> <strong>Not sure what style?</strong> Just click <strong>Consultation</strong> and we'll help you choose!
                         </small>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="location" class="form-label" style="color: #F5F0E8; font-weight: 600;">Location / Address</label>
+                    <div class="mb-4">
+                        <label for="location" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
+                            <i class="bi bi-geo-alt" style="color: var(--barber-gold);"></i> Location / Address
+                        </label>
                         <input type="text" class="form-control" id="location" name="location" 
                                placeholder="Enter the address where you're located" 
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;" required>
+                               style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="appointment_date" class="form-label" style="color: #F5F0E8; font-weight: 600;">Select Date</label>
+                    <div class="mb-4">
+                        <label for="appointment_date" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
+                            <i class="bi bi-calendar3" style="color: var(--barber-gold);"></i> Select Date
+                        </label>
                         <input type="date" class="form-control" id="appointment_date" name="appointment_date" required
                                min="<?php echo date('Y-m-d'); ?>"
-                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(192,192,192,0.4); color: #f5f5f5;">
+                               style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="color: #F5F0E8; font-weight: 600;">Available Time Slots</label>
-                        <div id="slotsContainer" class="d-flex flex-wrap gap-2">
-                            <p style="color: var(--text-secondary);">Please select a date to view available slots.</p>
+                    <div class="mb-4">
+                        <label class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
+                            <i class="bi bi-clock" style="color: var(--barber-gold);"></i> Available Time Slots
+                        </label>
+                        <div id="slotsContainer" class="d-flex flex-wrap gap-2" style="min-height: 60px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(192,192,192,0.2);">
+                            <p style="color: #B8B8CC; margin: 0;">Please select a date to view available slots.</p>
                         </div>
                         <input type="hidden" id="appointment_time" name="appointment_time" required>
-                        <div id="slotError" class="text-danger small mt-1 d-none">Please select a time slot.</div>
-                        <small class="mt-2 d-block" style="color: var(--text-secondary);">
-                            <span class="badge bg-secondary">Gray slots</span> are already booked and unavailable
+                        <div id="slotError" class="text-danger small mt-2 d-none" style="color: #ff6b6b !important;"><i class="bi bi-exclamation-circle"></i> Please select a time slot.</div>
+                        <small class="mt-3 d-block" style="color: #B8B8CC; font-size: 13px;">
+                            <span style="display: inline-block; background: rgba(115,115,115,0.3); color: #999; padding: 3px 10px; border-radius: 12px; font-size: 12px; text-decoration: line-through;">Booked</span> slots are already taken
                         </small>
                     </div>
 
@@ -155,22 +166,41 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.type = 'button';
                     
                     if (slot.available) {
-                        // Available slot
-                        btn.className = 'btn btn-outline-primary time-slot';
+                        // Available slot - modern styling
+                        btn.className = 'btn time-slot';
                         btn.textContent = formatTime(slot.time);
+                        btn.style.cssText = 'background: rgba(197,160,89,0.1); border: 2px solid rgba(197,160,89,0.5); color: #F5F0E8; padding: 10px 18px; border-radius: 20px; font-weight: 500; font-size: 14px; transition: all 0.3s ease;';
+                        
                         btn.addEventListener('click', function() {
-                            document.querySelectorAll('.time-slot:not(.booked)').forEach(b => b.classList.remove('selected'));
+                            document.querySelectorAll('.time-slot:not(.booked)').forEach(b => {
+                                b.classList.remove('selected');
+                                b.style.background = 'rgba(197,160,89,0.1)';
+                                b.style.borderColor = 'rgba(197,160,89,0.5)';
+                                b.style.color = '#F5F0E8';
+                            });
                             btn.classList.add('selected');
+                            btn.style.background = 'var(--barber-gold)';
+                            btn.style.borderColor = 'var(--barber-gold)';
+                            btn.style.color = '#1a1a2e';
+                            btn.style.fontWeight = '700';
                             timeInput.value = slot.time;
                             submitBtn.disabled = false;
                             slotError.classList.add('d-none');
                         });
                     } else {
-                        // Booked slot - disabled
-                        btn.className = 'btn btn-outline-secondary time-slot booked';
+                        // Booked slot - disabled with better styling
+                        btn.className = 'btn time-slot booked';
                         btn.textContent = formatTime(slot.time);
+                        btn.style.cssText = 'background: rgba(115,115,115,0.15); border: 2px solid rgba(115,115,115,0.3); color: #888; padding: 10px 18px; border-radius: 20px; font-weight: 400; font-size: 14px; text-decoration: line-through; cursor: not-allowed; opacity: 0.6; position: relative;';
                         btn.disabled = true;
                         btn.title = 'Already booked';
+                        
+                        // Add "Booked" badge
+                        const badge = document.createElement('span');
+                        badge.style.cssText = 'position: absolute; top: -8px; right: -5px; background: #6c757d; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 600;';
+                        badge.textContent = 'Booked';
+                        btn.style.position = 'relative';
+                        btn.appendChild(badge);
                     }
                     
                     slotsContainer.appendChild(btn);
@@ -198,15 +228,17 @@ function setStyle(styleName) {
     
     // Visual feedback - highlight the selected button
     document.querySelectorAll('.quick-style-btn').forEach(btn => {
-        btn.style.background = 'transparent';
-        btn.style.border = '1px solid rgba(197,160,89,0.5)';
+        btn.style.background = 'rgba(255,255,255,0.05)';
+        btn.style.border = '2px solid rgba(192,192,192,0.4)';
         btn.style.color = '#F5F0E8';
+        btn.style.fontWeight = '500';
     });
     
     const selectedBtn = event.target.closest('.quick-style-btn');
-    selectedBtn.style.background = 'var(--barber-gold)';
-    selectedBtn.style.border = '1px solid var(--barber-gold)';
-    selectedBtn.style.color = '#1a1a2e';
+    selectedBtn.style.background = 'rgba(197,160,89,0.2)';
+    selectedBtn.style.border = '2px solid var(--barber-gold)';
+    selectedBtn.style.color = 'var(--barber-gold)';
+    selectedBtn.style.fontWeight = '700';
 }
 </script>
 
