@@ -330,7 +330,7 @@ function buildCustomerEmailBody(array $details): string {
                         </tr>
                         <tr>
                             <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
-                            <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
+                            <td style='padding: 8px 0; color: #F5F0E8;'>" . formatTime12Hour($details['time']) . "</td>
                         </tr>
                     </table>
                 </div>
@@ -345,6 +345,32 @@ function buildCustomerEmailBody(array $details): string {
             </div>
         </div>
     ";
+}
+
+/**
+ * Convert 24-hour time (14:00) to 12-hour format (2:00 PM)
+ */
+function formatTime12Hour($time24) {
+    if (empty($time24)) return $time24;
+    
+    // Remove seconds if present (14:00:00 -> 14:00)
+    $time24 = preg_replace('/:\d{2}$/', '', $time24);
+    
+    // Parse the time
+    list($hours, $minutes) = explode(':', $time24);
+    $hours = (int)$hours;
+    
+    // Determine AM/PM
+    $period = $hours >= 12 ? 'PM' : 'AM';
+    
+    // Convert to 12-hour
+    if ($hours > 12) {
+        $hours -= 12;
+    } else if ($hours == 0) {
+        $hours = 12;
+    }
+    
+    return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
 }
 
 /**
@@ -390,7 +416,7 @@ function buildAdminEmailBody(array $details): string {
                         </tr>
                         <tr>
                             <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
-                            <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
+                            <td style='padding: 8px 0; color: #F5F0E8;'>" . formatTime12Hour($details['time']) . "</td>
                         </tr>
                     </table>
                 </div>
@@ -500,7 +526,7 @@ function buildCancellationEmailBody(array $details): string {
                         </tr>
                         <tr>
                             <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
-                            <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
+                            <td style='padding: 8px 0; color: #F5F0E8;'>" . formatTime12Hour($details['time']) . "</td>
                         </tr>
                     </table>
                 </div>
@@ -543,7 +569,7 @@ function buildRescheduleEmailBody(array $details): string {
                 <div style='background: rgba(108, 117, 125, 0.1); border-left: 4px solid #6c757d; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
                     <h3 style='color: #6c757d; margin: 0 0 10px 0; font-size: 18px;'>📅 Previous Schedule</h3>
                     <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Date:</strong> " . $oldDate . "</p>
-                    <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Time:</strong> " . $oldTime . "</p>
+                    <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Time:</strong> " . formatTime12Hour($details['old_time']) . "</p>
                 </div>
                 
                 <!-- New Appointment Details Card -->
@@ -564,7 +590,7 @@ function buildRescheduleEmailBody(array $details): string {
                         </tr>
                         <tr>
                             <td style='padding: 8px 0; font-weight: bold; color: #c0c0c0;'>⏰ Time:</td>
-                            <td style='padding: 8px 0; color: #F5F0E8;'>" . htmlspecialchars($details['time']) . "</td>
+                            <td style='padding: 8px 0; color: #F5F0E8;'>" . formatTime12Hour($details['time']) . "</td>
                         </tr>
                     </table>
                 </div>
