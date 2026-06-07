@@ -26,7 +26,17 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   // NEVER cache PHP files - they contain dynamic session data!
   if (event.request.url.endsWith('.php') || event.request.url.includes('.php?')) {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      fetch(event.request)
+        .catch(err => {
+          console.log('PHP fetch failed, returning network error:', err);
+          // Return a fallback response for failed PHP requests
+          return new Response('Network error. Please check your connection.', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain' }
+          });
+        })
+    );
     return;
   }
   
