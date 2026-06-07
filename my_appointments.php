@@ -725,7 +725,14 @@ window.addEventListener('DOMContentLoaded', function() {
             if (successAlert) {
                 setTimeout(() => {
                     successAlert.style.animation = 'fadeSlideOut 0.5s ease forwards';
-                    setTimeout(() => successAlert.remove(), 500);
+                    setTimeout(() => {
+                        successAlert.remove();
+                        // Clean URL parameters to prevent showing message on refresh
+                        const url = new URL(window.location);
+                        url.searchParams.delete('booked');
+                        url.searchParams.delete('email');
+                        window.history.replaceState({}, document.title, url.toString());
+                    }, 500);
                 }, 300);
             }
         }, 5000); // 5 seconds
