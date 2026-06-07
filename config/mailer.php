@@ -33,7 +33,7 @@ function getMailer(): PHPMailer {
         $mail->Password   = $brevoKey;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
-        $mail->Timeout    = 10; // Shorter timeout for API
+        $mail->Timeout    = 5; // Ultra-fast timeout for API
         $mail->setFrom('noreply@vonbarbershop.com', 'V.O.N Barber Studio');
     } else {
         // Fallback to Gmail
@@ -53,7 +53,7 @@ function getMailer(): PHPMailer {
         $mail->Password   = $mailPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
-        $mail->Timeout    = 30;
+        $mail->Timeout    = 10; // Reduced timeout for faster response
         $mail->SMTPKeepAlive = false;
         $mail->setFrom($mailUsername, 'V.O.N Barber Studio');
     }

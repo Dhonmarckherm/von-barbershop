@@ -84,17 +84,23 @@ if ($stmt->rowCount() > 0) {
         'old_time'       => $appt['appointment_time'],
     ];
 
-    // Send response first, then email
+    // Send response immediately for fast UX
+    header('Connection: close');
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'message' => 'Appointment rescheduled successfully']);
+    header('Content-Length: ' . ob_get_length());
+    
+    // Close connection to client
     if (function_exists('fastcgi_finish_request')) {
-        echo json_encode(['success' => true, 'message' => 'Appointment rescheduled successfully']);
         fastcgi_finish_request();
     } else {
         ignore_user_abort(true);
-        set_time_limit(30);
-        echo json_encode(['success' => true, 'message' => 'Appointment rescheduled successfully']);
+        set_time_limit(1); // Very short timeout
         if (ob_get_level() > 0) { ob_end_flush(); }
         flush();
     }
+    
+    // Email sending happens in background (user already sees success)
 
     // Send email after response
     try {
