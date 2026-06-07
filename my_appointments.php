@@ -591,7 +591,7 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
             }
             
             // Show beautiful toast notification instead of ugly alert
-            showSuccessMessage('Appointment rescheduled successfully!');
+            showSuccessMessage('Appointment rescheduled successfully! Barber has been notified.');
             rescheduleModal.hide();
             
             // Reload after toast is visible
@@ -667,7 +667,7 @@ function cancelAppointment(appointmentId) {
                 }
                 
                 // Show success message
-                showSuccessMessage('Appointment cancelled successfully!');
+                showSuccessMessage('Appointment cancelled successfully! Barber has been notified.');
                 setTimeout(() => location.reload(), 1500);
             } else {
                 showErrorMessage(result.error || 'Failed to cancel appointment.');
