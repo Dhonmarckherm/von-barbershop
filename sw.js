@@ -1,8 +1,9 @@
-const CACHE_NAME = 'von-barbershop-v3';
+const CACHE_NAME = 'von-barbershop-v4';
 const urlsToCache = [
   '/',
-  '/index.php',
-  '/assets/css/style.css'
+  '/assets/css/style.css',
+  '/assets/images/rubiks.jpg',
+  '/assets/images/von-barber-logo.png'
 ];
 
 self.addEventListener('install', event => {
@@ -23,6 +24,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // NEVER cache PHP files - they contain dynamic session data!
+  if (event.request.url.endsWith('.php') || event.request.url.includes('.php?')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -36,6 +43,11 @@ self.addEventListener('fetch', event => {
           }
           // Only cache GET requests
           if (event.request.method !== 'GET') {
+            return response;
+          }
+          // NEVER cache HTML or PHP files
+          const contentType = response.headers.get('content-type');
+          if (contentType && (contentType.includes('text/html') || contentType.includes('php'))) {
             return response;
           }
           // Clone the response
