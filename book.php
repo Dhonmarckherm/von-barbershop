@@ -28,6 +28,9 @@ require_once 'includes/header.php';
                         <input type="text" class="form-control" id="haircut_description" name="haircut_description" 
                                placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, Consultation, etc." 
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
+                        <style>
+                            #haircut_description::placeholder { color: rgba(255,255,255,0.5); }
+                        </style>
                         <div class="mt-3">
                             <p style="color: #B8B8CC; font-size: 13px; margin-bottom: 10px; font-weight: 500;">Quick select:</p>
                             <div class="d-flex flex-wrap gap-2">
@@ -61,6 +64,9 @@ require_once 'includes/header.php';
                         <input type="text" class="form-control" id="location" name="location" 
                                placeholder="Enter the address where you're located" 
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
+                        <style>
+                            #location::placeholder { color: rgba(255,255,255,0.5); }
+                        </style>
                     </div>
 
                     <div class="mb-4">
