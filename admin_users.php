@@ -1,4 +1,9 @@
 <?php
+// Prevent caching - always fetch fresh data
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 /**
  * Admin User Management
  * Admin can view all users, edit emails, and reset passwords.
@@ -309,11 +314,15 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteUserError.classList.add('d-none');
         deleteUserSuccess.classList.add('d-none');
 
+        // Add cache-busting timestamp to prevent Service Worker cache
+        const cacheBuster = '&_t=' + Date.now();
+        
         fetch('api/delete_user.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'user_id=' + encodeURIComponent(id),
-            credentials: 'include'
+            body: 'user_id=' + encodeURIComponent(id) + cacheBuster,
+            credentials: 'include',
+            cache: 'no-store' // Tell browser not to cache this request
         })
         .then(r => {
             console.log('Response status:', r.status);
