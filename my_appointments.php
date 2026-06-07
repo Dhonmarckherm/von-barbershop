@@ -560,9 +560,12 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
                 showNotification(result.notification.title, result.notification.body, result.notification.id);
             }
             
-            alert(result.message);
+            // Show beautiful toast notification instead of ugly alert
+            showSuccessMessage('Appointment rescheduled successfully!');
             rescheduleModal.hide();
-            location.reload();
+            
+            // Reload after toast is visible
+            setTimeout(() => location.reload(), 1500);
         } else {
             document.getElementById('rescheduleError').textContent = result.error || 'Failed to reschedule.';
             document.getElementById('rescheduleError').classList.remove('d-none');
