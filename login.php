@@ -111,7 +111,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 require_once 'includes/header.php';
+
+// Show registration success message
+if (isset($_GET['registered']) && $_GET['registered'] == '1'):
 ?>
+<div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(40, 167, 69, 0.2); border: 1px solid #28a745; color: #f5f5f5; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill" style="font-size: 24px; margin-right: 12px;"></i>
+        <div>
+            <strong style="font-size: 18px;">Registration Successful!</strong><br>
+            <span style="font-size: 14px;">Your account has been created. Please log in with your email and password.</span>
+        </div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="filter: invert(1);"></button>
+</div>
+<?php endif; ?>
 
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">

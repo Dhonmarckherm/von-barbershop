@@ -141,28 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log("Welcome email stack trace: " . $e->getTraceAsString());
         }
         
-        // Auto-login the newly registered user
-        // Clear old session
-        $_SESSION = array();
-        session_regenerate_id(true);
-        
-        // Set new session for the registered user
-        $_SESSION['user_id'] = $newUserId;
-        $_SESSION['name'] = $name;
-        $_SESSION['email'] = $email;
-        $_SESSION['role'] = 'customer'; // Always lowercase
-        $_SESSION['login_time'] = time();
-        
-        // Set auth cookies
-        $isHttps = true; // Render always serves over HTTPS
-        
-        setcookie('auth_user_id', $newUserId, time() + (86400 * 30), '/', '', $isHttps, true);
-        setcookie('auth_name', $name, time() + (86400 * 30), '/', '', $isHttps, true);
-        setcookie('auth_email', $email, time() + (86400 * 30), '/', '', $isHttps, true);
-        setcookie('auth_role', 'customer', time() + (86400 * 30), '/', '', $isHttps, true); // Always lowercase
-        
-        // Redirect to home page as the new user
-        header('Location: index.php?registered=1');
+        // Registration successful - DO NOT auto-login
+        // Redirect to login page with success message
+        header('Location: login.php?registered=1');
         exit;
     }
 }
