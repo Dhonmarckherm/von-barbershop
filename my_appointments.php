@@ -401,8 +401,8 @@ const datepicker = flatpickr('#rescheduleDate', {
 const timepicker = flatpickr('#rescheduleTime', {
     enableTime: true,
     noCalendar: true,
-    dateFormat: 'H:i',
-    time_24hr: true,
+    dateFormat: 'h:i K',  // 12-hour format with AM/PM (e.g., 3:00 PM)
+    time_24hr: false,      // Use 12-hour format
     minTime: '09:00',
     maxTime: '17:00',
     minuteIncrement: 30,
@@ -513,8 +513,31 @@ document.getElementById('confirmRescheduleBtn').addEventListener('click', async 
         return;
     }
     
-    // Time is already in HH:MM format (24-hour)
+    // Convert 12-hour format (3:00 PM) to 24-hour format (15:00) for backend
     let time = timeValue;
+    
+    // Check if time contains AM/PM
+    const hasAMPM = /AM|PM/i.test(time);
+    if (hasAMPM) {
+        // Parse 12-hour format and convert to 24-hour
+        const match = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (match) {
+            let hours = parseInt(match[1]);
+            const minutes = match[2];
+            const period = match[3].toUpperCase();
+            
+            // Convert to 24-hour format
+            if (period === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            time = String(hours).padStart(2, '0') + ':' + minutes;
+        }
+    }
+    
+    // Ensure seconds are included
     if (time && !time.includes(':00')) {
         time = time + ':00';
     }
