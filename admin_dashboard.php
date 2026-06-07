@@ -232,6 +232,88 @@ require_once 'includes/header.php';
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
 <script>
+// Show success toast notification
+function showSuccessToast(message, icon = 'check-circle-fill') {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 20px 28px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(16,185,129,0.4);
+        z-index: 10000;
+        font-weight: 600;
+        font-size: 15px;
+        max-width: 400px;
+        animation: slideInRight 0.4s ease;
+        border-left: 4px solid #059669;
+    `;
+    toast.innerHTML = `<i class="bi bi-${icon}" style="font-size: 18px; margin-right: 8px;"></i> ${message}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.4s ease';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+// Show error toast notification
+function showErrorToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 20px 28px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(239,68,68,0.4);
+        z-index: 10000;
+        font-weight: 600;
+        font-size: 15px;
+        max-width: 400px;
+        animation: slideInRight 0.4s ease;
+        border-left: 4px solid #dc2626;
+    `;
+    toast.innerHTML = `<i class="bi bi-x-circle-fill" style="font-size: 18px; margin-right: 8px;"></i> ${message}`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.4s ease';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+// Add animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
 
@@ -310,18 +392,27 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmBtn.textContent = 'Confirm';
             
             if (data.success) {
-                // Show success message
+                // Show beautiful toast notification
                 const statusMessages = {
-                    'accepted': '✅ Appointment has been ACCEPTED successfully!\n\nCustomer will receive a confirmation email.',
-                    'cancelled': '❌ Appointment has been CANCELLED successfully!\n\nCustomer will receive a cancellation email.',
-                    'completed': '✅ Appointment marked as COMPLETED successfully!',
-                    'pending': '✅ Appointment status reset to PENDING!'
+                    'accepted': 'Appointment has been <strong>ACCEPTED</strong> successfully!<br><small style="opacity: 0.9;">Customer will receive a confirmation email.</small>',
+                    'cancelled': 'Appointment has been <strong>CANCELLED</strong> successfully!<br><small style="opacity: 0.9;">Customer will receive a cancellation email.</small>',
+                    'completed': 'Appointment marked as <strong>COMPLETED</strong> successfully!',
+                    'pending': 'Appointment status reset to <strong>PENDING</strong>!'
                 };
                 
-                alert(statusMessages[status] || '✅ Status updated successfully!');
-                location.reload();
+                const statusIcons = {
+                    'accepted': 'check-circle-fill',
+                    'cancelled': 'x-circle-fill',
+                    'completed': 'check-circle-fill',
+                    'pending': 'arrow-clockwise'
+                };
+                
+                showSuccessToast(statusMessages[status] || 'Status updated successfully!', statusIcons[status] || 'check-circle-fill');
+                
+                // Reload after toast is visible
+                setTimeout(() => location.reload(), 1500);
             } else {
-                alert('❌ Error: ' + (data.error || 'Failed to update status'));
+                showErrorToast(data.error || 'Failed to update status');
             }
         })
         .catch(err => {
