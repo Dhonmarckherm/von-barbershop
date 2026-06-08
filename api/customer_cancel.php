@@ -77,10 +77,17 @@ if ($stmt->rowCount() > 0) {
         
         // Notify barber about cancellation
         try {
-            $barberStmt = $pdo->query("SELECT email, name FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
+            $barberStmt = $pdo->query("SELECT id, email, name FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
             $barberUser = $barberStmt->fetch();
             $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
             $barberName = $barberUser ? $barberUser['name'] : 'Barber';
+            
+            // Send push notification to barber
+            if ($barberUser) {
+                sendPushNotification($pdo, $barberUser['id'], '❌ Customer Cancelled', 
+                    "{$appt['customer_name']} cancelled their appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5), 
+                    '/admin_dashboard.php');
+            }
             
             error_log("Sending barber cancellation notification to: {$barberEmail}");
             

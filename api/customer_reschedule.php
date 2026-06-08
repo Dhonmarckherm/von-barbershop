@@ -127,10 +127,17 @@ if ($stmt->rowCount() > 0) {
         
         // Notify barber about reschedule
         try {
-            $barberStmt = $pdo->query("SELECT email, name FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
+            $barberStmt = $pdo->query("SELECT id, email, name FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
             $barberUser = $barberStmt->fetch();
             $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
             $barberName = $barberUser ? $barberUser['name'] : 'Barber';
+            
+            // Send push notification to barber
+            if ($barberUser) {
+                sendPushNotification($pdo, $barberUser['id'], '📅 Customer Rescheduled', 
+                    "{$appt['customer_name']} rescheduled their appointment to {$newDate} at {$newTime12}", 
+                    '/admin_dashboard.php');
+            }
             
             error_log("=== BARBER RESCHEDULE NOTIFICATION DEBUG ===");
             error_log("Barber email: {$barberEmail}");
