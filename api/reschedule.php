@@ -38,9 +38,14 @@ if (empty($newDate) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $newDate)) {
     exit;
 }
 
-if (empty($newTime) || !preg_match('/^\d{2}:\d{2}$/', $newTime)) {
+if (empty($newTime) || !preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $newTime)) {
     echo json_encode(['error' => 'Invalid time format.']);
     exit;
+}
+
+// Normalize time to HH:MM:SS format
+if (strlen($newTime) === 5) {
+    $newTime .= ':00';
 }
 
 // Fetch current appointment details

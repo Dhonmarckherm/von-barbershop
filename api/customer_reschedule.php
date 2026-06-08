@@ -41,6 +41,11 @@ if (empty($newTime) || !preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $newTime)) {
     exit;
 }
 
+// Normalize time to HH:MM:SS format
+if (strlen($newTime) === 5) {
+    $newTime .= ':00';
+}
+
 // Fetch appointment and verify ownership
 $stmt = $pdo->prepare("SELECT a.appointment_date, a.appointment_time, a.status, a.haircut_description, a.location, u.name AS customer_name, u.email AS customer_email FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ? AND a.user_id = ?");
 $stmt->execute([$appointmentId, $_SESSION['user_id']]);
