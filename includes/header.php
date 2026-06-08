@@ -241,24 +241,104 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             color: #b0b0b0;
             font-size: 11px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 5px 10px;
-            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 12px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+        }
+        .bottom-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(197, 160, 89, 0.15);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+            pointer-events: none;
+        }
+        .bottom-nav-item:hover::before,
+        .bottom-nav-item:active::before {
+            width: 100px;
+            height: 100px;
         }
         .bottom-nav-item i {
-            font-size: 22px;
-            margin-bottom: 3px;
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            z-index: 1;
+            animation-play-state: running !important;
+            -webkit-animation-play-state: running !important;
+        }
+        .bottom-nav-item span {
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            animation-play-state: running !important;
+            -webkit-animation-play-state: running !important;
         }
         .bottom-nav-item:hover {
             color: var(--barber-gold);
-            background: rgba(197, 160, 89, 0.1);
+            transform: translateY(-3px);
+        }
+        .bottom-nav-item:hover i {
+            transform: scale(1.2) rotate(5deg);
+        }
+        .bottom-nav-item:active {
+            transform: translateY(-1px) scale(0.95);
+        }
+        .bottom-nav-item:active i {
+            transform: scale(0.9);
         }
         .bottom-nav-item.active {
             color: var(--barber-gold);
         }
+        .bottom-nav-item.active::before {
+            width: 80px;
+            height: 80px;
+            background: rgba(197, 160, 89, 0.2);
+        }
         .bottom-nav-item.active i {
-            transform: scale(1.1);
+            animation: iconBounce 0.6s ease;
+            animation-play-state: running !important;
+            -webkit-animation-play-state: running !important;
+        }
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            50% { transform: scale(1.15) rotate(10deg); }
+            75% { transform: scale(1.2) rotate(-5deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .bottom-nav-item:hover span {
+            transform: translateY(-1px);
+        }
+        
+        /* Enable animations on mobile devices */
+        @media (max-width: 768px) {
+            .bottom-nav-item,
+            .bottom-nav-item i,
+            .bottom-nav-item span {
+                animation-play-state: running !important;
+                -webkit-animation-play-state: running !important;
+            }
+            .bottom-nav-item.active i {
+                animation: iconBounce 0.6s ease !important;
+                animation-play-state: running !important;
+                -webkit-animation-play-state: running !important;
+            }
+            .bottom-nav-item::before {
+                transition: width 0.4s ease !important, height 0.4s ease !important;
+            }
         }
     </style>
     <div class="container mt-4">
