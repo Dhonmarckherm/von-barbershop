@@ -480,18 +480,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = rescheduleDate.value;
         const timeValue = rescheduleTime.value;
 
+        console.log('Raw time value from Flatpickr:', timeValue);
+
         if (!date || !timeValue) {
             rescheduleError.textContent = 'Please select both date and time.';
             rescheduleError.classList.remove('d-none');
             return;
         }
 
-        // Time is already in HH:MM format (24-hour)
+        // Time is already in HH:MM format (24-hour) from Flatpickr
         let time = timeValue;
-        // Ensure seconds are added
-        if (time && !time.includes(':00')) {
+        
+        // If time doesn't have seconds, add :00
+        if (time && time.split(':').length === 2) {
             time = time + ':00';
         }
+        
+        console.log('Final time being sent:', time);
 
         rescheduleError.classList.add('d-none');
 
