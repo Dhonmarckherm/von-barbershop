@@ -160,9 +160,9 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     </nav>
     
     <!-- Bottom Navigation Bar (Mobile App Style) -->
-    <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; background: #000000; border-top: 2px solid var(--barber-gold); padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.5);">
+    <nav class="bottom-nav">
         <div class="container">
-            <div class="d-flex justify-content-around align-items-center">
+            <div class="bottom-nav-container">
                 <?php if ($isLoggedIn): ?>
                     <?php if ($isAdmin): ?>
                         <!-- Admin Bottom Nav -->
@@ -233,112 +233,123 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         body {
             padding-bottom: 80px !important;
         }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0a0a0a;
+            border-top: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 12px 0 8px 0;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+        }
+        .bottom-nav-container {
+            position: relative;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
         .bottom-nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-decoration: none;
-            color: #b0b0b0;
-            font-size: 11px;
+            color: #888;
+            font-size: 10px;
             font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 8px 12px;
-            border-radius: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
             position: relative;
-            overflow: hidden;
+            transition: color 0.3s ease;
+            z-index: 1;
             -webkit-tap-highlight-color: transparent;
             cursor: pointer;
         }
-        .bottom-nav-item::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(197, 160, 89, 0.15);
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
-            pointer-events: none;
-        }
-        .bottom-nav-item:hover::before,
-        .bottom-nav-item:active::before {
-            width: 100px;
-            height: 100px;
-        }
         .bottom-nav-item i {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 4px;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative;
-            z-index: 1;
-            animation-play-state: running !important;
-            -webkit-animation-play-state: running !important;
+            transition: all 0.3s ease;
         }
         .bottom-nav-item span {
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            animation-play-state: running !important;
-            -webkit-animation-play-state: running !important;
+            opacity: 0.7;
         }
-        .bottom-nav-item:hover {
-            color: var(--barber-gold);
-            transform: translateY(-3px);
+        /* Sliding indicator background */
+        .bottom-nav-indicator {
+            position: absolute;
+            background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(197, 160, 89, 0.4);
+            z-index: 0;
         }
-        .bottom-nav-item:hover i {
-            transform: scale(1.2) rotate(5deg);
-        }
-        .bottom-nav-item:active {
-            transform: translateY(-1px) scale(0.95);
-        }
-        .bottom-nav-item:active i {
-            transform: scale(0.9);
-        }
+        /* Active state */
         .bottom-nav-item.active {
-            color: var(--barber-gold);
-        }
-        .bottom-nav-item.active::before {
-            width: 80px;
-            height: 80px;
-            background: rgba(197, 160, 89, 0.2);
+            color: #000;
         }
         .bottom-nav-item.active i {
-            animation: iconBounce 0.6s ease;
-            animation-play-state: running !important;
-            -webkit-animation-play-state: running !important;
+            transform: scale(1.1);
         }
-        @keyframes iconBounce {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.2) rotate(-10deg); }
-            50% { transform: scale(1.15) rotate(10deg); }
-            75% { transform: scale(1.2) rotate(-5deg); }
+        .bottom-nav-item.active span {
+            opacity: 1;
+            font-weight: 600;
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        /* Hover effect */
+        .bottom-nav-item:hover {
+            color: #C5A059;
         }
-        .bottom-nav-item:hover span {
-            transform: translateY(-1px);
+        .bottom-nav-item:hover i {
+            transform: translateY(-2px);
         }
-        
-        /* Enable animations on mobile devices */
-        @media (max-width: 768px) {
-            .bottom-nav-item,
-            .bottom-nav-item i,
-            .bottom-nav-item span {
-                animation-play-state: running !important;
-                -webkit-animation-play-state: running !important;
-            }
-            .bottom-nav-item.active i {
-                animation: iconBounce 0.6s ease !important;
-                animation-play-state: running !important;
-                -webkit-animation-play-state: running !important;
-            }
-            .bottom-nav-item::before {
-                transition: width 0.4s ease, height 0.4s ease !important;
-            }
+        /* Click/press feedback */
+        .bottom-nav-item:active {
+            transform: scale(0.95);
         }
     </style>
+    
+    <script>
+    // Sliding indicator logic
+    document.addEventListener('DOMContentLoaded', function() {
+        const navContainer = document.querySelector('.bottom-nav-container');
+        const activeItem = document.querySelector('.bottom-nav-item.active');
+        
+        if (navContainer && activeItem) {
+            // Create indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'bottom-nav-indicator';
+            navContainer.appendChild(indicator);
+            
+            // Position indicator under active item
+            function updateIndicator(item) {
+                if (!item) return;
+                const rect = item.getBoundingClientRect();
+                const containerRect = navContainer.getBoundingClientRect();
+                
+                indicator.style.width = (rect.width + 8) + 'px';
+                indicator.style.height = (rect.height + 4) + 'px';
+                indicator.style.left = (rect.left - containerRect.left - 4) + 'px';
+                indicator.style.top = (rect.top - containerRect.top - 2) + 'px';
+            }
+            
+            // Initial position
+            setTimeout(() => updateIndicator(activeItem), 100);
+            
+            // Update on click
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active from all
+                    document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                    // Move indicator
+                    updateIndicator(this);
+                });
+            });
+            
+            // Update on resize
+            window.addEventListener('resize', () => updateIndicator(document.querySelector('.bottom-nav-item.active')));
+        }
+    });
+    </script>
     <div class="container mt-4">
