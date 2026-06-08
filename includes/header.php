@@ -337,7 +337,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 -webkit-animation-play-state: running !important;
             }
             .bottom-nav-item::before {
-                transition: width 0.4s ease !important, height 0.4s ease !important;
+                transition: width 0.4s ease, height 0.4s ease !important;
             }
         }
     </style>
