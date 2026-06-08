@@ -80,7 +80,7 @@ if ($stmt->rowCount() > 0) {
     // Get customer user_id
     $customerId = $_SESSION['user_id'];
     
-    // Send reschedule email
+    // Prepare email details
     $details = [
         'customer_name'  => $appt['customer_name'],
         'customer_email' => $appt['customer_email'],
@@ -92,9 +92,27 @@ if ($stmt->rowCount() > 0) {
         'old_time'       => $appt['appointment_time'],
     ];
     
+    // Helper function to convert time to 12-hour format (define BEFORE use)
+    if (!function_exists('formatTime12HourResched')) {
+        function formatTime12HourResched($time24) {
+            if (empty($time24)) return $time24;
+            $time24 = preg_replace('/:\d{2}$/', '', $time24);
+            list($hours, $minutes) = explode(':', $time24);
+            $hours = (int)$hours;
+            $period = $hours >= 12 ? 'PM' : 'AM';
+            if ($hours > 12) $hours -= 12;
+            else if ($hours == 0) $hours = 12;
+            return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+        }
+    }
+    
+    // Format times for display
+    $oldTime12 = formatTime12HourResched($appt['appointment_time']);
+    $newTime12 = formatTime12HourResched($newTime);
+    
     // Send push notification to customer
     require_once __DIR__ . '/../includes/push_helper.php';
-    sendPushNotification($pdo, $customerId, '📅 Appointment Rescheduled', "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5), '/my_appointments.php');
+    sendPushNotification($pdo, $customerId, '📅 Appointment Rescheduled', "Your appointment has been rescheduled to {$newDate} at {$newTime12}", '/my_appointments.php');
 
     // Send response immediately for fast UX
     // NOTE: On Render free tier, we must send emails BEFORE response to ensure delivery
@@ -113,21 +131,6 @@ if ($stmt->rowCount() > 0) {
             $barberUser = $barberStmt->fetch();
             $barberEmail = $barberUser ? $barberUser['email'] : 'dhonmarck2004@gmail.com';
             $barberName = $barberUser ? $barberUser['name'] : 'Barber';
-            
-            // Helper function to convert time to 12-hour format
-            function formatTime12HourResched($time24) {
-                if (empty($time24)) return $time24;
-                $time24 = preg_replace('/:\d{2}$/', '', $time24);
-                list($hours, $minutes) = explode(':', $time24);
-                $hours = (int)$hours;
-                $period = $hours >= 12 ? 'PM' : 'AM';
-                if ($hours > 12) $hours -= 12;
-                else if ($hours == 0) $hours = 12;
-                return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
-            }
-            
-            $oldTime12 = formatTime12HourResched($appt['appointment_time']);
-            $newTime12 = formatTime12HourResched($newTime);
             
             error_log("=== BARBER RESCHEDULE NOTIFICATION DEBUG ===");
             error_log("Barber email: {$barberEmail}");
