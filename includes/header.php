@@ -278,15 +278,15 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         /* Sliding indicator background */
         .bottom-nav-indicator {
             position: absolute;
-            background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%);
+            background: linear-gradient(29deg, #212529 0%, rgba(255, 255, 255, 0.95) 100%);
             border-radius: 20px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(197, 160, 89, 0.4);
+            box-shadow: 0 2px 8px rgba(33, 37, 41, 0.4);
             z-index: 0;
         }
         /* Active state */
         .bottom-nav-item.active {
-            color: #000;
+            color: #ffffff;
         }
         .bottom-nav-item.active i {
             transform: scale(1.1);
