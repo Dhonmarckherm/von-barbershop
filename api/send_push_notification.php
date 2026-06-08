@@ -65,17 +65,21 @@ try {
         ]);
         
         try {
+            error_log("[PUSH-SEND] Attempting to send to endpoint: " . substr($sub['endpoint'], 0, 80));
             $report = $webPush->sendOneNotification($subscription, $payload);
             
             if ($report->isSuccess()) {
                 $notificationsSent++;
+                error_log("[PUSH-SEND] SUCCESS");
             } else {
                 $notificationsFailed++;
-                error_log("Push notification failed: " . $report->getReason());
+                $reason = $report->getReason();
+                error_log("[PUSH-SEND] FAILED: " . $reason);
+                error_log("[PUSH-SEND] HTTP Code: " . $report->getResponse()->getStatusCode());
             }
         } catch (Exception $e) {
             $notificationsFailed++;
-            error_log("Push notification error: " . $e->getMessage());
+            error_log("[PUSH-SEND] EXCEPTION: " . $e->getMessage());
         }
     }
     
