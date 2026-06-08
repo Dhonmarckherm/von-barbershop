@@ -94,7 +94,7 @@ if ($stmt->rowCount() > 0) {
     
     // Helper function to convert time to 12-hour format (define BEFORE use)
     if (!function_exists('formatTime12HourResched')) {
-        function formatTime12HourResched($time24) {
+        function formatTime12HourResched(string $time24): string {
             if (empty($time24)) return $time24;
             $time24 = preg_replace('/:\d{2}$/', '', $time24);
             list($hours, $minutes) = explode(':', $time24);

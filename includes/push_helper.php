@@ -4,7 +4,7 @@
  * Sends push notifications to users
  */
 
-function sendPushNotification($pdo, $userId, $title, $body, $url = '/index.php') {
+function sendPushNotification($pdo, int $userId, string $title, string $body, string $url = '/index.php'): bool {
     try {
         // Determine correct protocol
         $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') 
