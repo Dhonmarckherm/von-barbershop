@@ -306,6 +306,37 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         .bottom-nav-item:active {
             transform: scale(0.95);
         }
+        
+        /* iOS Safari animation fixes */
+        @supports (-webkit-touch-callout: none) {
+            .bottom-nav-item,
+            .bottom-nav-item i,
+            .bottom-nav-item span,
+            .bottom-nav-indicator {
+                -webkit-animation-play-state: running !important;
+                animation-play-state: running !important;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+            .bottom-nav-item:active {
+                -webkit-transform: scale(0.95);
+                transform: scale(0.95);
+            }
+            .bottom-nav-item:hover i {
+                -webkit-transform: translateY(-2px);
+                transform: translateY(-2px);
+            }
+            .bottom-nav-item.active i {
+                -webkit-transform: scale(1.1);
+                transform: scale(1.1);
+            }
+            .bottom-nav-indicator {
+                -webkit-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+        }
     </style>
     
     <script>
