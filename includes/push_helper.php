@@ -13,6 +13,9 @@ function sendPushNotification($pdo, $userId, $title, $body, $url = '/index.php')
         
         $pushUrl = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php';
         
+        error_log("[PUSH] Sending to user {$userId}: {$title}");
+        error_log("[PUSH] URL: {$pushUrl}");
+        
         $pushData = json_encode([
             'user_id' => $userId,
             'title' => $title,
@@ -27,13 +30,15 @@ function sendPushNotification($pdo, $userId, $title, $body, $url = '/index.php')
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_exec($ch);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        error_log("Push notification sent to user {$userId}: {$title}");
+        error_log("[PUSH] Response (HTTP {$httpCode}): {$response}");
+        
         return true;
     } catch (Exception $e) {
-        error_log('Push notification failed: ' . $e->getMessage());
+        error_log('[PUSH] ERROR: ' . $e->getMessage());
         return false;
     }
 }
