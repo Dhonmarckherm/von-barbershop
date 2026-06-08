@@ -51,6 +51,9 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <script src="https://cdn.jsdelivr.net/npm/@capacitor/core@latest/dist/capacitor.js"></script>
     <script src="/www/js/push-notifications.js?v=2"></script>
 
+    <!-- Web Push Notifications (for browsers and PWA) -->
+    <script src="/www/js/web-push-notifications.js?v=1"></script>
+
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#000000">

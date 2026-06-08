@@ -1,3 +1,88 @@
+self.addEventListener('push', function(event) {
+  console.log('Push notification received:', event);
+  
+  if (event.data) {
+    const data = event.data.json();
+    
+    const options = {
+      body: data.body || 'New notification from VON BARBER STUDIO',
+      icon: '/assets/images/rubiks.jpg',
+      badge: '/assets/images/rubiks.jpg',
+      vibrate: [200, 100, 200],
+      tag: data.tag || 'von-barbershop-notification',
+      data: {
+        url: data.url || '/my_appointments.php'
+      },
+      actions: [
+        {
+          action: 'view',
+          title: 'View',
+          icon: '/assets/images/rubiks.jpg'
+        },
+        {
+          action: 'close',
+          title: 'Close',
+          icon: '/assets/images/rubiks.jpg'
+        }
+      ]
+    };
+    
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'VON BARBER STUDIO', options)
+    );
+  }
+});
+
+self.addEventListener('notificationclick', function(event) {
+  console.log('Notification clicked:', event);
+  
+  event.notification.close();
+  
+  if (event.action === 'view' || !event.action) {
+    const urlToOpen = event.notification.data.url || '/my_appointments.php';
+    
+    event.waitUntil(
+      clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+      }).then(function(windowClients) {
+        // Check if there's already a window/tab open
+        for (let i = 0; i < windowClients.length; i++) {
+          const client = windowClients[i];
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Open a new window/tab
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+    );
+  }
+});
+
+self.addEventListener('pushsubscriptionchange', function(event) {
+  console.log('Push subscription changed, re-subscribing...');
+  event.waitUntil(
+    self.registration.pushManager.subscribe({
+      userVisibleOnly: true
+    }).then(function(subscription) {
+      console.log('Re-subscribed to push notifications');
+      // Send new subscription to server
+      return fetch('/api/save_push_subscription.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          subscription: subscription
+        })
+      });
+    })
+  );
+});
+
 const CACHE_NAME = 'von-barbershop-v5';
 const urlsToCache = [
   '/',
