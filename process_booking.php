@@ -67,28 +67,11 @@ $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
 // Send push notification to barber/admin about new booking
-try {
-    $barberStmt = $pdo->query("SELECT id FROM users WHERE role IN ('admin', 'barber') LIMIT 1");
-    $barber = $barberStmt->fetch();
-    if ($barber && $user) {
-        $pushData = [
-            'user_id' => $barber['id'],
-            'title' => '📅 New Booking',
-            'body' => "New appointment from {$user['name']} on {$date} at " . substr($time, 0, 5),
-            'url' => '/admin_dashboard.php'
-        ];
-        $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_exec($ch);
-        curl_close($ch);
-        error_log('Push notification sent to barber for new booking');
-    }
-} catch (Exception $e) {
-    error_log('Barber push notification failed: ' . $e->getMessage());
+require_once __DIR__ . '/includes/push_helper.php';
+$barberStmt = $pdo->query("SELECT id FROM users WHERE role IN ('admin', 'barber') LIMIT 1");
+$barber = $barberStmt->fetch();
+if ($barber && $user) {
+    sendPushNotification($pdo, $barber['id'], '📅 New Booking', "New appointment from {$user['name']} on {$date} at " . substr($time, 0, 5), '/admin_dashboard.php');
 }
 
 if ($user) {

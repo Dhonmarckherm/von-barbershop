@@ -88,25 +88,8 @@ if ($stmt->rowCount() > 0) {
     ];
     
     // Send push notification to customer
-    try {
-        $pushData = [
-            'user_id' => $customerId,
-            'title' => '📅 Appointment Rescheduled',
-            'body' => "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5),
-            'url' => '/my_appointments.php'
-        ];
-        $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_exec($ch);
-        curl_close($ch);
-        error_log('Push notification sent to customer for reschedule');
-    } catch (Exception $e) {
-        error_log('Customer push notification failed: ' . $e->getMessage());
-    }
+    require_once __DIR__ . '/../includes/push_helper.php';
+    sendPushNotification($pdo, $customerId, '📅 Appointment Rescheduled', "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5), '/my_appointments.php');
 
     // Send response immediately for fast UX
     // NOTE: On Render free tier, we must send emails BEFORE response to ensure delivery
