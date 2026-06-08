@@ -139,7 +139,18 @@ if (isset($_GET['registered']) && $_GET['registered'] == '1'):
                 <?php endif; ?>
 
                 <?php if ($error): ?>
-                    <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+                    <div class="alert alert-danger">
+                        <strong><?php echo htmlspecialchars($error); ?></strong>
+                        <div class="mt-2">
+                            <a href="forgot_password.php" style="color: var(--barber-gold); text-decoration: none; font-size: 0.9rem;">
+                                <i class="bi bi-key"></i> Forgot Password?
+                            </a>
+                            <span style="color: #6c757d;">|</span>
+                            <a href="register.php" style="color: var(--barber-gold); text-decoration: none; font-size: 0.9rem;">
+                                <i class="bi bi-person-plus"></i> Register New Account
+                            </a>
+                        </div>
+                    </div>
                 <?php endif; ?>
 
                 <form method="POST" action="login.php" novalidate autocomplete="off">
