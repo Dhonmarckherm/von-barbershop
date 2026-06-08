@@ -182,7 +182,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-megaphone"></i>
                             <span>Announce</span>
                         </a>
-                        <a href="logout.php" class="bottom-nav-item">
+                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
                         </a>
@@ -204,7 +204,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-person"></i>
                             <span>Profile</span>
                         </a>
-                        <a href="logout.php" class="bottom-nav-item">
+                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
                         </a>
@@ -343,7 +343,58 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         }
     </style>
     
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 20px; padding: 30px; max-width: 320px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); text-align: center; animation: modalSlideIn 0.3s ease;">
+            <div style="margin-bottom: 20px;">
+                <i class="bi bi-box-arrow-right" style="font-size: 48px; color: #ff6b6b; display: block; margin-bottom: 15px;"></i>
+                <h3 style="color: #ffffff; margin: 0 0 10px 0; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 20px;">Log Out?</h3>
+                <p style="color: #b0b0b0; margin: 0; font-size: 14px; font-family: 'Inter', sans-serif;">Are you sure you want to log out?</p>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 25px;">
+                <button onclick="closeLogoutModal()" style="flex: 1; padding: 12px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #ffffff; border-radius: 12px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">No</button>
+                <a href="logout.php" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: #ffffff; border-radius: 12px; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; box-shadow: 0 4px 15px rgba(255,107,107,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(255,107,107,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(255,107,107,0.3)'">Yes</a>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+    
     <script>
+    // Logout Modal Functions
+    function showLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        modal.style.display = 'flex';
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        modal.style.display = 'none';
+        // Restore body scroll
+        document.body.style.overflow = '';
+    }
+    
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('logoutModal');
+        if (e.target === modal) {
+            closeLogoutModal();
+        }
+    });
+    
     // Sliding indicator logic
     document.addEventListener('DOMContentLoaded', function() {
         const navContainer = document.querySelector('.bottom-nav-container');
