@@ -153,21 +153,36 @@ $userId = $_SESSION['user_id'] ?? null;
             addLog('Creating subscription...');
             try {
                 const reg = await navigator.serviceWorker.ready;
+                
+                // Delete existing subscription first
+                const existingSub = await reg.pushManager.getSubscription();
+                if (existingSub) {
+                    addLog('Deleting old subscription...');
+                    await existingSub.unsubscribe();
+                    addLog('Old subscription deleted');
+                }
+                
                 const sub = await reg.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array('BDSd6CxnFxXK3O3tWG7Ik90SrPwFVB0NDXK6bc2tJx6THXcSbL7mprKAO8tzpr9DY8fUXZaoamTx6cniZT5QwIc')
                 });
-                addLog('Subscription created!');
+                addLog('New subscription created!');
                 addLog('Endpoint: ' + sub.endpoint.substring(0, 50) + '...');
                 
                 // Save to server
+                const userId = <?php echo $userId ? (int)$userId : 'null'; ?>;
+                addLog('User ID being sent: ' + userId);
+                
+                const payload = {
+                    subscription: sub,
+                    user_id: userId
+                };
+                addLog('Payload: ' + JSON.stringify(payload).substring(0, 100) + '...');
+                
                 const response = await fetch('/api/save_push_subscription.php', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        subscription: sub,
-                        user_id: <?php echo $userId ? (int)$userId : 'null'; ?>
-                    })
+                    body: JSON.stringify(payload)
                 });
                 
                 const result = await response.json();
