@@ -445,8 +445,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const timepicker = flatpickr('#rescheduleTime', {
         enableTime: true,
         noCalendar: true,
-        dateFormat: 'H:i',
-        time_24hr: true,
+        dateFormat: 'h:i K',
+        time_24hr: false,
         minTime: '09:00',
         maxTime: '17:00',
         minuteIncrement: 30,
@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = rescheduleDate.value;
         const timeValue = rescheduleTime.value;
 
-        console.log('Raw time value from Flatpickr:', timeValue);
+        console.log('Raw time value from Flatpickr (12-hour):', timeValue);
 
         if (!date || !timeValue) {
             rescheduleError.textContent = 'Please select both date and time.';
@@ -488,15 +488,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Time is already in HH:MM format (24-hour) from Flatpickr
+        // Convert 12-hour format (03:30 PM) to 24-hour format (15:30)
         let time = timeValue;
+        if (time) {
+            // Parse 12-hour format: h:i K (e.g., "03:30 PM")
+            const match = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+            if (match) {
+                let hours = parseInt(match[1]);
+                const minutes = match[2];
+                const period = match[3].toUpperCase();
+                
+                // Convert to 24-hour
+                if (period === 'PM' && hours < 12) hours += 12;
+                if (period === 'AM' && hours === 12) hours = 0;
+                
+                time = String(hours).padStart(2, '0') + ':' + minutes;
+            }
+        }
         
-        // If time doesn't have seconds, add :00
+        // Add seconds if needed
         if (time && time.split(':').length === 2) {
             time = time + ':00';
         }
         
-        console.log('Final time being sent:', time);
+        console.log('Converted time (24-hour):', time);
 
         rescheduleError.classList.add('d-none');
 
