@@ -88,6 +88,32 @@ try {
                     $emailResult = sendAcceptanceEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Acceptance email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
                     
+                    // Send push notification to customer
+                    try {
+                        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                        $stmt->execute([$appt['customer_email']]);
+                        $customer = $stmt->fetch();
+                        if ($customer) {
+                            $pushData = [
+                                'user_id' => $customer['id'],
+                                'title' => '✅ Appointment Accepted',
+                                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been accepted!",
+                                'url' => '/my_appointments.php'
+                            ];
+                            $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                            curl_exec($ch);
+                            curl_close($ch);
+                            error_log('Push notification sent to customer for acceptance');
+                        }
+                    } catch (Exception $e) {
+                        error_log('Customer push notification failed: ' . $e->getMessage());
+                    }
+                    
                     // Notify barber about acceptance
                     try {
                         $mail = getMailer();
@@ -112,6 +138,32 @@ try {
                     // Send cancellation email to customer
                     $emailResult = sendCancellationEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Cancellation email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                    
+                    // Send push notification to customer
+                    try {
+                        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                        $stmt->execute([$appt['customer_email']]);
+                        $customer = $stmt->fetch();
+                        if ($customer) {
+                            $pushData = [
+                                'user_id' => $customer['id'],
+                                'title' => '❌ Appointment Cancelled',
+                                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been cancelled.",
+                                'url' => '/my_appointments.php'
+                            ];
+                            $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                            curl_exec($ch);
+                            curl_close($ch);
+                            error_log('Push notification sent to customer for cancellation');
+                        }
+                    } catch (Exception $e) {
+                        error_log('Customer push notification failed: ' . $e->getMessage());
+                    }
                     
                     // Notify barber about cancellation
                     try {
@@ -138,6 +190,32 @@ try {
                     $details['appointment_id'] = $appointmentId; // Add appointment ID for review link
                     $emailResult = sendCompletionEmail($appt['customer_email'], $appt['customer_name'], $details);
                     error_log('Completion email sent to ' . $appt['customer_email'] . ': ' . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                    
+                    // Send push notification to customer
+                    try {
+                        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                        $stmt->execute([$appt['customer_email']]);
+                        $customer = $stmt->fetch();
+                        if ($customer) {
+                            $pushData = [
+                                'user_id' => $customer['id'],
+                                'title' => '⭐ Appointment Completed',
+                                'body' => "Thank you for visiting! Your appointment is complete. Please rate us!",
+                                'url' => '/my_appointments.php'
+                            ];
+                            $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+                            curl_setopt($ch, CURLOPT_POST, true);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+                            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                            curl_exec($ch);
+                            curl_close($ch);
+                            error_log('Push notification sent to customer for completion');
+                        }
+                    } catch (Exception $e) {
+                        error_log('Customer push notification failed: ' . $e->getMessage());
+                    }
                     
                     // Notify barber about completion
                     try {

@@ -98,6 +98,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($sentCount > 0) {
                 $success = "Announcement sent successfully to {$sentCount} customer" . ($sentCount > 1 ? 's' : '') . "!";
+                
+                // Send push notification to all users
+                try {
+                    $pushData = [
+                        'title' => '📢 Announcement',
+                        'body' => $subject . ': ' . substr($message, 0, 100) . (strlen($message) > 100 ? '...' : ''),
+                        'url' => '/index.php'
+                    ];
+                    
+                    // Send to all subscribers via broadcast
+                    $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                    curl_exec($ch);
+                    curl_close($ch);
+                    error_log('Push notification sent for announcement');
+                } catch (Exception $e) {
+                    error_log('Announcement push notification failed: ' . $e->getMessage());
+                }
             } else {
                 $errors[] = 'Failed to send announcement. Please check your email configuration.';
             }
