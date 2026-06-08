@@ -297,7 +297,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         }
         /* Hover effect */
         .bottom-nav-item:hover {
-            color: #C5A059;
+            color: #ffffff;
         }
         .bottom-nav-item:hover i {
             transform: translateY(-2px);
