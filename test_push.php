@@ -53,6 +53,8 @@ $userId = $_SESSION['user_id'] ?? null;
     <div class="card">
         <h2>Step 5: Test Push Subscription</h2>
         <button id="test-btn" onclick="testPush()" style="display:none;">Test Push Notification</button>
+        <button id="force-subscribe-btn" onclick="subscribe()" style="margin-left: 10px;">Force Resubscribe</button>
+        <p class="warning">Click "Force Resubscribe" to create a fresh subscription with user_id</p>
         <p id="subscription-check">Checking...</p>
     </div>
 
