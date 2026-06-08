@@ -65,7 +65,7 @@ try {
         ]);
         
         try {
-            $report = $webPush->sendNotification($subscription, $payload);
+            $report = $webPush->sendOneNotification($subscription, $payload);
             
             if ($report->isSuccess()) {
                 $notificationsSent++;
