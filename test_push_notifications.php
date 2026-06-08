@@ -64,100 +64,87 @@ echo "<div class='card'>
     <div id='log' class='log'>Ready...</div>
 </div>";
 
-echo "<script>
-const logDiv = document.getElementById('log');
-const userId = $userId;
+echo "<script>";
+echo "const logDiv = document.getElementById('log');";
+echo "const userId = " . (int)$userId . ";";
 
-function log(msg, type = 'info') {
-    const colors = { info: '#fff', success: '#4caf50', error: '#f44336', warning: '#ff9800' };
-    logDiv.innerHTML += '\n<span style=\"color:' + colors[type] + '\">' + new Date().toLocaleTimeString() + ' - ' + msg + '</span>';
-    logDiv.scrollTop = logDiv.scrollHeight;
-}
+echo "function log(msg, type) {";
+echo "  type = type || 'info';";
+echo "  var colors = { info: '#fff', success: '#4caf50', error: '#f44336', warning: '#ff9800' };";
+echo "  logDiv.innerHTML += '\\n<span style=\\\"color:' + colors[type] + '\\\">' + new Date().toLocaleTimeString() + ' - ' + msg + '</span>';";
+echo "  logDiv.scrollTop = logDiv.scrollHeight;";
+echo "}";
 
-async function subscribe() {
-    log('Starting subscription...', 'warning');
-    
-    try {
-        const reg = await navigator.serviceWorker.ready;
-        log('Service Worker ready', 'success');
-        
-        // Delete existing
-        const existing = await reg.pushManager.getSubscription();
-        if (existing) {
-            log('Deleting old subscription...', 'warning');
-            await existing.unsubscribe();
-        }
-        
-        log('Requesting push permission...', 'warning');
-        const sub = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: 'BDSd6CxnFxXK3O3tWG7Ik90SrPwFVB0NDXK6bc2tJx6THXcSbL7mprKAO8tzpr9DY8fUXZaoamTx6cniZT5QwIc'
-        });
-        
-        log('Subscription created!', 'success');
-        log('Endpoint: ' + sub.endpoint.substring(0, 80) + '...', 'info');
-        
-        const response = await fetch('/api/save_push_subscription.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subscription: sub, user_id: userId })
-        });
-        
-        const result = await response.json();
-        log('Save response: ' + JSON.stringify(result), result.success ? 'success' : 'error');
-        
-        if (result.success) {
-            location.reload();
-        }
-    } catch (err) {
-        log('Error: ' + err.message, 'error');
-    }
-}
+echo "async function subscribe() {";
+echo "  log('Starting subscription...', 'warning');";
+echo "  try {";
+echo "    var reg = await navigator.serviceWorker.ready;";
+echo "    log('Service Worker ready', 'success');";
+echo "    var existing = await reg.pushManager.getSubscription();";
+echo "    if (existing) {";
+echo "      log('Deleting old subscription...', 'warning');";
+echo "      await existing.unsubscribe();";
+echo "    }";
+echo "    log('Requesting push permission...', 'warning');";
+echo "    var sub = await reg.pushManager.subscribe({";
+echo "      userVisibleOnly: true,";
+echo "      applicationServerKey: 'BDSd6CxnFxXK3O3tWG7Ik90SrPwFVB0NDXK6bc2tJx6THXcSbL7mprKAO8tzpr9DY8fUXZaoamTx6cniZT5QwIc'";
+echo "    });";
+echo "    log('Subscription created!', 'success');";
+echo "    log('Endpoint: ' + sub.endpoint.substring(0, 80) + '...', 'info');";
+echo "    var response = await fetch('/api/save_push_subscription.php', {";
+echo "      method: 'POST',";
+echo "      headers: { 'Content-Type': 'application/json' },";
+echo "      body: JSON.stringify({ subscription: sub, user_id: userId })";
+echo "    });";
+echo "    var result = await response.json();";
+echo "    log('Save response: ' + JSON.stringify(result), result.success ? 'success' : 'error');";
+echo "    if (result.success) { location.reload(); }";
+echo "  } catch (err) {";
+echo "    log('Error: ' + err.message, 'error');";
+echo "  }";
+echo "}";
 
-async function deleteAndResubscribe() {
-    log('Deleting subscription...', 'warning');
-    const reg = await navigator.serviceWorker.ready;
-    const existing = await reg.pushManager.getSubscription();
-    if (existing) {
-        await existing.unsubscribe();
-        log('Subscription deleted', 'success');
-    }
-    
-    log('Sending delete request to server...', 'warning');
-    const response = await fetch('/api/delete_push_subscription.php?user_id=' + userId);
-    const result = await response.json();
-    log('Delete response: ' + JSON.stringify(result), 'info');
-    
-    setTimeout(() => subscribe(), 1000);
-}
+echo "async function deleteAndResubscribe() {";
+echo "  log('Deleting subscription...', 'warning');";
+echo "  var reg = await navigator.serviceWorker.ready;";
+echo "  var existing = await reg.pushManager.getSubscription();";
+echo "  if (existing) {";
+echo "    await existing.unsubscribe();";
+echo "    log('Subscription deleted', 'success');";
+echo "  }";
+echo "  log('Sending delete request to server...', 'warning');";
+echo "  var response = await fetch('/api/delete_push_subscription.php?user_id=' + userId);";
+echo "  var result = await response.json();";
+echo "  log('Delete response: ' + JSON.stringify(result), 'info');";
+echo "  setTimeout(function() { subscribe(); }, 1000);";
+echo "}";
 
-async function testPush() {
-    log('Sending test push notification...', 'warning');
-    
-    try {
-        const response = await fetch('/api/send_push_notification.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                user_id: userId,
-                title: '🧪 Test Notification',
-                body: 'This is a test notification. If you see this, push notifications are working!',
-                url: '/my_appointments.php'
-            })
-        });
-        
-        const result = await response.json();
-        log('Response: ' + JSON.stringify(result), result.success ? 'success' : 'error');
-        
-        if (result.success && result.sent > 0) {
-            log('✅ Push notification sent successfully!', 'success');
-        } else {
-            log('❌ Failed to send push notification', 'error');
-        }
-    } catch (err) {
-        log('Error: ' + err.message, 'error');
-    }
-}
-</script>";
+echo "async function testPush() {";
+echo "  log('Sending test push notification...', 'warning');";
+echo "  try {";
+echo "    var response = await fetch('/api/send_push_notification.php', {";
+echo "      method: 'POST',";
+echo "      headers: { 'Content-Type': 'application/json' },";
+echo "      body: JSON.stringify({";
+echo "        user_id: userId,";
+echo "        title: '🧪 Test Notification',";
+echo "        body: 'This is a test notification. If you see this, push notifications are working!',";
+echo "        url: '/my_appointments.php'";
+echo "      })";
+echo "    });";
+echo "    var result = await response.json();";
+echo "    log('Response: ' + JSON.stringify(result), result.success ? 'success' : 'error');";
+echo "    if (result.success && result.sent > 0) {";
+echo "      log('Push notification sent successfully!', 'success');";
+echo "    } else {";
+echo "      log('Failed to send push notification', 'error');";
+echo "    }";
+echo "  } catch (err) {";
+echo "    log('Error: ' + err.message, 'error');";
+echo "  }";
+echo "}";
+
+echo "</script>";
 
 echo "</body></html>";
