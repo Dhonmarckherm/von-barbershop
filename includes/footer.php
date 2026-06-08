@@ -10,6 +10,31 @@
     <script>
     // Show/Hide password toggle
     document.addEventListener('DOMContentLoaded', function() {
+        // Navbar toggle icon change (hamburger <-> X)
+        const navToggler = document.getElementById('navToggler');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (navToggler && toggleIcon) {
+            navToggler.addEventListener('click', function() {
+                const isOpen = this.getAttribute('aria-expanded') === 'true';
+                if (isOpen) {
+                    // Menu is opening - change to X
+                    toggleIcon.classList.remove('bi-list');
+                    toggleIcon.classList.add('bi-x-lg');
+                } else {
+                    // Menu is closing - change to hamburger
+                    toggleIcon.classList.remove('bi-x-lg');
+                    toggleIcon.classList.add('bi-list');
+                }
+            });
+            
+            // Reset icon when menu is hidden
+            document.getElementById('navbarNav')?.addEventListener('hidden.bs.collapse', function() {
+                toggleIcon.classList.remove('bi-x-lg');
+                toggleIcon.classList.add('bi-list');
+            });
+        }
+        
         // Single password field (login page)
         const toggleBtn = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');

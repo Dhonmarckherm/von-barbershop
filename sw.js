@@ -1,4 +1,4 @@
-const CACHE_NAME = 'von-barbershop-v4';
+const CACHE_NAME = 'von-barbershop-v5';
 const urlsToCache = [
   '/',
   '/assets/css/style.css',

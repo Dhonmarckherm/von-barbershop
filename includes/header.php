@@ -156,34 +156,109 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             <a class="navbar-brand" href="index.php">
                 <?php echo htmlspecialchars($siteName); ?>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-                    <?php if ($isLoggedIn): ?>
-                        <?php if ($isAdmin): ?>
-                            <li class="nav-item"><a class="nav-link" href="admin_dashboard.php">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin_users.php">Manage Users</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin_settings.php">Settings</a></li>
-                            <li class="nav-item"><a class="nav-link" href="admin_announcements.php">Announcements</a></li>
-                        <?php else: ?>
-                            <li class="nav-item"><a class="nav-link" href="book.php">Book Now</a></li>
-                            <li class="nav-item"><a class="nav-link" href="my_appointments.php">My Appointments</a></li>
-                            <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
-                        <?php endif; ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.php">
-                                Logout (<span style="color: var(--accent-gold);"><?php echo htmlspecialchars($_SESSION['name'] ?? 'User'); ?></span>)
-                            </a>
-                        </li>
+        </div>
+    </nav>
+    
+    <!-- Bottom Navigation Bar (Mobile App Style) -->
+    <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; background: #000000; border-top: 2px solid var(--barber-gold); padding: 8px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.5);">
+        <div class="container">
+            <div class="d-flex justify-content-around align-items-center">
+                <?php if ($isLoggedIn): ?>
+                    <?php if ($isAdmin): ?>
+                        <!-- Admin Bottom Nav -->
+                        <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-house-door"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="admin_dashboard.php" class="bottom-nav-item <?php echo $current_page == 'admin_dashboard.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="admin_users.php" class="bottom-nav-item <?php echo $current_page == 'admin_users.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-people"></i>
+                            <span>Users</span>
+                        </a>
+                        <a href="admin_announcements.php" class="bottom-nav-item <?php echo $current_page == 'admin_announcements.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-megaphone"></i>
+                            <span>Announce</span>
+                        </a>
+                        <a href="logout.php" class="bottom-nav-item">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </a>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
+                        <!-- Customer Bottom Nav -->
+                        <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-house-door"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="book.php" class="bottom-nav-item <?php echo $current_page == 'book.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-calendar-plus"></i>
+                            <span>Book</span>
+                        </a>
+                        <a href="my_appointments.php" class="bottom-nav-item <?php echo $current_page == 'my_appointments.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-calendar-check"></i>
+                            <span>My Appts</span>
+                        </a>
+                        <a href="profile.php" class="bottom-nav-item <?php echo $current_page == 'profile.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-person"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="logout.php" class="bottom-nav-item">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </a>
                     <?php endif; ?>
-                </ul>
+                <?php else: ?>
+                    <!-- Guest Bottom Nav -->
+                    <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
+                        <i class="bi bi-house-door"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="login.php" class="bottom-nav-item <?php echo $current_page == 'login.php' ? 'active' : ''; ?>">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </a>
+                    <a href="register.php" class="bottom-nav-item <?php echo $current_page == 'register.php' ? 'active' : ''; ?>">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Register</span>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
+    
+    <!-- Add padding at bottom to prevent content from being hidden behind nav -->
+    <style>
+        body {
+            padding-bottom: 80px !important;
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #b0b0b0;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        .bottom-nav-item i {
+            font-size: 22px;
+            margin-bottom: 3px;
+            transition: all 0.3s ease;
+        }
+        .bottom-nav-item:hover {
+            color: var(--barber-gold);
+            background: rgba(197, 160, 89, 0.1);
+        }
+        .bottom-nav-item.active {
+            color: var(--barber-gold);
+        }
+        .bottom-nav-item.active i {
+            transform: scale(1.1);
+        }
+    </style>
     <div class="container mt-4">
