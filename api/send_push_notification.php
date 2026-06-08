@@ -35,12 +35,12 @@ try {
         exit;
     }
     
-    // VAPID Configuration (replace with your own keys)
+    // VAPID Configuration
     $auth = [
         'VAPID' => [
             'subject' => 'mailto:dhonmarck2004@gmail.com',
-            'publicKey' => 'YOUR_VAPID_PUBLIC_KEY', // Replace with your VAPID public key
-            'privateKey' => 'YOUR_VAPID_PRIVATE_KEY' // Replace with your VAPID private key
+            'publicKey' => 'BDSd6CxnFxXK3O3tWG7Ik90SrPwFVB0NDXK6bc2tJx6THXcSbL7mprKAO8tzpr9DY8fUXZaoamTx6cniZT5QwIc',
+            'privateKey' => 'zRYORC94sD71vHoUdfQlVXxa-b26i8k4c-PFYAO6Kt8'
         ]
     ];
     

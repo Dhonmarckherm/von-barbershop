@@ -60,7 +60,7 @@ async function subscribeToPush() {
       // Create new subscription
       subscription = await swRegistration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array('YOUR_VAPID_PUBLIC_KEY') // Replace with your VAPID key
+        applicationServerKey: urlBase64ToUint8Array('BDSd6CxnFxXK3O3tWG7Ik90SrPwFVB0NDXK6bc2tJx6THXcSbL7mprKAO8tzpr9DY8fUXZaoamTx6cniZT5QwIc') // VAPID public key
       });
 
       console.log('Push subscription created:', subscription);
