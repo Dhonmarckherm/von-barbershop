@@ -189,7 +189,12 @@ function urlBase64ToUint8Array(base64String) {
  * Get user ID from session/cookie
  */
 function getUserId() {
-  // Try to get from cookie or session storage
+  // Use the user_id set by PHP in header.php
+  if (window.currentUserId) {
+    return window.currentUserId;
+  }
+  
+  // Fallback: try to get from cookie (won't work for httponly cookies)
   const cookies = document.cookie.split(';');
   for (let cookie of cookies) {
     const [name, value] = cookie.trim().split('=');

@@ -52,7 +52,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <script src="/www/js/push-notifications.js?v=2"></script>
 
     <!-- Web Push Notifications (for browsers and PWA) -->
-    <script src="/www/js/web-push-notifications.js?v=1"></script>
+<?php if ($isLoggedIn && isset($_SESSION['user_id'])): ?>
+    <script>
+    window.currentUserId = <?php echo (int)$_SESSION['user_id']; ?>;
+    </script>
+<?php endif; ?>
+    <script src="/www/js/web-push-notifications.js?v=2"></script>
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
