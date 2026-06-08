@@ -66,6 +66,12 @@ $stmt = $pdo->prepare("UPDATE appointments SET appointment_date = ?, appointment
 $stmt->execute([$newDate, $newTime, $appointmentId]);
 
 if ($stmt->rowCount() > 0) {
+    // Get customer user_id for push notification
+    $stmt = $pdo->prepare("SELECT user_id FROM appointments WHERE id = ?");
+    $stmt->execute([$appointmentId]);
+    $appointment = $stmt->fetch();
+    $customerId = $appointment['user_id'];
+    
     // Send reschedule email asynchronously
     $details = [
         'customer_name'  => $appt['customer_name'],
@@ -77,6 +83,27 @@ if ($stmt->rowCount() > 0) {
         'old_date'       => $appt['appointment_date'],
         'old_time'       => $appt['appointment_time'],
     ];
+
+    // Send push notification to customer
+    try {
+        $pushData = [
+            'user_id' => $customerId,
+            'title' => '📅 Appointment Rescheduled',
+            'body' => "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5),
+            'url' => '/my_appointments.php'
+        ];
+        $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_exec($ch);
+        curl_close($ch);
+        error_log('Push notification sent to customer for reschedule');
+    } catch (Exception $e) {
+        error_log('Customer push notification failed: ' . $e->getMessage());
+    }
 
     // Send response first, then email
     if (function_exists('fastcgi_finish_request')) {

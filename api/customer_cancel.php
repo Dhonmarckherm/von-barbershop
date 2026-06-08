@@ -48,6 +48,9 @@ $stmt = $pdo->prepare("UPDATE appointments SET status = 'cancelled' WHERE id = ?
 $stmt->execute([$appointmentId]);
 
 if ($stmt->rowCount() > 0) {
+    // Get customer user_id
+    $customerId = $_SESSION['user_id'];
+    
     // Send cancellation email
     $details = [
         'customer_name'  => $appt['customer_name'],
@@ -57,6 +60,27 @@ if ($stmt->rowCount() > 0) {
         'date'           => $appt['appointment_date'],
         'time'           => $appt['appointment_time'],
     ];
+    
+    // Send push notification to customer
+    try {
+        $pushData = [
+            'user_id' => $customerId,
+            'title' => '❌ Appointment Cancelled',
+            'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been cancelled.",
+            'url' => '/my_appointments.php'
+        ];
+        $ch = curl_init('http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($pushData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_exec($ch);
+        curl_close($ch);
+        error_log('Push notification sent to customer for cancellation');
+    } catch (Exception $e) {
+        error_log('Customer push notification failed: ' . $e->getMessage());
+    }
 
     // NOTE: On Render free tier, we must send emails BEFORE response to ensure delivery
     
