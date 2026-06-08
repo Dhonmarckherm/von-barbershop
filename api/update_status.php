@@ -43,6 +43,22 @@ try {
         exit;
     }
 
+    // Helper function to format time to 12-hour (define early for all uses)
+    if (!function_exists('formatTime12HourStatus')) {
+        function formatTime12HourStatus($time24) {
+            if (empty($time24)) return $time24;
+            $time24 = preg_replace('/:\d{2}$/', '', $time24);
+            list($hours, $minutes) = explode(':', $time24);
+            $hours = (int)$hours;
+            $period = $hours >= 12 ? 'PM' : 'AM';
+            if ($hours > 12) $hours -= 12;
+            else if ($hours == 0) $hours = 12;
+            return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+        }
+    }
+
+    $time12 = formatTime12HourStatus($appt['appointment_time']);
+
     // Update status
     $stmt = $pdo->prepare("UPDATE appointments SET status = ? WHERE id = ?");
     $stmt->execute([$status, $appointmentId]);
@@ -78,6 +94,22 @@ try {
             try {
                 require_once __DIR__ . '/../config/mailer.php';
                 
+                // Helper function to format time to 12-hour
+                if (!function_exists('formatTime12HourStatus')) {
+                    function formatTime12HourStatus($time24) {
+                        if (empty($time24)) return $time24;
+                        $time24 = preg_replace('/:\d{2}$/', '', $time24);
+                        list($hours, $minutes) = explode(':', $time24);
+                        $hours = (int)$hours;
+                        $period = $hours >= 12 ? 'PM' : 'AM';
+                        if ($hours > 12) $hours -= 12;
+                        else if ($hours == 0) $hours = 12;
+                        return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+                    }
+                }
+                
+                $time12 = formatTime12HourStatus($appt['appointment_time']);
+                
                 // Fetch barber email for notifications
                 $barberStmt = $pdo->query("SELECT email FROM users WHERE role IN ('admin', 'barber') ORDER BY id ASC LIMIT 1");
                 $barberUser = $barberStmt->fetch();
@@ -94,7 +126,7 @@ try {
                     $stmt->execute([$appt['customer_email']]);
                     $customer = $stmt->fetch();
                     if ($customer) {
-                        sendPushNotification($pdo, $customer['id'], '✅ Appointment Accepted', "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been accepted!", '/my_appointments.php');
+                        sendPushNotification($pdo, $customer['id'], '✅ Appointment Accepted', "Your appointment on {$appt['appointment_date']} at {$time12} has been accepted!", '/my_appointments.php');
                     }
                     
                     // Notify barber about acceptance
@@ -128,7 +160,7 @@ try {
                     $stmt->execute([$appt['customer_email']]);
                     $customer = $stmt->fetch();
                     if ($customer) {
-                        sendPushNotification($pdo, $customer['id'], '❌ Appointment Cancelled', "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been cancelled.", '/my_appointments.php');
+                        sendPushNotification($pdo, $customer['id'], '❌ Appointment Cancelled', "Your appointment on {$appt['appointment_date']} at {$time12} has been cancelled.", '/my_appointments.php');
                     }
                     
                     // Notify barber about cancellation
@@ -220,13 +252,13 @@ try {
         if ($status === 'accepted') {
             $notification = [
                 'title' => '✅ Appointment Accepted',
-                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been accepted!",
+                'body' => "Your appointment on {$appt['appointment_date']} at {$time12} has been accepted!",
                 'id' => $appointmentId
             ];
         } elseif ($status === 'declined') {
             $notification = [
                 'title' => '❌ Appointment Declined',
-                'body' => "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been declined.",
+                'body' => "Your appointment on {$appt['appointment_date']} at {$time12} has been declined.",
                 'id' => $appointmentId + 1000
             ];
         } elseif ($status === 'completed') {

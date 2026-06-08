@@ -77,6 +77,21 @@ if ($stmt->rowCount() > 0) {
     $appointment = $stmt->fetch();
     $customerId = $appointment['user_id'];
     
+    // Format time to 12-hour for notifications
+    function formatTime12HourAdmin($time24) {
+        if (empty($time24)) return $time24;
+        $time24 = preg_replace('/:\d{2}$/', '', $time24);
+        list($hours, $minutes) = explode(':', $time24);
+        $hours = (int)$hours;
+        $period = $hours >= 12 ? 'PM' : 'AM';
+        if ($hours > 12) $hours -= 12;
+        else if ($hours == 0) $hours = 12;
+        return $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+    }
+    
+    $newTime12 = formatTime12HourAdmin($newTime);
+    $oldTime12 = formatTime12HourAdmin($appt['appointment_time']);
+    
     // Send reschedule email asynchronously
     $details = [
         'customer_name'  => $appt['customer_name'],
@@ -91,7 +106,7 @@ if ($stmt->rowCount() > 0) {
 
     // Send push notification to customer
     require_once __DIR__ . '/../includes/push_helper.php';
-    sendPushNotification($pdo, $customerId, '📅 Appointment Rescheduled', "Your appointment has been rescheduled to {$newDate} at " . substr($newTime, 0, 5), '/my_appointments.php');
+    sendPushNotification($pdo, $customerId, '📅 Appointment Rescheduled', "Your appointment has been rescheduled to {$newDate} at {$newTime12}", '/my_appointments.php');
 
     // Send response first, then email
     if (function_exists('fastcgi_finish_request')) {
