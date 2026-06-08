@@ -27,7 +27,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
 }
 
 // Fetch booked time slots for the selected date
-$stmt = $pdo->prepare("SELECT appointment_time FROM appointments WHERE appointment_date = ? AND status != 'cancelled'");
+$stmt = $pdo->prepare("SELECT appointment_time FROM appointments WHERE appointment_date = ? AND status NOT IN ('cancelled', 'completed')");
 $stmt->execute([$date]);
 $bookedSlots = $stmt->fetchAll(PDO::FETCH_COLUMN);
 

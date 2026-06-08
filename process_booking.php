@@ -41,7 +41,7 @@ if (empty($time) || !preg_match('/^\d{2}:\d{2}$/', $time)) {
 
 // Check if slot is already booked (race condition protection)
 if (empty($errors)) {
-    $stmt = $pdo->prepare("SELECT id FROM appointments WHERE appointment_date = ? AND appointment_time = ? AND status != 'cancelled'");
+    $stmt = $pdo->prepare("SELECT id FROM appointments WHERE appointment_date = ? AND appointment_time = ? AND status NOT IN ('cancelled', 'completed')");
     $stmt->execute([$date, $time]);
     if ($stmt->fetch()) {
         $errors[] = 'This time slot has just been booked by someone else. Please choose another slot.';
