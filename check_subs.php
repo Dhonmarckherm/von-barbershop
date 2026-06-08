@@ -58,7 +58,10 @@ try {
     echo "<div class='card'>";
     echo "<h2>Test: Send Notification to User 35</h2>";
     
-    $testUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/api/send_push_notification.php';
+    // Use HTTPS for production
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $testUrl = $protocol . '://' . $host . '/api/send_push_notification.php';
     $testData = json_encode([
         'user_id' => 35,
         'title' => '🧪 Test from Checker',
@@ -75,6 +78,7 @@ try {
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
