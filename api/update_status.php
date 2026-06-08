@@ -45,7 +45,7 @@ try {
 
     // Helper function to format time to 12-hour (define early for all uses)
     if (!function_exists('formatTime12HourStatus')) {
-        function formatTime12HourStatus($time24) {
+        function formatTime12HourStatus(string $time24): string {
             if (empty($time24)) return $time24;
             $time24 = preg_replace('/:\d{2}$/', '', $time24);
             list($hours, $minutes) = explode(':', $time24);

@@ -78,7 +78,7 @@ if ($stmt->rowCount() > 0) {
     $customerId = $appointment['user_id'];
     
     // Format time to 12-hour for notifications
-    function formatTime12HourAdmin($time24) {
+    function formatTime12HourAdmin(string $time24): string {
         if (empty($time24)) return $time24;
         $time24 = preg_replace('/:\d{2}$/', '', $time24);
         list($hours, $minutes) = explode(':', $time24);
