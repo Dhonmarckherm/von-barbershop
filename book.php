@@ -3,6 +3,7 @@
  * Booking Page
  * Customers enter their desired haircut/style, location, select a date, and available time slot.
  * AJAX is used to fetch available slots dynamically when a date is selected.
+ * Version: 2026-06-06-v2
  */
 $pageTitle = 'Book Appointment';
 require_once 'includes/auth_check.php';
