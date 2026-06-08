@@ -47,8 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($errors)) {
+            // Load push notification helper
+            require_once __DIR__ . '/includes/push_helper.php';
+            
             foreach ($recipients as $recipient) {
                 try {
+                    // Get user_id for push notification
+                    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                    $stmt->execute([$recipient['email']]);
+                    $user = $stmt->fetch();
+                    
+                    // Send push notification to customer
+                    if ($user) {
+                        sendPushNotification($pdo, $user['id'], '📢 Announcement', $subject, '/index.php');
+                    }
+                    
                     $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
                     
                     error_log("Announcement: Sending to " . $recipient['email']);
