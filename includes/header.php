@@ -190,6 +190,10 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-megaphone"></i>
                             <span>Announce</span>
                         </a>
+                        <a href="admin_settings.php" class="bottom-nav-item <?php echo $current_page == 'admin_settings.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-gear"></i>
+                            <span>Settings</span>
+                        </a>
                         <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
