@@ -72,7 +72,7 @@ try {
                 'service_name'   => $appt['haircut_description'],
                 'location'       => $appt['location'],
                 'date'           => $appt['appointment_date'],
-                'time'           => $appt['appointment_time'],
+                'time'           => $time12,  // Use 12-hour format for emails
             ];
 
             // Use fastcgi_finish_request() to send response before sending email
@@ -141,7 +141,7 @@ try {
                             <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
                             <p><strong>Location:</strong> {$appt['location']}</p>
                             <p><strong>Date:</strong> {$appt['appointment_date']}</p>
-                            <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                            <p><strong>Time:</strong> {$time12}</p>
                             <p>This appointment has been accepted.</p>
                         ";
                         $mail->send();
@@ -175,7 +175,7 @@ try {
                             <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
                             <p><strong>Location:</strong> {$appt['location']}</p>
                             <p><strong>Date:</strong> {$appt['appointment_date']}</p>
-                            <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                            <p><strong>Time:</strong> {$time12}</p>
                             <p>This appointment has been cancelled.</p>
                         ";
                         $mail->send();
@@ -210,7 +210,7 @@ try {
                                     <p style='margin-top: 20px;'>Customer: <strong>{$appt['customer_name']}</strong> ({$appt['customer_email']})</p>
                                     <p>Haircut: <strong>{$appt['haircut_description']}</strong></p>
                                     <p>Location: <strong>{$appt['location']}</strong></p>
-                                    <p>Date: <strong>{$appt['appointment_date']}</strong> at <strong>{$appt['appointment_time']}</strong></p>
+                                    <p>Date: <strong>{$appt['appointment_date']}</strong> at <strong>{$time12}</strong></p>
                                     <p style='margin-top: 20px; color: #28a745;'>This appointment has been marked as completed.</p>
                                     <hr style='border-color: rgba(197,160,89,0.3); margin: 30px 0;'>
                                     <p style='color: #8A8A9A; font-size: 0.85rem;'>V.O.N Barber Studio Notification System</p>
@@ -229,7 +229,7 @@ try {
                                 <p><strong>Haircut:</strong> {$appt['haircut_description']}</p>
                                 <p><strong>Location:</strong> {$appt['location']}</p>
                                 <p><strong>Date:</strong> {$appt['appointment_date']}</p>
-                                <p><strong>Time:</strong> {$appt['appointment_time']}</p>
+                                <p><strong>Time:</strong> {$time12}</p>
                                 <p>This appointment has been marked as completed.</p>
                             ";
                             $mail->send();
