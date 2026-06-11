@@ -59,12 +59,7 @@ try {
         <?php endif; ?>
         
         <p class="hero-subtitle">Est. 2024</p>
-        
-        <h1 class="hero-title">
-            <span class="hero-title-letter" style="--delay: 0">V</span>
-            <span class="hero-title-letter" style="--delay: 1">O</span>
-            <span class="hero-title-letter" style="--delay: 2">N</span>
-        </h1>
+        <p class="hero-subtitle" style="font-size: 1.5rem; font-weight: 600; margin-top: 0.5rem;">BARBER STUDIO</p>
         
         <div class="hero-divider">
             <div class="hero-divider-line"></div>
