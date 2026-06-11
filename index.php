@@ -174,6 +174,51 @@ try {
     </div>
 </div>
 
+<!-- Location Section -->
+<div class="row mt-5 mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h3 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">
+                        <i class="bi bi-geo-alt-fill"></i> Our Location
+                    </h3>
+                    <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
+                    <p style="color: #F5F0E8; font-size: 1.1rem; margin-top: 1rem;">
+                        <strong>Visit us at:</strong> 17°06'36.2"N 120°27'03.7"E
+                    </p>
+                </div>
+                
+                <div class="ratio ratio-16x9" style="max-width: 900px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d300.0!2d120.45102777777778!3d17.110055555555556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDA2JzM2LjIiTiAxMjDCsDI3JzAzLjciRQ!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph" 
+                        width="100%" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=17.110056,120.451028" 
+                       target="_blank" 
+                       class="btn btn-lg" 
+                       style="background: linear-gradient(135deg, #C5A059 0%, #D4AF61 100%); color: #000; border: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease;" 
+                       onmouseover="this.style.transform='translateY(-3px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                        <i class="bi bi-signpost-2"></i> Get Directions
+                    </a>
+                    <p class="mt-3" style="color: #F5F0E8; opacity: 0.8; font-size: 0.95rem;">
+                        <i class="bi bi-clock"></i> Open Monday - Saturday, 9:00 AM - 5:00 PM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mt-5 mb-5">
     <div class="col-12">
         <div class="card">
@@ -282,51 +327,6 @@ try {
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Location Section -->
-<div class="row mt-5 mb-5">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <h3 style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">
-                        <i class="bi bi-geo-alt-fill"></i> Our Location
-                    </h3>
-                    <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
-                    <p style="color: #F5F0E8; font-size: 1.1rem; margin-top: 1rem;">
-                        <strong>Visit us at:</strong> 17°06'36.2"N 120°27'03.7"E
-                    </p>
-                </div>
-                
-                <div class="ratio ratio-16x9" style="max-width: 900px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d300.0!2d120.45102777777778!3d17.110055555555556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDA2JzM2LjIiTiAxMjDCsDI3JzAzLjciRQ!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph" 
-                        width="100%" 
-                        height="450" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-                
-                <div class="text-center mt-4">
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=17.110056,120.451028" 
-                       target="_blank" 
-                       class="btn btn-lg" 
-                       style="background: linear-gradient(135deg, #C5A059 0%, #D4AF61 100%); color: #000; border: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease;" 
-                       onmouseover="this.style.transform='translateY(-3px)'" 
-                       onmouseout="this.style.transform='translateY(0)'">
-                        <i class="bi bi-signpost-2"></i> Get Directions
-                    </a>
-                    <p class="mt-3" style="color: #F5F0E8; opacity: 0.8; font-size: 0.95rem;">
-                        <i class="bi bi-clock"></i> Open Monday - Saturday, 9:00 AM - 5:00 PM
-                    </p>
-                </div>
             </div>
         </div>
     </div>
