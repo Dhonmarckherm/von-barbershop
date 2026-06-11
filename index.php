@@ -89,6 +89,9 @@ try {
                     <span>Book Appointment</span>
                     <span class="btn-shimmer"></span>
                 </a>
+                <p class="text-center mt-3 mb-2" style="color: var(--barber-gold); font-size: 0.95rem; line-height: 1.6; font-weight: 500; opacity: 0.95;">
+                    <i class="bi bi-info-circle"></i> Reserve your preferred schedule and enjoy a seamless, wait-free haircut experience.
+                </p>
                 <p class="hero-register">
                     <a href="register.php">New here? Create an Account</a>
                 </p>
