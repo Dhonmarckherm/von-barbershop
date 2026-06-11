@@ -38,7 +38,7 @@ $bookedTimes = array_map(function($time) {
 
 // Generate all possible slots: 09:00 to 17:00 (5:00 PM), 30-minute intervals
 $start = strtotime('09:00');
-$end = strtotime('17:00');
+$end = strtotime('17:30'); // Extended to include 17:00 (5:00 PM) slot
 $allSlots = [];
 
 for ($t = $start; $t < $end; $t += (30 * 60)) {

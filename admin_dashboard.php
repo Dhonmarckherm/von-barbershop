@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dateFormat: 'h:i K',
         time_24hr: false,
         minTime: '09:00',
-        maxTime: '17:00',
+        maxTime: '17:30',  // Extended to allow 5:00 PM
         minuteIncrement: 30,
         theme: 'dark',
         animate: true,
