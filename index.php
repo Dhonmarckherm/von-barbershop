@@ -89,7 +89,7 @@ try {
                     <span>Book Appointment</span>
                     <span class="btn-shimmer"></span>
                 </a>
-                <p class="text-center mt-3 mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: 0.5px; color: #F5F0E8; opacity: 0.8;">
+                <p class="text-center mt-3 mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; letter-spacing: 0.5px; color: #F5F0E8; opacity: 0.8;">
                     Reserve your preferred schedule and enjoy a seamless, wait-free haircut experience.
                 </p>
                 <p class="hero-register">
