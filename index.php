@@ -58,14 +58,12 @@ try {
             </div>
         <?php endif; ?>
         
-        <p class="hero-subtitle">Est. 2025 — BARBER STUDIO</p>
+        <p class="hero-subtitle">Est. 2024</p>
         
         <h1 class="hero-title">
             <span class="hero-title-letter" style="--delay: 0">V</span>
-            <span class="hero-title-letter" style="--delay: 1">.</span>
-            <span class="hero-title-letter" style="--delay: 2">O</span>
-            <span class="hero-title-letter" style="--delay: 3">.</span>
-            <span class="hero-title-letter" style="--delay: 4">N</span>
+            <span class="hero-title-letter" style="--delay: 1">O</span>
+            <span class="hero-title-letter" style="--delay: 2">N</span>
         </h1>
         
         <div class="hero-divider">
