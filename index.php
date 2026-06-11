@@ -188,13 +188,13 @@ try {
                         <i class="bi bi-geo-alt-fill"></i> <strong>Pagkurtian || San Juan, Santa Lucia, Ilocos Sur</strong>
                     </p>
                     <p style="color: #F5F0E8; font-size: 0.9rem; opacity: 0.8;">
-                        <small>Coordinates: 17°06'36.2"N 120°27'03.7"E</small>
+                        <small>Coordinates: 17.1092889, 120.4504919</small>
                     </p>
                 </div>
                 
                 <div class="ratio ratio-16x9" style="max-width: 900px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d300.0!2d120.45102777777778!3d17.110055555555556!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTfCsDA2JzM2LjIiTiAxMjDCsDI3JzAzLjciRQ!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.5!2d120.4504919!3d17.1092889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMTcuMTA5Mjg4OSwgMTIwLjQ1MDQ5MTk!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph" 
                         width="100%" 
                         height="450" 
                         style="border:0;" 
@@ -205,7 +205,7 @@ try {
                 </div>
                 
                 <div class="text-center mt-4">
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=17.110056,120.451028" 
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=17.1092889,120.4504919" 
                        target="_blank" 
                        class="btn btn-lg" 
                        style="background: linear-gradient(135deg, #C5A059 0%, #D4AF61 100%); color: #000; border: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease;" 
