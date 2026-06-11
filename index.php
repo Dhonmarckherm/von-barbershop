@@ -194,7 +194,7 @@ try {
                 
                 <div class="ratio ratio-16x9" style="max-width: 900px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.5!2d120.4504919!3d17.1092889!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMTcuMTA5Mjg4OSwgMTIwLjQ1MDQ5MTk!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph" 
+                        src="https://www.google.com/maps?q=17.1092889,120.4504919&z=15&output=embed" 
                         width="100%" 
                         height="450" 
                         style="border:0;" 
