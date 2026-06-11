@@ -17,8 +17,11 @@ require_once 'includes/header.php';
         <div class="card">
             <div class="card-body p-4">
                 <h2 class="text-center mb-3" style="color: var(--barber-gold); font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: bold;">Book an Appointment</h2>
-                <p class="text-center mb-4" style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; opacity: 0.9;">
+                <p class="text-center mb-2" style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; opacity: 0.9;">
                     Choose a date and time that works for you and enjoy priority service—no waiting, no hassle.
+                </p>
+                <p class="text-center mb-4" style="color: var(--barber-gold); font-size: 0.95rem; line-height: 1.6; font-weight: 500; opacity: 0.95;">
+                    <i class="bi bi-info-circle"></i> Reserve your preferred schedule and enjoy a seamless, wait-free haircut experience.
                 </p>
 
                 <form method="POST" action="process_booking.php" id="bookingForm">
