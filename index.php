@@ -185,7 +185,10 @@ try {
                     </h3>
                     <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
                     <p style="color: #F5F0E8; font-size: 1.1rem; margin-top: 1rem;">
-                        <strong>Visit us at:</strong> 17°06'36.2"N 120°27'03.7"E
+                        <i class="bi bi-geo-alt-fill"></i> <strong>Pagkurtian || San Juan, Santa Lucia, Ilocos Sur</strong>
+                    </p>
+                    <p style="color: #F5F0E8; font-size: 0.9rem; opacity: 0.8;">
+                        <small>Coordinates: 17°06'36.2"N 120°27'03.7"E</small>
                     </p>
                 </div>
                 
