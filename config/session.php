@@ -43,6 +43,51 @@ function initializeSession() {
             error_log('Failed to start session');
         }
     }
+    
+    // Check for inactivity timeout (1 hour = 3600 seconds)
+    checkInactivityTimeout();
+}
+
+/**
+ * Check user inactivity and auto-logout after 1 hour
+ */
+function checkInactivityTimeout() {
+    // Skip check if user is not logged in
+    if (!isset($_SESSION['user_id'])) {
+        return;
+    }
+    
+    $timeout = 3600; // 1 hour in seconds
+    $now = time();
+    
+    // Check if last activity timestamp exists
+    if (isset($_SESSION['last_activity'])) {
+        $elapsed = $now - $_SESSION['last_activity'];
+        
+        // If inactive for more than 1 hour, logout
+        if ($elapsed > $timeout) {
+            // Log the auto-logout
+            error_log('Auto-logout due to inactivity for user ID: ' . $_SESSION['user_id'] . ' after ' . round($elapsed / 60) . ' minutes');
+            
+            // Clear session
+            session_unset();
+            session_destroy();
+            
+            // Clear auth cookies
+            clearAuthCookies();
+            
+            // Redirect to login with timeout message
+            if (!headers_sent()) {
+                $logoutUrl = '/login.php?timeout=1';
+                header('Location: ' . $logoutUrl);
+                exit;
+            }
+            return;
+        }
+    }
+    
+    // Update last activity timestamp
+    $_SESSION['last_activity'] = $now;
 }
 
 /**

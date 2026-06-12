@@ -112,6 +112,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once 'includes/header.php';
 
+// Show timeout message
+if (isset($_GET['timeout']) && $_GET['timeout'] == '1'):
+?>
+<div class="alert alert-warning alert-dismissible fade show" role="alert" style="background: rgba(255, 193, 7, 0.2); border: 1px solid #ffc107; color: #f5f5f5; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-clock-fill" style="font-size: 24px; margin-right: 12px; color: #ffc107;"></i>
+        <div>
+            <strong>Session Expired!</strong><br>
+            <span style="font-size: 14px;">You were automatically logged out due to 1 hour of inactivity. Please login again.</span>
+        </div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+</div>
+<?php endif; ?>
+
+<?php
 // Show registration success message
 if (isset($_GET['registered']) && $_GET['registered'] == '1'):
 ?>
