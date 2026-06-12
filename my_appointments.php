@@ -768,7 +768,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn btn-secondary" id="biometric-skip-btn" style="border-radius: 8px;">
                     Not Now
                 </button>
-                <button type="button" class="btn btn-primary" id="biometric-enable-btn" style="border-radius: 8px; background: var(--barber-gold); border-color: var(--barber-gold); color: #000; font-weight: 600;">
+                <button type="button" class="btn btn-primary" id="biometric-enable-btn" style="border-radius: 8px; background: var(--barber-gold); border-color: var(--barber-gold); color: #1a1a1a; font-weight: 600;">
                     <i class="bi bi-fingerprint"></i> Enable Now
                 </button>
             </div>
