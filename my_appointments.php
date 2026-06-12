@@ -790,13 +790,32 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('[Biometric] showBiometricPrompt:', showBiometricPrompt);
     console.log('[Biometric] URL:', window.location.href);
     
+    // Debug alert to see if script is running
+    const debugMessages = [];
+    debugMessages.push('Page loaded: YES');
+    debugMessages.push('biometric_prompt param: ' + showBiometricPrompt);
+    
     if (showBiometricPrompt && typeof BiometricAuth !== 'undefined') {
+        debugMessages.push('BiometricAuth available: YES');
+        
         // Check if biometrics are supported
         const isSupported = BiometricAuth.isSupported();
         console.log('[Biometric] isSupported:', isSupported);
+        debugMessages.push('WebAuthn supported: ' + (isSupported ? 'YES' : 'NO'));
+        
+        if (!isSupported) {
+            alert('Biometric Debug:\n' + debugMessages.join('\n') + '\n\nWebAuthn is NOT supported in this browser.');
+            return;
+        }
         
         const isAvailable = isSupported ? await BiometricAuth.isBiometricAvailable() : false;
         console.log('[Biometric] isAvailable:', isAvailable);
+        debugMessages.push('Biometric hardware available: ' + (isAvailable ? 'YES' : 'NO'));
+        
+        if (!isAvailable) {
+            alert('Biometric Debug:\n' + debugMessages.join('\n') + '\n\nNo biometric hardware detected on this device.');
+            return;
+        }
         
         if (isAvailable) {
             // Check if user already has biometric registered
