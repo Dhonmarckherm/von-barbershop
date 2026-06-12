@@ -11,15 +11,31 @@
 
 // Helper functions for base64url encoding/decoding
 function base64urlToBuffer(base64url) {
+    if (!base64url || typeof base64url !== 'string') {
+        throw new Error('Invalid base64url input: ' + JSON.stringify(base64url));
+    }
+    
+    // Validate base64url characters (A-Z, a-z, 0-9, -, _)
+    if (!/^[A-Za-z0-9_-]+$/.test(base64url)) {
+        console.error('[Base64url] Invalid characters in:', base64url);
+        throw new Error('Base64url string contains invalid characters: ' + base64url);
+    }
+    
     const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
     const pad = base64.length % 4;
     const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
-    const binary = atob(padded);
-    const buffer = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        buffer[i] = binary.charCodeAt(i);
+    
+    try {
+        const binary = atob(padded);
+        const buffer = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            buffer[i] = binary.charCodeAt(i);
+        }
+        return buffer;
+    } catch (e) {
+        console.error('[Base64url] Failed to decode:', { original: base64url, converted: padded });
+        throw new Error('Failed to decode base64url: ' + e.message);
     }
-    return buffer;
 }
 
 function stringToBuffer(str) {
@@ -160,13 +176,17 @@ const BiometricAuth = {
             }
 
             console.log('[Biometric Login] Requesting biometric authentication...');
+            console.log('[Biometric Login] Credentials from server:', JSON.stringify(options.allowCredentials, null, 2));
             
             // Get credential using device biometrics
             const assertion = await navigator.credentials.get({
                 publicKey: {
                     challenge: base64urlToBuffer(options.challenge),
                     allowCredentials: options.allowCredentials.map(cred => {
-                        console.log('[Biometric Login] Processing credential:', cred.id);
+                        console.log('[Biometric Login] Processing credential ID:', cred.id);
+                        console.log('[Biometric Login] Credential ID length:', cred.id.length);
+                        console.log('[Biometric Login] Credential ID matches pattern:', /^[A-Za-z0-9_-]+$/.test(cred.id));
+                        
                         return {
                             id: base64urlToBuffer(cred.id),
                             type: 'public-key',
