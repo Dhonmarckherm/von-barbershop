@@ -9,6 +9,36 @@
  * - Any device with biometric support
  */
 
+// Helper functions for base64url encoding/decoding
+function base64urlToBuffer(base64url) {
+    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
+    const binary = atob(padded);
+    const buffer = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        buffer[i] = binary.charCodeAt(i);
+    }
+    return buffer;
+}
+
+function stringToBuffer(str) {
+    const buffer = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) {
+        buffer[i] = str.charCodeAt(i);
+    }
+    return buffer;
+}
+
+function bufferToBase64url(buffer) {
+    let binary = '';
+    for (let i = 0; i < buffer.length; i++) {
+        binary += String.fromCharCode(buffer[i]);
+    }
+    const base64 = btoa(binary);
+    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
 const BiometricAuth = {
     /**
      * Check if biometric authentication is supported
@@ -53,13 +83,13 @@ const BiometricAuth = {
             // Create credential using device biometrics
             const credential = await navigator.credentials.create({
                 publicKey: {
-                    challenge: Uint8Array.from(options.challenge, c => c.charCodeAt(0)),
+                    challenge: base64urlToBuffer(options.challenge),
                     rp: {
                         name: 'VON BARBER STUDIO',
                         id: window.location.hostname
                     },
                     user: {
-                        id: Uint8Array.from(options.user_id, c => c.charCodeAt(0)),
+                        id: stringToBuffer(String(options.user_id)),
                         name: options.email,
                         displayName: options.display_name
                     },
@@ -85,10 +115,10 @@ const BiometricAuth = {
                     action: 'register',
                     credential: {
                         id: credential.id,
-                        rawId: btoa(String.fromCharCode(...new Uint8Array(credential.rawId))),
+                        rawId: bufferToBase64url(new Uint8Array(credential.rawId)),
                         response: {
-                            attestationObject: btoa(String.fromCharCode(...new Uint8Array(credential.response.attestationObject))),
-                            clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(credential.response.clientDataJSON)))
+                            attestationObject: bufferToBase64url(new Uint8Array(credential.response.attestationObject)),
+                            clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON))
                         },
                         type: credential.type
                     }
@@ -129,9 +159,9 @@ const BiometricAuth = {
             // Get credential using device biometrics
             const assertion = await navigator.credentials.get({
                 publicKey: {
-                    challenge: Uint8Array.from(options.challenge, c => c.charCodeAt(0)),
+                    challenge: base64urlToBuffer(options.challenge),
                     allowCredentials: options.allowCredentials.map(cred => ({
-                        id: Uint8Array.from(atob(cred.id), c => c.charCodeAt(0)),
+                        id: base64urlToBuffer(cred.id),
                         type: 'public-key',
                         transports: cred.transports
                     })),
@@ -148,13 +178,13 @@ const BiometricAuth = {
                     action: 'login',
                     assertion: {
                         id: assertion.id,
-                        rawId: btoa(String.fromCharCode(...new Uint8Array(assertion.rawId))),
+                        rawId: bufferToBase64url(new Uint8Array(assertion.rawId)),
                         response: {
-                            authenticatorData: btoa(String.fromCharCode(...new Uint8Array(assertion.response.authenticatorData))),
-                            clientDataJSON: btoa(String.fromCharCode(...new Uint8Array(assertion.response.clientDataJSON))),
-                            signature: btoa(String.fromCharCode(...new Uint8Array(assertion.response.signature))),
+                            authenticatorData: bufferToBase64url(new Uint8Array(assertion.response.authenticatorData)),
+                            clientDataJSON: bufferToBase64url(new Uint8Array(assertion.response.clientDataJSON)),
+                            signature: bufferToBase64url(new Uint8Array(assertion.response.signature)),
                             userHandle: assertion.response.userHandle ? 
-                                btoa(String.fromCharCode(...new Uint8Array(assertion.response.userHandle))) : null
+                                bufferToBase64url(new Uint8Array(assertion.response.userHandle)) : null
                         },
                         type: assertion.type
                     }

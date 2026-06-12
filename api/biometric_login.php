@@ -24,6 +24,7 @@ if (empty($credentials)) {
 
 // Generate cryptographic challenge
 $challenge = random_bytes(32);
+$challengeBase64 = rtrim(strtr(base64_encode($challenge), '+/', '-_'), '=');
 
 // Store challenge in session
 session_start();
@@ -39,6 +40,6 @@ $allowCredentials = array_map(function($cred) {
 }, $credentials);
 
 echo json_encode([
-    'challenge' => $challenge,
+    'challenge' => $challengeBase64,
     'allowCredentials' => $allowCredentials
 ]);

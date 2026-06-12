@@ -30,6 +30,7 @@ if (!$user) {
 
 // Generate cryptographic challenge
 $challenge = random_bytes(32);
+$challengeBase64 = rtrim(strtr(base64_encode($challenge), '+/', '-_'), '=');
 
 // Store challenge in session for verification
 session_start();
@@ -38,7 +39,7 @@ $_SESSION['webauthn_user_id'] = $userId;
 
 // Return registration options
 echo json_encode([
-    'challenge' => $challenge,
+    'challenge' => $challengeBase64,
     'user_id' => (string)$userId,
     'email' => $user['email'],
     'display_name' => $user['name'],
