@@ -447,9 +447,9 @@ document.addEventListener('DOMContentLoaded', function() {
         noCalendar: true,
         dateFormat: 'h:i K',
         time_24hr: false,
-        minTime: '09:00',
-        maxTime: '17:30',  // Extended to allow 5:00 PM
-        minuteIncrement: 30,
+        minTime: '10:00',
+        maxTime: '18:00',  // 6:00 PM last slot
+        minuteIncrement: 60,  // 1-hour intervals
         theme: 'dark',
         animate: true,
         static: true,

@@ -181,23 +181,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (slot.available) {
                         // Available slot - modern styling with better visibility
                         btn.className = 'btn time-slot';
-                        btn.textContent = formatTime(slot.time);
-                        btn.style.cssText = 'background: rgba(255,255,255,0.95); border: 2px solid rgba(192,192,192,0.6); color: #1a1a2e; padding: 10px 18px; border-radius: 20px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;';
+                        
+                        // Check if this is the 6 PM slot with additional fee
+                        if (slot.has_additional_fee) {
+                            btn.innerHTML = formatTime(slot.time) + '<br><small style="font-size:10px;color:#C5A059;">+Additional Fee</small>';
+                            btn.style.cssText = 'background: rgba(197,160,89,0.15); border: 2px solid rgba(197,160,89,0.6); color: #1a1a2e; padding: 10px 18px; border-radius: 20px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;';
+                        } else {
+                            btn.textContent = formatTime(slot.time);
+                            btn.style.cssText = 'background: rgba(255,255,255,0.95); border: 2px solid rgba(192,192,192,0.6); color: #1a1a2e; padding: 10px 18px; border-radius: 20px; font-weight: 600; font-size: 14px; transition: all 0.3s ease;';
+                        }
                         
                         btn.addEventListener('click', function() {
                             document.querySelectorAll('.time-slot:not(.booked)').forEach(b => {
                                 b.classList.remove('selected');
-                                b.style.background = 'rgba(255,255,255,0.95)';
-                                b.style.borderColor = 'rgba(192,192,192,0.6)';
+                                b.style.background = slot.has_additional_fee ? 'rgba(197,160,89,0.15)' : 'rgba(255,255,255,0.95)';
+                                b.style.borderColor = slot.has_additional_fee ? 'rgba(197,160,89,0.6)' : 'rgba(192,192,192,0.6)';
                                 b.style.color = '#1a1a2e';
                                 b.style.fontWeight = '600';
                             });
                             btn.classList.add('selected');
-                            btn.style.background = 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%)';
-                            btn.style.borderColor = '#FFFFFF';
+                            btn.style.background = slot.has_additional_fee ? 'linear-gradient(135deg, #C5A059 0%, #D4AF37 100%)' : 'linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%)';
+                            btn.style.borderColor = slot.has_additional_fee ? '#D4AF37' : '#FFFFFF';
                             btn.style.color = '#FFFFFF';
                             btn.style.fontWeight = '700';
-                            btn.style.boxShadow = '0 4px 15px rgba(255,255,255,0.3)';
+                            btn.style.boxShadow = slot.has_additional_fee ? '0 4px 15px rgba(197,160,89,0.4)' : '0 4px 15px rgba(255,255,255,0.3)';
                             timeInput.value = slot.time;
                             submitBtn.disabled = false;
                             slotError.classList.add('d-none');

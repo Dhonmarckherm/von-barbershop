@@ -36,16 +36,20 @@ $bookedTimes = array_map(function($time) {
     return substr($time, 0, 5); // Convert HH:MM:SS to HH:MM
 }, $bookedSlots);
 
-// Generate all possible slots: 09:00 to 17:00 (5:00 PM), 30-minute intervals
-$start = strtotime('09:00');
-$end = strtotime('17:30'); // Extended to include 17:00 (5:00 PM) slot
+// Generate all possible slots: 10:00 to 18:00 (6:00 PM), 1-hour intervals
+$start = strtotime('10:00');
+$end = strtotime('18:00'); // 6:00 PM last slot
 $allSlots = [];
 
-for ($t = $start; $t < $end; $t += (30 * 60)) {
+for ($t = $start; $t <= $end; $t += (60 * 60)) { // 1-hour intervals
     $slotTime = date('H:i', $t);
+    $isLastSlot = ($slotTime === '18:00'); // 6 PM slot
+    
     $allSlots[] = [
         'time' => $slotTime,
-        'available' => !in_array($slotTime, $bookedTimes)
+        'available' => !in_array($slotTime, $bookedTimes),
+        'is_evening' => $isLastSlot, // Flag for 6 PM slot
+        'has_additional_fee' => $isLastSlot // Additional fee for 6 PM
     ];
 }
 
