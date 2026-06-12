@@ -781,16 +781,25 @@ window.addEventListener('DOMContentLoaded', function() {
 <script>
 // Show biometric prompt after login if requested
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('[Biometric] Page loaded');
+    
     // Check if we should show biometric prompt
     const urlParams = new URLSearchParams(window.location.search);
     const showBiometricPrompt = urlParams.get('biometric_prompt') === '1';
     
+    console.log('[Biometric] showBiometricPrompt:', showBiometricPrompt);
+    console.log('[Biometric] URL:', window.location.href);
+    
     if (showBiometricPrompt && typeof BiometricAuth !== 'undefined') {
         // Check if biometrics are supported
         const isSupported = BiometricAuth.isSupported();
+        console.log('[Biometric] isSupported:', isSupported);
+        
         const isAvailable = isSupported ? await BiometricAuth.isBiometricAvailable() : false;
+        console.log('[Biometric] isAvailable:', isAvailable);
         
         if (isAvailable) {
+            console.log('[Biometric] Showing enrollment modal...');
             // Clean URL (remove query parameter)
             window.history.replaceState({}, document.title, window.location.pathname);
             
