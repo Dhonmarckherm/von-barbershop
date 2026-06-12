@@ -172,6 +172,18 @@ if (isset($_GET['registered']) && $_GET['registered'] == '1'):
                     </div>
                 </form>
 
+                <!-- Biometric Login Button (will show if supported) -->
+                <div id="biometric-login-section" style="display: none; margin-top: 20px;">
+                    <div class="text-center mb-3" style="color: var(--barber-gray); font-size: 0.85rem;">
+                        — or —
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" id="biometric-login-btn" class="btn btn-outline-secondary" style="border-color: var(--barber-gold); color: var(--barber-gold);">
+                            <i class="bi bi-fingerprint"></i> Login with Biometrics
+                        </button>
+                    </div>
+                </div>
+
                 <div class="text-center mt-3">
                     <a href="forgot_password.php" style="color: var(--barber-gold); text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
                 </div>
@@ -182,5 +194,41 @@ if (isset($_GET['registered']) && $_GET['registered'] == '1'):
         </div>
     </div>
 </div>
+
+<!-- Biometric Authentication Script -->
+<script src="/www/js/biometric-auth.js"></script>
+<script>
+// Initialize biometric login on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check if biometric auth is supported
+    if (typeof BiometricAuth !== 'undefined' && BiometricAuth.isSupported()) {
+        const isAvailable = await BiometricAuth.isBiometricAvailable();
+        
+        if (isAvailable) {
+            // Show biometric login button
+            const bioSection = document.getElementById('biometric-login-section');
+            const bioBtn = document.getElementById('biometric-login-btn');
+            
+            if (bioSection && bioBtn) {
+                bioSection.style.display = 'block';
+                
+                // Add click handler
+                bioBtn.addEventListener('click', async function() {
+                    bioBtn.disabled = true;
+                    bioBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Verifying...';
+                    
+                    const result = await BiometricAuth.login();
+                    
+                    if (!result.success) {
+                        alert('Biometric login failed: ' + result.error);
+                        bioBtn.disabled = false;
+                        bioBtn.innerHTML = '<i class="bi bi-fingerprint"></i> Login with Biometrics';
+                    }
+                });
+            }
+        }
+    }
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>
