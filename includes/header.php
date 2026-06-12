@@ -294,10 +294,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 8px rgba(33, 37, 41, 0.4);
             z-index: 0;
+            pointer-events: none; /* Allow clicks to pass through to buttons */
         }
         /* Active state */
         .bottom-nav-item.active {
             color: #ffffff;
+            z-index: 2; /* Ensure active item is above indicator */
         }
         .bottom-nav-item.active i {
             transform: scale(1.1);
@@ -309,6 +311,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         /* Hover effect */
         .bottom-nav-item:hover {
             color: #ffffff;
+            z-index: 2;
         }
         .bottom-nav-item:hover i {
             transform: translateY(-2px);
@@ -316,6 +319,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         /* Click/press feedback */
         .bottom-nav-item:active {
             transform: scale(0.95);
+            z-index: 2;
         }
         
         /* iOS Safari animation fixes */
