@@ -170,9 +170,7 @@ if ($stmt->rowCount() > 0) {
         error_log('Cancellation email error: ' . $e->getMessage());
     }
     
-    // NOW send response after emails are sent
-    exit;
-} else {
+    // Send success response AFTER emails are sent
     echo json_encode([
         'success' => true,
         'message' => 'Appointment cancelled successfully',
@@ -182,5 +180,7 @@ if ($stmt->rowCount() > 0) {
             'id' => $appointmentId + 3000
         ]
     ]);
+} else {
+    echo json_encode(['error' => 'Failed to cancel appointment. Please try again.']);
 }
 exit;
