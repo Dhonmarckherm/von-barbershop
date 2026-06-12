@@ -799,6 +799,28 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('[Biometric] isAvailable:', isAvailable);
         
         if (isAvailable) {
+            // Check if user already has biometric registered
+            try {
+                const checkResponse = await fetch('/api/biometric_login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_challenge' })
+                });
+                
+                const checkResult = await checkResponse.json();
+                console.log('[Biometric] Existing credentials check:', checkResult);
+                
+                // If user already has credentials, don't show modal
+                if (checkResult.allowCredentials && checkResult.allowCredentials.length > 0) {
+                    console.log('[Biometric] User already has biometric registered - skipping modal');
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return; // Don't show modal
+                }
+            } catch (err) {
+                console.log('[Biometric] No existing credentials or error:', err.message);
+            }
+            
             console.log('[Biometric] Showing enrollment modal...');
             // Clean URL (remove query parameter)
             window.history.replaceState({}, document.title, window.location.pathname);
