@@ -13,17 +13,16 @@ if (in_array($current_page, $auth_pages)) {
     }
     $isLoggedIn = false;
 } else {
-    // On ALL other pages, ALWAYS restore from cookies
-    if (isset($_COOKIE['auth_user_id'])) {
+    // On ALL other pages, restore from cookies ONLY if session is not already set
+    // This prevents conflicts with auth_check.php which may have already validated the session
+    if (!isset($_SESSION['user_id']) && isset($_COOKIE['auth_user_id'])) {
         $_SESSION['user_id'] = $_COOKIE['auth_user_id'];
         $_SESSION['name'] = $_COOKIE['auth_name'] ?? '';
         $_SESSION['email'] = $_COOKIE['auth_email'] ?? '';
         $_SESSION['role'] = $_COOKIE['auth_role'] ?? 'customer';
         $_SESSION['login_time'] = time();
-        $isLoggedIn = true;
-    } else {
-        $isLoggedIn = isset($_SESSION['user_id']);
     }
+    $isLoggedIn = isset($_SESSION['user_id']);
 }
 
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'barber');
