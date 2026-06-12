@@ -143,6 +143,8 @@ const BiometricAuth = {
      */
     async login() {
         try {
+            console.log('[Biometric Login] Starting login process...');
+            
             // Get challenge from server
             const response = await fetch('/api/biometric_login.php', {
                 method: 'POST',
@@ -151,24 +153,32 @@ const BiometricAuth = {
             });
             
             const options = await response.json();
+            console.log('[Biometric Login] Server response:', options);
             
             if (options.error) {
                 throw new Error(options.error);
             }
 
+            console.log('[Biometric Login] Requesting biometric authentication...');
+            
             // Get credential using device biometrics
             const assertion = await navigator.credentials.get({
                 publicKey: {
                     challenge: base64urlToBuffer(options.challenge),
-                    allowCredentials: options.allowCredentials.map(cred => ({
-                        id: base64urlToBuffer(cred.id),
-                        type: 'public-key',
-                        transports: cred.transports
-                    })),
+                    allowCredentials: options.allowCredentials.map(cred => {
+                        console.log('[Biometric Login] Processing credential:', cred.id);
+                        return {
+                            id: base64urlToBuffer(cred.id),
+                            type: 'public-key',
+                            transports: cred.transports
+                        };
+                    }),
                     timeout: 60000,
                     userVerification: 'required'
                 }
             });
+            
+            console.log('[Biometric Login] Biometric verified! Assertion ID:', assertion.id);
 
             // Verify credential with server
             const verifyResponse = await fetch('/api/biometric_verify.php', {

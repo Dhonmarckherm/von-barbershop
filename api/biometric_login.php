@@ -45,3 +45,6 @@ echo json_encode([
     'challenge' => $challengeBase64,
     'allowCredentials' => $allowCredentials
 ]);
+
+error_log('Biometric login challenge generated. Credentials count: ' . count($allowCredentials));
+error_log('First credential ID: ' . ($allowCredentials[0]['id'] ?? 'none'));
