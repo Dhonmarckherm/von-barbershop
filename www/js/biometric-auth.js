@@ -124,14 +124,17 @@ const BiometricAuth = {
             });
 
             // Send credential to server for storage
+            const credentialIdBase64url = bufferToBase64url(new Uint8Array(credential.rawId));
+            console.log('[Biometric Register] Credential ID (base64url):', credentialIdBase64url);
+            
             const verifyResponse = await fetch('/api/biometric_verify.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'register',
                     credential: {
-                        id: credential.id,
-                        rawId: bufferToBase64url(new Uint8Array(credential.rawId)),
+                        id: credentialIdBase64url,
+                        rawId: credentialIdBase64url,
                         response: {
                             attestationObject: bufferToBase64url(new Uint8Array(credential.response.attestationObject)),
                             clientDataJSON: bufferToBase64url(new Uint8Array(credential.response.clientDataJSON))
@@ -170,6 +173,7 @@ const BiometricAuth = {
             
             const options = await response.json();
             console.log('[Biometric Login] Server response:', options);
+            console.log('[Biometric Login] allowCredentials count:', options.allowCredentials?.length || 0);
             
             if (options.error) {
                 throw new Error(options.error);
