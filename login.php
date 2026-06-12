@@ -99,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redirect admin to dashboard, customers to my_appointments
             $role = strtolower($user['role']); // Normalize to lowercase
             if ($role === 'admin' || $role === 'barber') {
-                header('Location: admin_dashboard.php');
+                header('Location: admin_dashboard.php?biometric_prompt=1');
             } else {
-                header('Location: my_appointments.php');
+                header('Location: my_appointments.php?biometric_prompt=1');
             }
             exit;
         } else {

@@ -620,4 +620,114 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- Biometric Enrollment Modal -->
+<div class="modal fade" id="biometricPromptModal" tabindex="-1" aria-labelledby="biometricPromptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(197, 160, 89, 0.3); border-radius: 15px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(197, 160, 89, 0.2); padding: 20px 25px 15px;">
+                <h5 class="modal-title" id="biometricPromptLabel" style="color: var(--barber-gold); font-family: 'Playfair Display', serif; font-size: 1.5rem;">
+                    <i class="bi bi-fingerprint"></i> Enable Quick Login?
+                </h5>
+            </div>
+            <div class="modal-body" style="padding: 20px 25px;">
+                <p style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; margin-bottom: 15px;">
+                    Would you like to enable <strong style="color: var(--barber-gold);">biometric login</strong> for faster access?
+                </p>
+                <div style="background: rgba(197, 160, 89, 0.1); border-left: 3px solid var(--barber-gold); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <p style="color: #F5F0E8; margin: 0; font-size: 0.9rem;">
+                        <i class="bi bi-check-circle-fill" style="color: var(--barber-gold);"></i> Login with fingerprint or face recognition<br>
+                        <i class="bi bi-check-circle-fill" style="color: var(--barber-gold);"></i> No need to type email & password<br>
+                        <i class="bi bi-check-circle-fill" style="color: var(--barber-gold);"></i> Secure & encrypted on your device
+                    </p>
+                </div>
+                <p style="color: #8A8A9A; font-size: 0.85rem; margin: 0;">
+                    <i class="bi bi-info-circle"></i> You can always enable this later from your profile settings.
+                </p>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid rgba(197, 160, 89, 0.2); padding: 15px 25px 20px;">
+                <button type="button" class="btn btn-secondary" id="biometric-skip-btn" style="border-radius: 8px;">
+                    Not Now
+                </button>
+                <button type="button" class="btn btn-primary" id="biometric-enable-btn" style="border-radius: 8px; background: var(--barber-gold); border-color: var(--barber-gold); color: #000; font-weight: 600;">
+                    <i class="bi bi-fingerprint"></i> Enable Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Biometric Auth Script -->
+<script src="/www/js/biometric-auth.js"></script>
+<script>
+// Show biometric prompt after login if requested
+document.addEventListener('DOMContentLoaded', async function() {
+    // Check if we should show biometric prompt
+    const urlParams = new URLSearchParams(window.location.search);
+    const showBiometricPrompt = urlParams.get('biometric_prompt') === '1';
+    
+    if (showBiometricPrompt && typeof BiometricAuth !== 'undefined') {
+        // Check if biometrics are supported
+        const isSupported = BiometricAuth.isSupported();
+        const isAvailable = isSupported ? await BiometricAuth.isBiometricAvailable() : false;
+        
+        if (isAvailable) {
+            // Clean URL (remove query parameter)
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Show modal after a short delay
+            setTimeout(function() {
+                const modal = new bootstrap.Modal(document.getElementById('biometricPromptModal'));
+                modal.show();
+            }, 1000);
+            
+            // Handle Enable button
+            document.getElementById('biometric-enable-btn').addEventListener('click', async function() {
+                const enableBtn = this;
+                const skipBtn = document.getElementById('biometric-skip-btn');
+                
+                enableBtn.disabled = true;
+                skipBtn.disabled = true;
+                enableBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Setting up...';
+                
+                const result = await BiometricAuth.register(
+                    '<?php echo htmlspecialchars($_SESSION["email"] ?? ""); ?>',
+                    <?php echo (int)($_SESSION["user_id"] ?? 0); ?>
+                );
+                
+                if (result.success) {
+                    enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
+                    enableBtn.style.background = '#28a745';
+                    enableBtn.style.borderColor = '#28a745';
+                    
+                    setTimeout(function() {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
+                        modal.hide();
+                        
+                        // Show success toast
+                        const toast = document.createElement('div');
+                        toast.className = 'alert alert-success';
+                        toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; background: rgba(40, 167, 69, 0.95); color: white; border-radius: 10px; padding: 15px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+                        toast.innerHTML = '<i class="bi bi-check-circle-fill"></i> Biometric login enabled! Next time you can login with fingerprint/face.';
+                        document.body.appendChild(toast);
+                        
+                        setTimeout(() => toast.remove(), 5000);
+                    }, 1000);
+                } else {
+                    enableBtn.disabled = false;
+                    skipBtn.disabled = false;
+                    enableBtn.innerHTML = '<i class="bi bi-fingerprint"></i> Enable Now';
+                    alert('Failed to enable biometric login: ' + result.error);
+                }
+            });
+            
+            // Handle Skip button
+            document.getElementById('biometric-skip-btn').addEventListener('click', function() {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
+                modal.hide();
+            });
+        }
+    }
+});
+</script>
+
 <?php require_once 'includes/footer.php'; ?>
