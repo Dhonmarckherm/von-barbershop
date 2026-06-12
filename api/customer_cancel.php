@@ -51,19 +51,30 @@ if ($stmt->rowCount() > 0) {
     // Get customer user_id
     $customerId = $_SESSION['user_id'];
     
-    // Send cancellation email
+    // Convert time to 12-hour format for emails and notifications
+    $time12 = $appt['appointment_time'];
+    if (preg_match('/^(\d{1,2}):(\d{2})(?::\d{2})?$/', $time12, $matches)) {
+        $hours = (int)$matches[1];
+        $minutes = $matches[2];
+        $period = $hours >= 12 ? 'PM' : 'AM';
+        if ($hours > 12) $hours -= 12;
+        else if ($hours == 0) $hours = 12;
+        $time12 = $hours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' ' . $period;
+    }
+    
+    // Send cancellation email with 12-hour time format
     $details = [
         'customer_name'  => $appt['customer_name'],
         'customer_email' => $appt['customer_email'],
         'service_name'   => $appt['haircut_description'],
         'location'       => $appt['location'],
         'date'           => $appt['appointment_date'],
-        'time'           => $appt['appointment_time'],
+        'time'           => $time12,  // Use 12-hour format
     ];
     
     // Send push notification to customer
     require_once __DIR__ . '/../includes/push_helper.php';
-    sendPushNotification($pdo, $customerId, '❌ Appointment Cancelled', "Your appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5) . " has been cancelled.", '/my_appointments.php');
+    sendPushNotification($pdo, $customerId, '❌ Appointment Cancelled', "Your appointment on {$appt['appointment_date']} at {$time12} has been cancelled.", '/my_appointments.php');
 
     // NOTE: On Render free tier, we must send emails BEFORE response to ensure delivery
     
@@ -85,22 +96,11 @@ if ($stmt->rowCount() > 0) {
             // Send push notification to barber
             if ($barberUser) {
                 sendPushNotification($pdo, $barberUser['id'], '❌ Customer Cancelled', 
-                    "{$appt['customer_name']} cancelled their appointment on {$appt['appointment_date']} at " . substr($appt['appointment_time'], 0, 5), 
+                    "{$appt['customer_name']} cancelled their appointment on {$appt['appointment_date']} at {$time12}", 
                     '/admin_dashboard.php');
             }
             
             error_log("Sending barber cancellation notification to: {$barberEmail}");
-            
-            // Convert time to 12-hour format
-            $time12 = $appt['appointment_time'];
-            if (preg_match('/^(\d{1,2}):(\d{2})$/', $time12, $matches)) {
-                $hours = (int)$matches[1];
-                $minutes = $matches[2];
-                $period = $hours >= 12 ? 'PM' : 'AM';
-                if ($hours > 12) $hours -= 12;
-                else if ($hours == 0) $hours = 12;
-                $time12 = $hours . ':' . $minutes . ' ' . $period;
-            }
             
             // Use sendBrevoEmail for reliable delivery
             $barberEmailBody = "
