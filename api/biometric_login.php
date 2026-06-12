@@ -32,8 +32,10 @@ $_SESSION['webauthn_challenge'] = bin2hex($challenge);
 
 // Format credentials for WebAuthn
 $allowCredentials = array_map(function($cred) {
+    // Trim any whitespace and ensure proper base64url format
+    $credentialId = trim($cred['credential_id']);
     return [
-        'id' => $cred['credential_id'],
+        'id' => $credentialId,
         'type' => 'public-key',
         'transports' => $cred['transports'] ? explode(',', $cred['transports']) : ['internal']
     ];
