@@ -686,6 +686,8 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         --border-color: #404040;
         --input-bg: #1a1a1a;
         --input-border: #505050;
+        --navbar-bg: #0a0a0a;
+        --bottom-nav-bg: #0a0a0a;
     }
 
     [data-theme="light"] {
@@ -698,72 +700,225 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         --border-color: #e0e0e0;
         --input-bg: #ffffff;
         --input-border: #c0c0c0;
+        --navbar-bg: #ffffff;
+        --bottom-nav-bg: #ffffff;
     }
 
-    /* Theme Toggle Button - Fixed Position, Always Visible */
+    /* Global Theme Application */
+    body {
+        background: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* Navbar Theme */
+    .navbar {
+        background: var(--navbar-bg) !important;
+        transition: all 0.4s ease !important;
+    }
+
+    .navbar-brand {
+        color: var(--text-primary) !important;
+        transition: color 0.4s ease !important;
+    }
+
+    /* Bottom Navigation Theme */
+    .bottom-nav {
+        background: var(--bottom-nav-bg) !important;
+        border-top-color: var(--border-color) !important;
+        transition: all 0.4s ease !important;
+    }
+
+    .bottom-nav-item {
+        color: var(--text-muted) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .bottom-nav-item.active,
+    .bottom-nav-item:hover {
+        color: var(--text-primary) !important;
+    }
+
+    /* Card Theme */
+    .card {
+        background: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+        transition: all 0.4s ease !important;
+    }
+
+    .card-body h2,
+    .card-body h3,
+    .card-body h4,
+    .card-body h5 {
+        color: var(--text-primary) !important;
+    }
+
+    .card-body p,
+    .card-body span,
+    .card-body div {
+        color: var(--text-primary) !important;
+    }
+
+    /* Form Elements Theme */
+    .form-label {
+        color: var(--text-primary) !important;
+        font-weight: 600;
+    }
+
+    .form-control {
+        background: var(--input-bg) !important;
+        border-color: var(--input-border) !important;
+        color: var(--text-primary) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .form-control:focus {
+        background: var(--input-bg) !important;
+        border-color: #d4af37 !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted) !important;
+    }
+
+    /* Alert Theme */
+    .alert-success {
+        background: rgba(40, 167, 69, 0.15) !important;
+        border-color: rgba(40, 167, 69, 0.4) !important;
+        color: #28a745 !important;
+    }
+
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.15) !important;
+        border-color: rgba(220, 53, 69, 0.4) !important;
+        color: #dc3545 !important;
+    }
+
+    /* Text Elements Theme */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary) !important;
+    }
+
+    p, span, div, label {
+        color: var(--text-primary) !important;
+    }
+
+    a {
+        color: #d4af37 !important;
+    }
+
+    /* Theme Toggle Button - Premium Slider Style */
     #themeToggleBtn {
         position: fixed !important;
-        bottom: 90px !important;
+        bottom: 100px !important;
         right: 20px !important;
         z-index: 99999 !important;
-        width: 60px !important;
-        height: 60px !important;
-        border-radius: 50% !important;
-        border: 3px solid #d4af37 !important;
-        background: #2d2d2d !important;
-        color: #ffffff !important;
+        width: 70px !important;
+        height: 36px !important;
+        border-radius: 18px !important;
+        border: 2px solid #d4af37 !important;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
         cursor: pointer !important;
         display: flex !important;
         align-items: center !important;
-        justify-content: center !important;
-        font-size: 26px !important;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 175, 55, 0.4) !important;
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        padding: 3px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.3) !important;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
         -webkit-tap-highlight-color: transparent !important;
     }
 
-    #themeToggleBtn:hover {
-        transform: scale(1.15) rotate(180deg) !important;
-        box-shadow: 0 12px 35px rgba(0,0,0,0.6), 0 0 0 2px rgba(212, 175, 55, 0.6) !important;
+    /* Toggle Knob */
+    #themeToggleBtn::before {
+        content: '' !important;
+        position: absolute !important;
+        left: 3px !important;
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
+        box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5) !important;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
     }
 
-    #themeToggleBtn:active {
-        transform: scale(0.95) !important;
-    }
-
-    /* Light mode button styles */
+    /* Light mode - move knob to right */
     [data-theme="light"] #themeToggleBtn {
-        background: #ffffff !important;
-        color: #1a1a1a !important;
+        background: linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 100%) !important;
         border-color: #d4af37 !important;
     }
 
-    @keyframes themePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
+    [data-theme="light"] #themeToggleBtn::before {
+        left: 37px !important;
+        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
     }
 
-    .theme-changing {
-        animation: themePulse 0.5s ease !important;
+    /* Toggle Icons */
+    #themeToggleBtn .toggle-icon {
+        position: absolute !important;
+        font-size: 16px !important;
+        transition: all 0.4s ease !important;
+        z-index: 1 !important;
+    }
+
+    #themeToggleBtn .icon-moon {
+        left: 8px !important;
+        opacity: 1 !important;
+    }
+
+    #themeToggleBtn .icon-sun {
+        right: 8px !important;
+        opacity: 0.5 !important;
+    }
+
+    [data-theme="light"] #themeToggleBtn .icon-moon {
+        opacity: 0.5 !important;
+    }
+
+    [data-theme="light"] #themeToggleBtn .icon-sun {
+        opacity: 1 !important;
+    }
+
+    #themeToggleBtn:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
+    }
+
+    #themeToggleBtn:active {
+        transform: scale(0.98) !important;
+    }
+
+    /* Theme Change Animation */
+    .theme-changing * {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    @keyframes themeSwitch {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .theme-switching {
+        animation: themeSwitch 0.4s ease !important;
     }
     </style>
 
     <button id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
-        <span id="themeIcon">🌙</span>
+        <span class="toggle-icon icon-moon">🌙</span>
+        <span class="toggle-icon icon-sun">☀️</span>
     </button>
 
     <script>
     // Theme Toggle Logic (Applied to ALL pages)
     (function() {
         const themeToggle = document.getElementById('themeToggleBtn');
-        const themeIcon = document.getElementById('themeIcon');
         
-        if (!themeToggle || !themeIcon) return;
+        if (!themeToggle) return;
         
         // Load saved theme or default to dark
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        updateIcon(savedTheme);
         
         // Toggle on click
         themeToggle.addEventListener('click', function(e) {
@@ -773,24 +928,18 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            // Add pulse animation
-            themeToggle.classList.add('theme-changing');
+            // Add switching animation to body
+            document.body.classList.add('theme-switching');
             
             // Update theme
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateIcon(newTheme);
             
-            // Remove animation
+            // Remove animation class
             setTimeout(() => {
-                themeToggle.classList.remove('theme-changing');
-            }, 500);
+                document.body.classList.remove('theme-switching');
+            }, 400);
         });
-        
-        function updateIcon(theme) {
-            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
-            themeToggle.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-        }
     })();
     </script>
 
