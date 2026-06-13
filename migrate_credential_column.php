@@ -6,10 +6,24 @@
 require_once __DIR__ . '/config/db.php';
 
 try {
-    // Alter the column to TEXT
-    $pdo->exec("ALTER TABLE user_passkeys MODIFY COLUMN credential_id TEXT NOT NULL");
+    // Try to drop unique constraint if it exists (ignore errors)
+    try {
+        $pdo->exec("ALTER TABLE user_passkeys DROP INDEX credential_id");
+    } catch (PDOException $e) {
+        // Index doesn't exist, that's fine
+    }
     
-    echo "✅ Successfully migrated credential_id column to TEXT\n";
+    // Alter the column to VARCHAR(500)
+    $pdo->exec("ALTER TABLE user_passkeys MODIFY COLUMN credential_id VARCHAR(500) NOT NULL");
+    
+    // Add index (ignore if already exists)
+    try {
+        $pdo->exec("ALTER TABLE user_passkeys ADD INDEX idx_credential_id (credential_id(255))");
+    } catch (PDOException $e) {
+        // Index already exists, that's fine
+    }
+    
+    echo "✅ Successfully migrated credential_id column to VARCHAR(500)\n";
     
     // Verify the change
     $stmt = $pdo->query("SHOW COLUMNS FROM user_passkeys LIKE 'credential_id'");
