@@ -89,7 +89,7 @@ try {
                     <span>Book Appointment</span>
                     <span class="btn-shimmer"></span>
                 </a>
-                <p class="text-center mt-3 mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; letter-spacing: 0.5px; color: #F5F0E8; opacity: 0.8;">
+                <p class="text-center mt-3 mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 15px; letter-spacing: 0.5px; color: var(--text-secondary); opacity: 0.8;">
                     Reserve your preferred schedule and enjoy a seamless, wait-free haircut experience.
                 </p>
                 <p class="hero-register">
@@ -180,10 +180,10 @@ try {
                         <i class="bi bi-geo-alt-fill"></i> Our Location
                     </h3>
                     <div style="width: 60px; height: 3px; background: var(--barber-red); margin: 0.75rem auto;"></div>
-                    <p style="color: #F5F0E8; font-size: 1.1rem; margin-top: 1rem;">
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1rem;">
                         <i class="bi bi-geo-alt-fill"></i> <strong>Pagkurtian || San Juan, Santa Lucia, Ilocos Sur</strong>
                     </p>
-                    <p style="color: #F5F0E8; font-size: 0.9rem; opacity: 0.8;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; opacity: 0.8;">
                         <small>Coordinates: 17.1092889, 120.4504919</small>
                     </p>
                 </div>
@@ -209,7 +209,7 @@ try {
                        onmouseout="this.style.transform='translateY(0)'">
                         <i class="bi bi-signpost-2"></i> Get Directions
                     </a>
-                    <p class="mt-3" style="color: #F5F0E8; opacity: 0.8; font-size: 0.95rem;">
+                    <p class="mt-3" style="color: var(--text-secondary); opacity: 0.8; font-size: 0.95rem;">
                         <i class="bi bi-clock"></i> Open Monday - Saturday, 9:00 AM - 5:00 PM
                     </p>
                 </div>
@@ -290,7 +290,7 @@ try {
                             </p>
                         </div>
                     <?php else: ?>
-                        <p style="color: #F5F0E8; opacity: 0.8;" class="mt-3">Be the first to leave a review!</p>
+                        <p style="color: var(--text-secondary); opacity: 0.8;" class="mt-3">Be the first to leave a review!</p>
                     <?php endif; ?>
                 </div>
 
