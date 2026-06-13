@@ -193,7 +193,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-gear"></i>
                             <span>Settings</span>
                         </a>
-                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
+                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item" id="logoutNavBtn">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
                         </a>
@@ -322,6 +322,15 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             z-index: 2;
         }
         
+        /* Ensure logout button is always visible */
+        #logoutNavBtn {
+            z-index: 3 !important;
+            pointer-events: auto !important;
+        }
+        #logoutNavBtn:hover {
+            z-index: 3 !important;
+        }
+        
         /* iOS Safari animation fixes */
         @supports (-webkit-touch-callout: none) {
             .bottom-nav-item,
@@ -441,10 +450,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 item.addEventListener('click', function() {
                     // Remove active from all
                     document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
-                    // Add active to clicked
-                    this.classList.add('active');
-                    // Move indicator
-                    updateIndicator(this);
+                    // Add active to clicked (except logout button)
+                    if (this.id !== 'logoutNavBtn') {
+                        this.classList.add('active');
+                        // Move indicator
+                        updateIndicator(this);
+                    }
                 });
                 
                 // iOS touch feedback
