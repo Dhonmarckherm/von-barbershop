@@ -111,35 +111,67 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             const installBtn = banner.querySelector('.btn-install');
             
             if (deferredPrompt) {
-                // Show installing state
-                installBtn.disabled = true;
-                installBtn.innerHTML = '<span class="spinner"></span> Installing...';
-                installBtn.style.background = 'linear-gradient(135deg, #C5A059 0%, #D4AF37 100%)';
-                installBtn.style.color = '#000000';
+                // Show installing overlay
+                showInstallingOverlay();
                 
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
-                        // Show success state
-                        installBtn.innerHTML = '<i class="bi bi-check-circle"></i> Installed!';
-                        installBtn.style.background = '#28a745';
-                        
-                        // Hide banner after 2 seconds
-                        setTimeout(() => {
-                            banner.style.display = 'none';
-                        }, 2000);
+                        // Show success popup
+                        hideInstallingOverlay();
+                        showSuccessPopup();
                     } else {
                         console.log('User dismissed the install prompt');
-                        // Reset button
-                        installBtn.disabled = false;
-                        installBtn.innerHTML = 'Install';
-                        installBtn.style.background = 'white';
-                        installBtn.style.color = 'black';
+                        // Hide overlay and reset
+                        hideInstallingOverlay();
                     }
                     deferredPrompt = null;
                 });
             }
+        }
+        
+        function showInstallingOverlay() {
+            const overlay = document.createElement('div');
+            overlay.id = 'install-overlay';
+            overlay.innerHTML = `
+                <div class="overlay-content">
+                    <div class="overlay-spinner"></div>
+                    <h5>Installing App...</h5>
+                    <p>Please wait while we set up VON BARBER STUDIO on your device</p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        function hideInstallingOverlay() {
+            const overlay = document.getElementById('install-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+        
+        function showSuccessPopup() {
+            const popup = document.createElement('div');
+            popup.id = 'install-success-popup';
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <div class="popup-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h5>Successfully Installed!</h5>
+                    <p>VON BARBER STUDIO is now installed on your device. You can access it anytime from your home screen for faster booking!</p>
+                    <button class="popup-btn" onclick="closeSuccessPopup()">Got it!</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        }
+        
+        function closeSuccessPopup() {
+            const popup = document.getElementById('install-success-popup');
+            const banner = document.getElementById('pwa-install-banner');
+            if (popup) popup.remove();
+            if (banner) banner.style.display = 'none';
         }
 
         function closePWABanner() {

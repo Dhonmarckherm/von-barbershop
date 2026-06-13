@@ -2196,6 +2196,145 @@ img, video, canvas, svg {
     cursor: not-allowed;
 }
 
+/* Installing Overlay */
+#install-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26,26,26,0.95);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#install-overlay .overlay-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 90%;
+}
+
+#install-overlay .overlay-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 24px;
+    border: 4px solid rgba(192,192,192,0.2);
+    border-top-color: #c0c0c0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+#install-overlay h5 {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+}
+
+#install-overlay p {
+    color: #c0c0c0;
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Success Popup */
+#install-success-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26,26,26,0.95);
+    z-index: 100001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+#install-success-popup .popup-content {
+    background: #1a1a1a;
+    border: 1px solid #c0c0c0;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+    animation: popIn 0.4s ease-out;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#install-success-popup .popup-icon {
+    width: 80px;
+    height: 80px;
+    background: #c0c0c0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+}
+
+#install-success-popup .popup-icon i {
+    font-size: 48px;
+    color: #1a1a1a;
+}
+
+#install-success-popup h5 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+#install-success-popup p {
+    color: #c0c0c0;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+    line-height: 1.6;
+}
+
+#install-success-popup .popup-btn {
+    background: #ffffff;
+    color: #1a1a1a;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+#install-success-popup .popup-btn:hover {
+    background: #c0c0c0;
+}
+
+#install-success-popup .popup-btn:active {
+    transform: scale(0.98);
+}
+
 /* Spinner animation for installing state */
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -2256,6 +2395,52 @@ img, video, canvas, svg {
         font-size: 18px;
         width: 26px;
         height: 26px;
+    }
+    
+    /* Mobile overlay */
+    #install-overlay .overlay-content {
+        padding: 30px 20px;
+    }
+    
+    #install-overlay .overlay-spinner {
+        width: 50px;
+        height: 50px;
+    }
+    
+    #install-overlay h5 {
+        font-size: 20px;
+    }
+    
+    #install-overlay p {
+        font-size: 13px;
+    }
+    
+    /* Mobile popup */
+    #install-success-popup .popup-content {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+    
+    #install-success-popup .popup-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    #install-success-popup .popup-icon i {
+        font-size: 40px;
+    }
+    
+    #install-success-popup h5 {
+        font-size: 20px;
+    }
+    
+    #install-success-popup p {
+        font-size: 13px;
+    }
+    
+    #install-success-popup .popup-btn {
+        padding: 12px 30px;
+        font-size: 15px;
     }
 }
 
