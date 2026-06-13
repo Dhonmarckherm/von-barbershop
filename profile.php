@@ -155,21 +155,21 @@ body, .profile-container {
 /* Theme Toggle Button */
 .theme-toggle-btn {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    width: 60px;
-    height: 60px;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10000 !important;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
-    border: 3px solid var(--border-color);
+    border: 3px solid var(--barber-gold) !important;
     background: var(--bg-secondary);
     color: var(--text-primary);
     cursor: pointer;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    font-size: 28px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.3);
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
