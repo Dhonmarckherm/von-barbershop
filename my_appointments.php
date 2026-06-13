@@ -797,6 +797,7 @@ window.addEventListener('DOMContentLoaded', function() {
 <script>
 // Show biometric prompt after login if requested
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('[Biometric] ===== START =====');
     console.log('[Biometric] Page loaded');
     
     // Check if we should show biometric prompt
@@ -806,139 +807,141 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('[Biometric] showBiometricPrompt:', showBiometricPrompt);
     console.log('[Biometric] URL:', window.location.href);
     
-    // Debug alert to see if script is running
-    const debugMessages = [];
-    debugMessages.push('Page loaded: YES');
-    debugMessages.push('biometric_prompt param: ' + showBiometricPrompt);
+    if (!showBiometricPrompt) {
+        console.log('[Biometric] No biometric_prompt parameter - skipping');
+        return;
+    }
     
-    if (showBiometricPrompt && typeof BiometricAuth !== 'undefined') {
-        debugMessages.push('BiometricAuth available: YES');
+    if (typeof BiometricAuth === 'undefined') {
+        console.error('[Biometric] BiometricAuth library NOT loaded!');
+        return;
+    }
+    
+    console.log('[Biometric] BiometricAuth library loaded: YES');
+    
+    // Check if biometrics are supported
+    const isSupported = BiometricAuth.isSupported();
+    console.log('[Biometric] WebAuthn supported:', isSupported);
+    
+    if (!isSupported) {
+        console.log('[Biometric] WebAuthn not supported - skipping');
+        return;
+    }
+    
+    const isAvailable = await BiometricAuth.isBiometricAvailable();
+    console.log('[Biometric] Biometric hardware available:', isAvailable);
+    
+    if (!isAvailable) {
+        console.log('[Biometric] No biometric hardware - skipping');
+        return;
+    }
+    
+    // IMPORTANT: Check if THIS SPECIFIC USER has credentials registered
+    // Use a dedicated API endpoint that checks for current user only
+    try {
+        const checkResponse = await fetch('/api/check_biometric_status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
         
-        // Check if biometrics are supported
-        const isSupported = BiometricAuth.isSupported();
-        console.log('[Biometric] isSupported:', isSupported);
-        debugMessages.push('WebAuthn supported: ' + (isSupported ? 'YES' : 'NO'));
+        const checkResult = await checkResponse.json();
+        console.log('[Biometric] User credential status:', checkResult);
         
-        if (!isSupported) {
-            alert('Biometric Debug:\n' + debugMessages.join('\n') + '\n\nWebAuthn is NOT supported in this browser.');
-            return;
+        // If user ALREADY has credentials on THIS device, DON'T show modal
+        if (checkResult.hasCredentials && checkResult.hasCredentials === true) {
+            console.log('[Biometric] User already enrolled - skipping modal (PERMANENT)');
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return; // Don't show modal - user already enrolled!
         }
         
-        const isAvailable = isSupported ? await BiometricAuth.isBiometricAvailable() : false;
-        console.log('[Biometric] isAvailable:', isAvailable);
-        debugMessages.push('Biometric hardware available: ' + (isAvailable ? 'YES' : 'NO'));
-        
-        if (!isAvailable) {
-            alert('Biometric Debug:\n' + debugMessages.join('\n') + '\n\nNo biometric hardware detected on this device.');
-            return;
+        console.log('[Biometric] User NOT enrolled - showing modal');
+    } catch (err) {
+        console.error('[Biometric] Error checking credentials:', err);
+        // If check fails, show modal anyway to be safe
+    }
+    
+    console.log('[Biometric] ===== SHOWING MODAL =====');
+    // Clean URL (remove query parameter)
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    // Show a brief notification before modal
+    const bioNotification = document.createElement('div');
+    bioNotification.id = 'biometric-notification';
+    bioNotification.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); color: #1a1a1a; padding: 12px 24px; border-radius: 10px; font-weight: bold; z-index: 9998; box-shadow: 0 4px 15px rgba(197,160,89,0.4); animation: fadeSlideIn 0.5s ease;';
+    bioNotification.innerHTML = '<i class="bi bi-fingerprint"></i> Setting up quick login...';
+    document.body.appendChild(bioNotification);
+    
+    // Show modal after a short delay
+    setTimeout(function() {
+        // Remove notification
+        if (bioNotification) {
+            bioNotification.style.animation = 'fadeSlideOut 0.3s ease';
+            setTimeout(() => bioNotification.remove(), 300);
         }
         
-        if (isAvailable) {
-            // Check if user already has biometric registered
-            try {
-                const checkResponse = await fetch('/api/biometric_login.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_challenge' })
-                });
-                
-                const checkResult = await checkResponse.json();
-                console.log('[Biometric] Existing credentials check:', checkResult);
-                
-                // If user already has credentials, don't show modal
-                if (checkResult.allowCredentials && checkResult.allowCredentials.length > 0) {
-                    console.log('[Biometric] User already has biometric registered - skipping modal');
-                    // Clean URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    return; // Don't show modal
-                }
-            } catch (err) {
-                console.log('[Biometric] No existing credentials or error:', err.message);
+        try {
+            const modalElement = document.getElementById('biometricPromptModal');
+            if (!modalElement) {
+                console.error('[Biometric] Modal element not found!');
+                alert('Biometric enrollment modal not found. Please contact support.');
+                return;
             }
             
-            console.log('[Biometric] Showing enrollment modal...');
-            // Clean URL (remove query parameter)
-            window.history.replaceState({}, document.title, window.location.pathname);
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            console.log('[Biometric] Modal shown successfully');
+        } catch (error) {
+            console.error('[Biometric] Error showing modal:', error);
+            alert('Error showing biometric modal: ' + error.message);
+        }
+    }, 1500); // Increased delay to 1.5s for better reliability
+    
+    // Handle Enable button
+    document.getElementById('biometric-enable-btn').addEventListener('click', async function() {
+        const enableBtn = this;
+        const skipBtn = document.getElementById('biometric-skip-btn');
+        
+        enableBtn.disabled = true;
+        skipBtn.disabled = true;
+        enableBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Setting up...';
+        
+        const result = await BiometricAuth.register(
+            '<?php echo htmlspecialchars($_SESSION["email"] ?? ""); ?>',
+            <?php echo (int)($_SESSION["user_id"] ?? 0); ?>
+        );
+        
+        if (result.success) {
+            enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
+            enableBtn.style.background = '#28a745';
+            enableBtn.style.borderColor = '#28a745';
             
-            // Show a brief notification before modal
-            const bioNotification = document.createElement('div');
-            bioNotification.id = 'biometric-notification';
-            bioNotification.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); color: #1a1a1a; padding: 12px 24px; border-radius: 10px; font-weight: bold; z-index: 9998; box-shadow: 0 4px 15px rgba(197,160,89,0.4); animation: fadeSlideIn 0.5s ease;';
-            bioNotification.innerHTML = '<i class="bi bi-fingerprint"></i> Setting up quick login...';
-            document.body.appendChild(bioNotification);
-            
-            // Show modal after a short delay
             setTimeout(function() {
-                // Remove notification
-                if (bioNotification) {
-                    bioNotification.style.animation = 'fadeSlideOut 0.3s ease';
-                    setTimeout(() => bioNotification.remove(), 300);
-                }
-                
-                try {
-                    const modalElement = document.getElementById('biometricPromptModal');
-                    if (!modalElement) {
-                        console.error('[Biometric] Modal element not found!');
-                        alert('Biometric enrollment modal not found. Please contact support.');
-                        return;
-                    }
-                    
-                    const modal = new bootstrap.Modal(modalElement);
-                    modal.show();
-                    console.log('[Biometric] Modal shown successfully');
-                } catch (error) {
-                    console.error('[Biometric] Error showing modal:', error);
-                    alert('Error showing biometric modal: ' + error.message);
-                }
-            }, 1500); // Increased delay to 1.5s for better reliability
-            
-            // Handle Enable button
-            document.getElementById('biometric-enable-btn').addEventListener('click', async function() {
-                const enableBtn = this;
-                const skipBtn = document.getElementById('biometric-skip-btn');
-                
-                enableBtn.disabled = true;
-                skipBtn.disabled = true;
-                enableBtn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Setting up...';
-                
-                const result = await BiometricAuth.register(
-                    '<?php echo htmlspecialchars($_SESSION["email"] ?? ""); ?>',
-                    <?php echo (int)($_SESSION["user_id"] ?? 0); ?>
-                );
-                
-                if (result.success) {
-                    enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
-                    enableBtn.style.background = '#28a745';
-                    enableBtn.style.borderColor = '#28a745';
-                    
-                    setTimeout(function() {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
-                        modal.hide();
-                        
-                        // Show success toast
-                        const toast = document.createElement('div');
-                        toast.className = 'alert alert-success';
-                        toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; background: rgba(40, 167, 69, 0.95); color: white; border-radius: 10px; padding: 15px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
-                        toast.innerHTML = '<i class="bi bi-check-circle-fill"></i> Biometric login enabled! Next time you can login with fingerprint/face.';
-                        document.body.appendChild(toast);
-                        
-                        setTimeout(() => toast.remove(), 5000);
-                    }, 1000);
-                } else {
-                    enableBtn.disabled = false;
-                    skipBtn.disabled = false;
-                    enableBtn.innerHTML = '<i class="bi bi-fingerprint"></i> Enable Now';
-                    alert('Failed to enable biometric login: ' + result.error);
-                }
-            });
-            
-            // Handle Skip button
-            document.getElementById('biometric-skip-btn').addEventListener('click', function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
                 modal.hide();
-            });
+                
+                // Show success toast
+                const toast = document.createElement('div');
+                toast.className = 'alert alert-success';
+                toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; background: rgba(40, 167, 69, 0.95); color: white; border-radius: 10px; padding: 15px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+                toast.innerHTML = '<i class="bi bi-check-circle-fill"></i> Biometric login enabled! Next time you can login with fingerprint/face.';
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.remove(), 5000);
+            }, 1000);
+        } else {
+            enableBtn.disabled = false;
+            skipBtn.disabled = false;
+            enableBtn.innerHTML = '<i class="bi bi-fingerprint"></i> Enable Now';
+            alert('Failed to enable biometric login: ' + result.error);
         }
-    }
+    });
+    
+    // Handle Skip button
+    document.getElementById('biometric-skip-btn').addEventListener('click', function() {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
+        modal.hide();
+    });
 });
 </script>
 
