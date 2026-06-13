@@ -32,19 +32,29 @@ if ($action === 'register') {
         exit;
     }
     
+    // DEBUG: Log everything we receive
+    error_log("[Biometric Register] === START REGISTRATION ===");
+    error_log("[Biometric Register] User ID: $userId");
+    error_log("[Biometric Register] Credential object keys: " . implode(', ', array_keys($credential)));
+    error_log("[Biometric Register] credential[id]: " . ($credential['id'] ?? 'NOT SET'));
+    error_log("[Biometric Register] credential[rawId]: " . ($credential['rawId'] ?? 'NOT SET'));
+    error_log("[Biometric Register] credential[id] type: " . gettype($credential['id']));
+    error_log("[Biometric Register] credential[id] length: " . strlen($credential['id'] ?? ''));
+    error_log("[Biometric Register] credential[rawId] length: " . strlen($credential['rawId'] ?? ''));
+    
     try {
-        // Get credential ID - ensure it's a string
-        $credentialId = $credential['id'];
+        // Get credential ID - use rawId if available, fallback to id
+        $credentialId = $credential['rawId'] ?? $credential['id'];
         
-        // Log what we're storing
-        error_log("[Biometric Register] Raw credential ID type: " . gettype($credentialId));
-        error_log("[Biometric Register] Raw credential ID: " . (is_string($credentialId) ? $credentialId : json_encode($credentialId)));
+        error_log("[Biometric Register] Using credential ID from: " . (isset($credential['rawId']) ? 'rawId' : 'id'));
+        error_log("[Biometric Register] Final credential ID: " . $credentialId);
+        error_log("[Biometric Register] Final credential ID length: " . strlen($credentialId));
         
         // Ensure it's a string and trim it
         $credentialId = trim((string)$credentialId);
         
-        error_log("[Biometric Register] Stored credential ID: " . $credentialId);
-        error_log("[Biometric Register] Stored credential ID length: " . strlen($credentialId));
+        error_log("[Biometric Register] After trim - credential ID: " . $credentialId);
+        error_log("[Biometric Register] After trim - length: " . strlen($credentialId));
         
         // Store credential in database
         $stmt = $pdo->prepare("
@@ -55,7 +65,7 @@ if ($action === 'register') {
         $stmt->execute([
             $userId,
             $credentialId,
-            $credential['response']['attestationObject'], // Store as-is for now
+            $credential['response']['attestationObject'] ?? 'no-attestation',
             implode(',', $credential['response']['transports'] ?? ['internal'])
         ]);
         
@@ -63,7 +73,8 @@ if ($action === 'register') {
         unset($_SESSION['webauthn_challenge']);
         unset($_SESSION['webauthn_user_id']);
         
-        error_log("Biometric credential registered successfully for user {$userId}, credential_id: {$credentialId}");
+        error_log("[Biometric Register] SUCCESS: Stored credential for user {$userId}, length: " . strlen($credentialId));
+        error_log("[Biometric Register] === END REGISTRATION ===");
         
         echo json_encode([
             'success' => true,
