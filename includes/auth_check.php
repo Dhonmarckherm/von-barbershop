@@ -21,15 +21,26 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Security: Verify session role matches actual user role from database
-// This prevents role escalation from stale cookies
+// Security: Verify user still exists and role matches
+// This prevents access after account deletion and role escalation
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
     require_once __DIR__ . '/../config/db.php';
-    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, role FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $actualUser = $stmt->fetch();
     
-    if ($actualUser && $actualUser['role'] !== $_SESSION['role']) {
+    // Check if user was deleted from database
+    if (!$actualUser) {
+        // User no longer exists - destroy session and force logout
+        error_log('SECURITY: Deleted user session detected for user ID ' . $_SESSION['user_id'] . '. Destroying session.');
+        session_destroy();
+        clearAuthCookies();
+        header('Location: login.php?error=account_deleted');
+        exit;
+    }
+    
+    // Check if role matches
+    if ($actualUser['role'] !== $_SESSION['role']) {
         // Role mismatch detected - clear session and force re-login
         error_log('SECURITY: Role mismatch detected for user ' . $_SESSION['user_id'] . '. Session: ' . $_SESSION['role'] . ', DB: ' . $actualUser['role']);
         session_destroy();

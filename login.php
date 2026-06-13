@@ -128,6 +128,22 @@ if (isset($_GET['timeout']) && $_GET['timeout'] == '1'):
 <?php endif; ?>
 
 <?php
+// Show account deleted message
+if (isset($_GET['error']) && $_GET['error'] == 'account_deleted'):
+?>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #f5f5f5; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 24px; margin-right: 12px; color: #dc3545;"></i>
+        <div>
+            <strong>Account Deleted</strong><br>
+            <span style="font-size: 14px;">Your account has been deleted by an administrator. Please contact support if this was a mistake.</span>
+        </div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+</div>
+<?php endif; ?>
+
+<?php
 // Show registration success message
 if (isset($_GET['registered']) && $_GET['registered'] == '1'):
 ?>
