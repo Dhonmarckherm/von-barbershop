@@ -73,32 +73,11 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             });
         }
 
-        // iOS Detection - More Accurate
-        const isIos = () => {
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            // Check for iPhone, iPad, iPod
-            const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
-            // Also check for iPad on iOS 13+ (reports as MacIntel)
-            const isIPad = /MacIntel/.test(window.navigator.platform) && window.navigator.maxTouchPoints > 1;
-            return isIOSDevice || isIPad;
-        }
-
         // Check if already in standalone mode (PWA installed)
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
         window.addEventListener('load', () => {
-            // ALWAYS hide iOS hint first
-            const iosHint = document.getElementById('ios-install-hint');
-            if (iosHint) {
-                iosHint.style.display = 'none';
-            }
-            
-            // Only show iOS hint if ACTUALLY on iOS device and not installed
-            if (isIos() && !isInStandaloneMode()) {
-                if (iosHint) {
-                    iosHint.style.display = 'block';
-                }
-            }
+            // Load event handler
         });
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -322,9 +301,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
         function closePWABanner() {
             const banner = document.getElementById('pwa-install-banner');
-            const iosHint = document.getElementById('ios-install-hint');
             if (banner) banner.style.display = 'none';
-            if (iosHint) iosHint.style.display = 'none';
         }
     </script>
 </head>
@@ -349,16 +326,6 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                     <i class="bi bi-download"></i> Install App
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- iOS Install Hint -->
-    <div id="ios-install-hint">
-        <button class="btn-close" onclick="closePWABanner()">&times;</button>
-        <div class="hint-content">
-            <i class="bi bi-box-arrow-up"></i>
-            <p>To install <b>VON BARBER STUDIO</b> on your iPhone:</p>
-            <p>Tap the <b>Share</b> button and select <b>"Add to Home Screen"</b></p>
         </div>
     </div>
 
