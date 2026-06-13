@@ -42,6 +42,9 @@ try {
 }
 
 require_once 'includes/header.php';
+
+// Check if this is a new user who just registered
+$isNewUser = isset($_GET['welcome']) && $_GET['welcome'] == '1';
 ?>
 
 <!-- Welcome Greeting Section -->
@@ -107,6 +110,19 @@ require_once 'includes/header.php';
         </a>
     </div>
 </div>
+
+<?php if ($isNewUser): ?>
+<!-- New User Welcome Message -->
+<div class="alert alert-success mb-4" style="background: rgba(40, 167, 69, 0.15); border: 2px solid #28a745; color: #ffffff; border-radius: 15px; padding: 20px; animation: fadeSlideIn 0.5s ease;">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-emoji-smile-fill" style="font-size: 32px; margin-right: 15px; color: #28a745;"></i>
+        <div>
+            <h5 style="color: #28a745; margin: 0 0 5px 0; font-weight: bold;">Welcome to VON BARBER STUDIO! 🎉</h5>
+            <p style="margin: 0; color: #b0b0b0;">Your account has been created successfully. Enable Face ID/Touch ID for instant login next time!</p>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <h2 class="mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">My Appointments</h2>
 <p class="mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Your grooming history</p>

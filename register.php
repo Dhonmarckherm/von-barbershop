@@ -156,9 +156,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log("================================================");
         }
         
-        // Registration successful - DO NOT auto-login
-        // Redirect to login page with success message
-        header('Location: login.php?registered=1');
+        // Registration successful - Auto-login and redirect to appointments with biometric prompt
+        $_SESSION['user_id'] = $newUserId;
+        $_SESSION['email'] = $email;
+        $_SESSION['name'] = $name;
+        $_SESSION['role'] = 'customer';
+        
+        // Set auth cookies for consistency
+        $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                   || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+                   || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+        
+        $cookieParams = [
+            'expires' => time() + (30 * 24 * 60 * 60), // 30 days
+            'path' => '/',
+            'secure' => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ];
+        
+        setcookie('auth_user_id', $newUserId, $cookieParams);
+        setcookie('auth_name', $name, $cookieParams);
+        setcookie('auth_email', $email, $cookieParams);
+        setcookie('auth_role', 'customer', $cookieParams);
+        
+        // Redirect to appointments with biometric enrollment prompt
+        header('Location: my_appointments.php?biometric_prompt=1&welcome=1');
         exit;
     }
 }
