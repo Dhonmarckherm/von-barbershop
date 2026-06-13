@@ -367,6 +367,12 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             <a class="navbar-brand" href="index.php">
                 <?php echo htmlspecialchars($siteName); ?>
             </a>
+            
+            <!-- Theme Toggle Button in Navbar -->
+            <button id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+                <span class="toggle-icon icon-moon">🌙</span>
+                <span class="toggle-icon icon-sun">☀️</span>
+            </button>
         </div>
     </nav>
     
@@ -726,9 +732,16 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         transition: all 0.4s ease !important;
     }
 
+    .navbar .container {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
     .navbar-brand {
         color: var(--text-primary) !important;
         transition: color 0.4s ease !important;
+        margin: 0 !important;
     }
 
     /* Bottom Navigation Theme */
@@ -818,27 +831,25 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         color: #d4af37 !important;
     }
 
-    /* Theme Toggle Button - Premium Slider Style */
+    /* Theme Toggle Button - In Navbar, Knob Slides Only */
     #themeToggleBtn {
-        position: fixed !important;
-        bottom: 100px !important;
-        right: 20px !important;
-        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
         width: 70px !important;
         height: 36px !important;
         border-radius: 18px !important;
         border: 2px solid #d4af37 !important;
         background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
         cursor: pointer !important;
-        display: flex !important;
-        align-items: center !important;
         padding: 3px !important;
+        margin-left: auto !important;
         box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.3) !important;
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        transition: all 0.3s ease !important;
         -webkit-tap-highlight-color: transparent !important;
+        position: relative !important;
     }
 
-    /* Toggle Knob */
+    /* Toggle Knob - ONLY this slides */
     #themeToggleBtn::before {
         content: '' !important;
         position: absolute !important;
@@ -848,40 +859,40 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         border-radius: 50% !important;
         background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
         box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5) !important;
-        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
     }
 
-    /* Light mode - move knob to right */
+    /* Light mode - ONLY knob slides to right */
     [data-theme="light"] #themeToggleBtn {
         background: linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 100%) !important;
         border-color: #d4af37 !important;
     }
 
     [data-theme="light"] #themeToggleBtn::before {
-        left: 37px !important;
+        left: 37px !important;  /* ONLY knob moves */
         background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
     }
 
-    /* Toggle Icons */
+    /* Toggle Icons - Stay in place, opacity changes only */
     #themeToggleBtn .toggle-icon {
-        position: absolute !important;
         font-size: 16px !important;
-        transition: all 0.4s ease !important;
+        transition: opacity 0.3s ease !important;
         z-index: 1 !important;
+        flex: 1 !important;
+        text-align: center !important;
+        pointer-events: none !important;
     }
 
     #themeToggleBtn .icon-moon {
-        left: 8px !important;
         opacity: 1 !important;
     }
 
     #themeToggleBtn .icon-sun {
-        right: 8px !important;
-        opacity: 0.5 !important;
+        opacity: 0.4 !important;
     }
 
     [data-theme="light"] #themeToggleBtn .icon-moon {
-        opacity: 0.5 !important;
+        opacity: 0.4 !important;
     }
 
     [data-theme="light"] #themeToggleBtn .icon-sun {
@@ -889,7 +900,6 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     }
 
     #themeToggleBtn:hover {
-        transform: scale(1.05) !important;
         box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
     }
 
