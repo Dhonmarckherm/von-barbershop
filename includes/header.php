@@ -690,26 +690,27 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
     <!-- Theme Toggle Button (Visible on ALL pages) -->
     <style>
-    /* Theme Variables */
+    /* Theme Variables - Black, Grey, White ONLY */
     :root {
-        --bg-primary: #1a1a1a;
-        --bg-secondary: #2d2d2d;
-        --bg-card: #242424;
+        --bg-primary: #000000;
+        --bg-secondary: #1a1a1a;
+        --bg-card: #2d2d2d;
         --text-primary: #ffffff;
-        --text-secondary: #b0b0b0;
+        --text-secondary: #c0c0c0;
         --text-muted: #808080;
         --border-color: #404040;
         --input-bg: #1a1a1a;
         --input-border: #505050;
         --navbar-bg: #0a0a0a;
         --bottom-nav-bg: #0a0a0a;
+        --accent-color: #c0c0c0;
     }
 
     [data-theme="light"] {
-        --bg-primary: #f5f5f5;
-        --bg-secondary: #ffffff;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f5;
         --bg-card: #ffffff;
-        --text-primary: #1a1a1a;
+        --text-primary: #000000;
         --text-secondary: #4a4a4a;
         --text-muted: #6a6a6a;
         --border-color: #e0e0e0;
@@ -717,6 +718,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         --input-border: #c0c0c0;
         --navbar-bg: #ffffff;
         --bottom-nav-bg: #ffffff;
+        --accent-color: #000000;
     }
 
     /* Global Theme Application */
@@ -796,9 +798,9 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
     .form-control:focus {
         background: var(--input-bg) !important;
-        border-color: #d4af37 !important;
+        border-color: var(--accent-color) !important;
         color: var(--text-primary) !important;
-        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+        box-shadow: 0 0 0 0.25rem rgba(192, 192, 192, 0.25) !important;
     }
 
     .form-control::placeholder {
@@ -828,28 +830,28 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     }
 
     a {
-        color: #d4af37 !important;
+        color: var(--accent-color) !important;
     }
 
-    /* Theme Toggle Button - In Navbar, Knob Slides Only */
+    /* Theme Toggle Button - In Navbar, Knob Slides Only - Silver Theme */
     #themeToggleBtn {
         display: flex !important;
         align-items: center !important;
         width: 70px !important;
         height: 36px !important;
         border-radius: 18px !important;
-        border: 2px solid #d4af37 !important;
+        border: 2px solid #c0c0c0 !important;
         background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
         cursor: pointer !important;
         padding: 3px !important;
         margin-left: auto !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.3) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 0 1px rgba(192, 192, 192, 0.3) !important;
         transition: all 0.3s ease !important;
         -webkit-tap-highlight-color: transparent !important;
         position: relative !important;
     }
 
-    /* Toggle Knob - ONLY this slides */
+    /* Toggle Knob - Silver gradient - ONLY this slides */
     #themeToggleBtn::before {
         content: '' !important;
         position: absolute !important;
@@ -857,20 +859,20 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         width: 26px !important;
         height: 26px !important;
         border-radius: 50% !important;
-        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
-        box-shadow: 0 2px 8px rgba(212, 175, 55, 0.5) !important;
+        background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%) !important;
+        box-shadow: 0 2px 8px rgba(192, 192, 192, 0.5) !important;
         transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
     }
 
     /* Light mode - ONLY knob slides to right */
     [data-theme="light"] #themeToggleBtn {
         background: linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 100%) !important;
-        border-color: #d4af37 !important;
+        border-color: #000000 !important;
     }
 
     [data-theme="light"] #themeToggleBtn::before {
         left: 37px !important;  /* ONLY knob moves */
-        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%) !important;
+        background: linear-gradient(135deg, #808080 0%, #a0a0a0 100%) !important;
     }
 
     /* Toggle Icons - Stay in place, opacity changes only */
@@ -900,7 +902,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     }
 
     #themeToggleBtn:hover {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 2px rgba(192, 192, 192, 0.5) !important;
     }
 
     #themeToggleBtn:active {

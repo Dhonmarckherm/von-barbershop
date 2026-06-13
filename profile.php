@@ -127,9 +127,9 @@ body, .profile-container {
 
 .form-control:focus {
     background: var(--input-bg) !important;
-    border-color: var(--barber-gold) !important;
+    border-color: var(--accent-color) !important;
     color: var(--text-primary) !important;
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+    box-shadow: 0 0 0 0.25rem rgba(192, 192, 192, 0.25) !important;
 }
 
 .form-control::placeholder {
@@ -161,7 +161,7 @@ body, .profile-container {
     width: 65px;
     height: 65px;
     border-radius: 50%;
-    border: 3px solid var(--barber-gold) !important;
+    border: 3px solid #c0c0c0 !important;
     background: var(--bg-secondary);
     color: var(--text-primary);
     cursor: pointer;
@@ -169,14 +169,14 @@ body, .profile-container {
     align-items: center;
     justify-content: center;
     font-size: 28px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(192, 192, 192, 0.3);
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .theme-toggle-btn:hover {
     transform: scale(1.1) rotate(180deg);
     box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    border-color: var(--barber-gold);
+    border-color: #c0c0c0;
 }
 
 .theme-toggle-btn:active {
@@ -244,7 +244,7 @@ body, .profile-container {
     <div class="col-md-6 col-lg-5">
         <div class="card">
             <div class="card-body p-4">
-                <h2 class="text-center mb-4" style="color: var(--barber-gold); font-family: 'Playfair Display', serif;">My Profile</h2>
+                <h2 class="text-center mb-4" style="color: var(--text-primary); font-family: 'Playfair Display', serif;">My Profile</h2>
                 <p class="text-center mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Update your personal information</p>
 
                 <?php if ($success): ?>
@@ -281,13 +281,13 @@ body, .profile-container {
 
                 <!-- Biometric Login Section -->
                 <div class="text-center">
-                    <h5 style="color: var(--barber-gold); font-family: 'Playfair Display', serif; margin-bottom: 15px;">
+                    <h5 style="color: var(--text-primary); font-family: 'Playfair Display', serif; margin-bottom: 15px;">
                         <i class="bi bi-fingerprint"></i> Quick Login
                     </h5>
                     <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
                         Enable fingerprint or face recognition for faster login
                     </p>
-                    <button type="button" id="reenableBiometricBtn" class="btn btn-outline-warning" style="border-color: var(--barber-gold); color: var(--barber-gold);">
+                    <button type="button" id="reenableBiometricBtn" class="btn btn-outline-secondary" style="border-color: var(--accent-color); color: var(--text-primary);">
                         <i class="bi bi-fingerprint"></i> Re-enable Biometric Login
                     </button>
                     <p style="color: #888; font-size: 12px; margin-top: 10px;">
