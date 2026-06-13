@@ -64,76 +64,46 @@ require_once 'includes/header.php';
 ?>
 
 <style>
-/* Theme Variables */
-:root {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --bg-card: #242424;
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --text-muted: #808080;
-    --border-color: #404040;
-    --input-bg: #1a1a1a;
-    --input-border: #505050;
-    --shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-[data-theme="light"] {
-    --bg-primary: #f5f5f5;
-    --bg-secondary: #ffffff;
-    --bg-card: #ffffff;
-    --text-primary: #1a1a1a;
-    --text-secondary: #4a4a4a;
-    --text-muted: #6a6a6a;
-    --border-color: #e0e0e0;
-    --input-bg: #ffffff;
-    --input-border: #c0c0c0;
-    --shadow: 0 10px 40px rgba(0,0,0,0.1);
-}
-
-/* Apply theme */
+/* Profile Page Styles - Dark Theme Only */
 body, .profile-container {
-    background: var(--bg-primary) !important;
-    color: var(--text-primary) !important;
-    transition: all 0.3s ease;
+    background: #000000 !important;
+    color: #ffffff !important;
 }
 
 .card {
-    background: var(--bg-card) !important;
-    border-color: var(--border-color) !important;
-    box-shadow: var(--shadow) !important;
-    transition: all 0.3s ease;
+    background: #2d2d2d !important;
+    border-color: #404040 !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
 }
 
 .card-body h2 {
-    color: var(--text-primary) !important;
+    color: #ffffff !important;
 }
 
 .card-body p.text-center {
-    color: var(--text-secondary) !important;
+    color: #b0b0b0 !important;
 }
 
 .form-label {
-    color: var(--text-primary) !important;
+    color: #ffffff !important;
     font-weight: 600;
 }
 
 .form-control {
-    background: var(--input-bg) !important;
-    border-color: var(--input-border) !important;
-    color: var(--text-primary) !important;
-    transition: all 0.3s ease;
+    background: #1a1a1a !important;
+    border-color: #505050 !important;
+    color: #ffffff !important;
 }
 
 .form-control:focus {
-    background: var(--input-bg) !important;
-    border-color: var(--accent-color) !important;
-    color: var(--text-primary) !important;
+    background: #1a1a1a !important;
+    border-color: #c0c0c0 !important;
+    color: #ffffff !important;
     box-shadow: 0 0 0 0.25rem rgba(192, 192, 192, 0.25) !important;
 }
 
 .form-control::placeholder {
-    color: var(--text-muted) !important;
+    color: #808080 !important;
 }
 
 .alert-success {
@@ -151,94 +121,7 @@ body, .profile-container {
 .alert-danger ul li {
     color: #dc3545 !important;
 }
-
-/* Theme Toggle Button */
-.theme-toggle-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 10000 !important;
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    border: 3px solid #c0c0c0 !important;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(192, 192, 192, 0.3);
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.theme-toggle-btn:hover {
-    transform: scale(1.1) rotate(180deg);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    border-color: #c0c0c0;
-}
-
-.theme-toggle-btn:active {
-    transform: scale(0.95);
-}
-
-.theme-icon {
-    transition: all 0.3s ease;
-}
-
-/* Theme switch animation */
-.theme-changing {
-    animation: themePulse 0.5s ease;
-}
-
-@keyframes themePulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
 </style>
-
-<!-- Theme Toggle Button -->
-<button class="theme-toggle-btn" id="themeToggle" title="Toggle Dark/Light Mode">
-    <span class="theme-icon" id="themeIcon">☀️</span>
-</button>
-
-<script>
-// Theme Management
-(function() {
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    
-    // Load saved theme or default to dark
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-    
-    // Toggle theme on click
-    themeToggle.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        // Add animation
-        themeToggle.classList.add('theme-changing');
-        
-        // Update theme
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        
-        // Remove animation class
-        setTimeout(() => {
-            themeToggle.classList.remove('theme-changing');
-        }, 500);
-    });
-    
-    function updateThemeIcon(theme) {
-        themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
-        themeToggle.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-    }
-})();
-</script>
 
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
