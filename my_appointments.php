@@ -912,9 +912,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
         
         if (result.success) {
-            enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
+            const credLength = result.credentialLength || 'unknown';
+            enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled! (' + credLength + ' chars)';
             enableBtn.style.background = '#28a745';
             enableBtn.style.borderColor = '#28a745';
+            
+            // Show alert with credential length for debugging
+            alert('✅ Biometric login enabled!\n\nCredential ID length: ' + credLength + ' characters\n\nIf this is less than 60 characters, the credential was stored incorrectly.');
             
             setTimeout(function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
