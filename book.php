@@ -96,6 +96,19 @@ require_once 'includes/header.php';
                         </small>
                     </div>
 
+                    <!-- Price Reminder -->
+                    <div class="mb-3" style="background: linear-gradient(135deg, rgba(197,160,89,0.15) 0%, rgba(197,160,89,0.05) 100%); border-left: 4px solid var(--barber-gold); padding: 15px 18px; border-radius: 10px;">
+                        <div class="d-flex align-items-start" style="gap: 12px;">
+                            <i class="bi bi-info-circle-fill" style="font-size: 22px; color: var(--barber-gold); flex-shrink: 0; margin-top: 2px;"></i>
+                            <div>
+                                <p style="color: #F5F0E8; font-size: 14px; font-weight: 600; margin: 0 0 5px 0;">Service Fee Reminder</p>
+                                <p style="color: #B8B8CC; font-size: 13px; margin: 0; line-height: 1.5;">
+                                    All haircuts and services are <strong style="color: var(--barber-gold); font-size: 15px;">₱150</strong> each. Payment is collected at the shop after your appointment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled 
                                 style="background: linear-gradient(135deg, #FFFFFF 0%, #C0C0C0 100%); border: none; color: #1a1a2e; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 16px; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(192,192,192,0.3);">
