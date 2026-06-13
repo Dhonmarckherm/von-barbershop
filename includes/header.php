@@ -672,4 +672,126 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         }
     });
     </script>
+
+    <!-- Theme Toggle Button (Visible on ALL pages) -->
+    <style>
+    /* Theme Variables */
+    :root {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --bg-card: #242424;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --text-muted: #808080;
+        --border-color: #404040;
+        --input-bg: #1a1a1a;
+        --input-border: #505050;
+    }
+
+    [data-theme="light"] {
+        --bg-primary: #f5f5f5;
+        --bg-secondary: #ffffff;
+        --bg-card: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #4a4a4a;
+        --text-muted: #6a6a6a;
+        --border-color: #e0e0e0;
+        --input-bg: #ffffff;
+        --input-border: #c0c0c0;
+    }
+
+    /* Theme Toggle Button - Fixed Position, Always Visible */
+    #themeToggleBtn {
+        position: fixed !important;
+        bottom: 90px !important;
+        right: 20px !important;
+        z-index: 99999 !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        border: 3px solid #d4af37 !important;
+        background: #2d2d2d !important;
+        color: #ffffff !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 26px !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 0 1px rgba(212, 175, 55, 0.4) !important;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    #themeToggleBtn:hover {
+        transform: scale(1.15) rotate(180deg) !important;
+        box-shadow: 0 12px 35px rgba(0,0,0,0.6), 0 0 0 2px rgba(212, 175, 55, 0.6) !important;
+    }
+
+    #themeToggleBtn:active {
+        transform: scale(0.95) !important;
+    }
+
+    /* Light mode button styles */
+    [data-theme="light"] #themeToggleBtn {
+        background: #ffffff !important;
+        color: #1a1a1a !important;
+        border-color: #d4af37 !important;
+    }
+
+    @keyframes themePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+
+    .theme-changing {
+        animation: themePulse 0.5s ease !important;
+    }
+    </style>
+
+    <button id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <script>
+    // Theme Toggle Logic (Applied to ALL pages)
+    (function() {
+        const themeToggle = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        if (!themeToggle || !themeIcon) return;
+        
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+        
+        // Toggle on click
+        themeToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Add pulse animation
+            themeToggle.classList.add('theme-changing');
+            
+            // Update theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+            
+            // Remove animation
+            setTimeout(() => {
+                themeToggle.classList.remove('theme-changing');
+            }, 500);
+        });
+        
+        function updateIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+    })();
+    </script>
+
     <div class="container mt-4">
