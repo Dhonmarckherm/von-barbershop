@@ -4,6 +4,9 @@ header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
 header('Expires: 0');
 
+// Start output buffering to prevent headers already sent errors
+ob_start();
+
 $pageTitle = 'Register';
 require_once 'config/db.php';
 require_once 'config/session.php';
@@ -83,12 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Send welcome email to new user
         try {
+            error_log("========== WELCOME EMAIL START ==========");
+            error_log("Welcome Email: Sending to $email for user $name (ID: $newUserId)");
+            
             $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
             
-            error_log("Welcome Email: Starting for $email");
             error_log("Welcome Email: Brevo key exists: " . ($brevoKey ? 'YES' : 'NO'));
             if ($brevoKey) {
                 error_log("Welcome Email: Key starts with: " . substr($brevoKey, 0, 10) . "...");
+            } else {
+                error_log("Welcome Email: ERROR - No Brevo API key found!");
             }
             
             $subject = 'Welcome to V.O.N Barber Studio! ✂️';
@@ -124,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Use Brevo HTTP API
                 error_log("Welcome Email: Using Brevo HTTP API");
                 $emailResult = sendBrevoEmail($email, $name, $subject, $htmlContent);
-                error_log("Welcome Email: Brevo API result: " . ($emailResult ? 'SUCCESS' : 'FAILED'));
+                error_log("Welcome Email: Brevo API result: " . ($emailResult ? 'SUCCESS ✅' : 'FAILED ❌'));
             } else {
                 // Fallback to PHPMailer SMTP
                 error_log("Welcome Email: Using PHPMailer SMTP fallback");
@@ -134,11 +141,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mail->Subject = $subject;
                 $mail->Body = $htmlContent;
                 $mail->send();
-                error_log("Welcome Email: SMTP email sent successfully");
+                error_log("Welcome Email: SMTP email sent successfully ✅");
+                $emailResult = true;
             }
+            
+            error_log("========== WELCOME EMAIL END ==========");
         } catch (Exception $e) {
+            error_log("========== WELCOME EMAIL EXCEPTION ==========");
             error_log("Welcome email failed: " . $e->getMessage());
             error_log("Welcome email stack trace: " . $e->getTraceAsString());
+            error_log("================================================");
         }
         
         // Registration successful - DO NOT auto-login

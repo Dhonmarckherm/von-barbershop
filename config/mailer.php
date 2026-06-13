@@ -119,7 +119,7 @@ function sendBrevoEmail(string $toEmail, string $toName, string $subject, string
         'content-type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30); // Increased from 10 to 30 seconds
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     
     $response = curl_exec($ch);
