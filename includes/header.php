@@ -108,16 +108,34 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 
         function installPWA() {
             const banner = document.getElementById('pwa-install-banner');
-            if (banner) {
-                banner.style.display = 'none';
-            }
+            const installBtn = banner.querySelector('.btn-install');
+            
             if (deferredPrompt) {
+                // Show installing state
+                installBtn.disabled = true;
+                installBtn.innerHTML = '<span class="spinner"></span> Installing...';
+                installBtn.style.background = 'linear-gradient(135deg, #C5A059 0%, #D4AF37 100%)';
+                installBtn.style.color = '#000000';
+                
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
+                        // Show success state
+                        installBtn.innerHTML = '<i class="bi bi-check-circle"></i> Installed!';
+                        installBtn.style.background = '#28a745';
+                        
+                        // Hide banner after 2 seconds
+                        setTimeout(() => {
+                            banner.style.display = 'none';
+                        }, 2000);
                     } else {
                         console.log('User dismissed the install prompt');
+                        // Reset button
+                        installBtn.disabled = false;
+                        installBtn.innerHTML = 'Install';
+                        installBtn.style.background = 'white';
+                        installBtn.style.color = 'black';
                     }
                     deferredPrompt = null;
                 });
@@ -136,14 +154,20 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <!-- PWA Install Banner (Android) -->
     <div id="pwa-install-banner">
         <div class="banner-content">
-            <img src="assets/images/rubiks.jpg" alt="VON BARBER STUDIO">
+            <div class="banner-icon">
+                <i class="bi bi-phone"></i>
+            </div>
             <div class="banner-text">
                 <h6>Install VON BARBER STUDIO</h6>
                 <p>Book your next cut faster!</p>
             </div>
             <div class="banner-btns">
-                <button class="btn-install" onclick="installPWA()">Install</button>
-                <button class="btn-close" onclick="closePWABanner()">&times;</button>
+                <button class="btn-install" onclick="installPWA()">
+                    <i class="bi bi-download"></i> Install
+                </button>
+                <button class="btn-close" onclick="closePWABanner()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         </div>
     </div>
