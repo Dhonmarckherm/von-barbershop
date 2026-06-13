@@ -6,6 +6,9 @@
  * and sends email notifications via PHPMailer.
  */
 
+// Start output buffering to prevent headers already sent errors
+ob_start();
+
 require_once 'includes/auth_check.php';
 require_once 'config/db.php';
 require_once 'config/mailer.php';
@@ -105,13 +108,13 @@ if ($user) {
     }
 }
 
-header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
-
-// Store notification for display in app
+// Store notification for display in app BEFORE redirect
 $_SESSION['push_notification'] = [
     'title' => '✅ Booking Confirmed',
     'body' => "Your appointment on {$date} at " . substr($time, 0, 5) . " has been booked!",
-    'id' => $pdo->lastInsertId()
+    'id' => $appointmentId
 ];
 
+// Redirect to success page
+header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
 exit;
