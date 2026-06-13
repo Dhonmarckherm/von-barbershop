@@ -115,12 +115,22 @@ $_SESSION['push_notification'] = [
     'id' => $appointmentId
 ];
 
+// Debug logging
+error_log("[Booking] Appointment inserted successfully. ID: $appointmentId");
+error_log("[Booking] User ID: " . $_SESSION['user_id']);
+error_log("[Booking] Redirecting to my_appointments.php");
+
 // Check if this is user's first booking (for biometric enrollment)
 $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM appointments WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $bookingCount = $stmt->fetch()['count'];
 $showBiometricPrompt = ($bookingCount <= 1) ? '&biometric_prompt=1' : '';
 
+error_log("[Booking] User has $bookingCount bookings. Biometric prompt: " . ($showBiometricPrompt ? 'YES' : 'NO'));
+
 // Redirect to success page
-header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed') . $showBiometricPrompt);
+$redirectUrl = 'my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed') . $showBiometricPrompt;
+error_log("[Booking] Final redirect URL: $redirectUrl");
+
+header('Location: ' . $redirectUrl);
 exit;

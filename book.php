@@ -250,9 +250,18 @@ document.addEventListener('DOMContentLoaded', function() {
     dateInput.addEventListener('change', fetchSlots);
 
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        console.log('[Booking] Form submitted');
+        console.log('[Booking] Time value:', timeInput.value);
+        
         if (!timeInput.value) {
             e.preventDefault();
             slotError.classList.remove('d-none');
+            console.log('[Booking] Prevented submit - no time selected');
+        } else {
+            console.log('[Booking] Allowing form submission to process_booking.php');
+            // Disable submit button to prevent double-submission
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
         }
     });
 });
