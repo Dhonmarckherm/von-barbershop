@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/config/session.php';
-initializeSession();
+session_start();
 
-// Check if logged in
+// Must be logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -13,37 +12,31 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Biometric</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Biometric Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
-<body class="bg-dark text-white">
+<body style="background: #1a1a1a; color: #F5F0E8;">
     <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card bg-secondary">
-                    <div class="card-body">
-                        <h2 class="card-title">🔐 Biometric Test Page</h2>
-                        <p class="card-text">Use this page to test biometric enrollment on your device.</p>
-                        
-                        <div id="status" class="alert alert-info">
-                            Click the button below to start
-                        </div>
-
-                        <button id="testBiometricBtn" class="btn btn-primary btn-lg w-100 mb-3">
-                            <i class="bi bi-fingerprint"></i> Test Biometric Enrollment
-                        </button>
-
-                        <a href="my_appointments.php" class="btn btn-outline-light w-100">
-                            ← Back to Dashboard
-                        </a>
-                    </div>
-                </div>
-
-                <div class="card bg-secondary mt-3">
-                    <div class="card-body">
-                        <h5>Debug Information:</h5>
-                        <pre id="debugInfo" class="bg-dark text-success p-3" style="font-size: 12px;"></pre>
-                    </div>
+        <h1 class="text-center mb-4">🔐 Biometric Login Test</h1>
+        
+        <div class="card" style="background: #2d2d2d; border: 1px solid #c0c0c0;">
+            <div class="card-body">
+                <h5>Debug Information:</h5>
+                <div id="debugInfo" class="mb-4" style="background: #000; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.85rem;"></div>
+                
+                <div class="d-grid gap-3">
+                    <button id="testWebAuthn" class="btn btn-primary" style="background: linear-gradient(135deg, #c0c0c0, #ffffff); color: #000; font-weight: 600;">
+                        <i class="bi bi-shield-check"></i> Test 1: Check WebAuthn Support
+                    </button>
+                    
+                    <button id="testBiometric" class="btn btn-success" disabled>
+                        <i class="bi bi-fingerprint"></i> Test 2: Check Biometric Hardware
+                    </button>
+                    
+                    <button id="testEnrollment" class="btn btn-warning" disabled>
+                        <i class="bi bi-plus-circle"></i> Test 3: Try Enroll Biometric
+                    </button>
                 </div>
             </div>
         </div>
@@ -51,65 +44,101 @@ if (!isset($_SESSION['user_id'])) {
 
     <script src="/www/js/biometric-auth.js"></script>
     <script>
-        const status = document.getElementById('status');
         const debugInfo = document.getElementById('debugInfo');
-        const testBtn = document.getElementById('testBiometricBtn');
+        const logs = [];
 
-        function log(message) {
-            debugInfo.textContent += message + '\n';
-            console.log(message);
+        function log(message, type = 'info') {
+            logs.push(`[${type.toUpperCase()}] ${message}`);
+            debugInfo.innerHTML = logs.join('<br>');
+            console.log(`[Biometric Test] ${message}`);
         }
 
-        testBtn.addEventListener('click', async function() {
-            debugInfo.textContent = '';
-            log('=== BIOMETRIC TEST STARTED ===');
-            log('User ID: <?php echo $_SESSION["user_id"]; ?>');
-            log('Email: <?php echo $_SESSION["email"]; ?>');
+        // Initial checks
+        log('Page loaded');
+        log(`User: <?= $_SESSION['user_name'] ?? 'Unknown' ?>`);
+        log(`Role: <?= $_SESSION['user_role'] ?? 'Unknown' ?>`);
+        log(`WebAuthn API available: ${window.PublicKeyCredential ? 'YES' : 'NO'}`);
+        log(`navigator.credentials available: ${navigator.credentials ? 'YES' : 'NO'}`);
+        log(`Protocol: ${window.location.protocol}`);
+        log(`Hostname: ${window.location.hostname}`);
+
+        // Test 1: WebAuthn Support
+        document.getElementById('testWebAuthn').addEventListener('click', async function() {
+            log('Testing WebAuthn support...', 'test');
             
-            // Step 1: Check if WebAuthn is supported
-            log('\n1. Checking WebAuthn support...');
-            if (!BiometricAuth.isSupported()) {
-                status.className = 'alert alert-danger';
-                status.innerHTML = '❌ WebAuthn is NOT supported in this browser!';
-                log('❌ WebAuthn NOT supported');
+            if (typeof BiometricAuth === 'undefined') {
+                log('ERROR: BiometricAuth library not loaded!', 'error');
                 return;
             }
-            log('✅ WebAuthn supported');
-
-            // Step 2: Check if biometric hardware is available
-            log('\n2. Checking biometric hardware...');
-            const isAvailable = await BiometricAuth.isBiometricAvailable();
-            if (!isAvailable) {
-                status.className = 'alert alert-warning';
-                status.innerHTML = '⚠️ No biometric hardware detected on this device';
-                log('❌ No biometric hardware');
-                return;
-            }
-            log('✅ Biometric hardware available');
-
-            // Step 3: Register biometric
-            log('\n3. Starting biometric registration...');
-            status.className = 'alert alert-primary';
-            status.innerHTML = '⏳ Please complete the biometric scan...';
             
-            const result = await BiometricAuth.register(
-                '<?php echo $_SESSION["email"]; ?>',
-                <?php echo (int)$_SESSION["user_id"]; ?>
-            );
-
-            if (result.success) {
-                status.className = 'alert alert-success';
-                status.innerHTML = '✅ SUCCESS! Biometric login is now enabled!<br><br>You can now logout and test "Login with Biometrics"';
-                log('\n✅ Registration successful!');
-                log(result.message);
-            } else {
-                status.className = 'alert alert-danger';
-                status.innerHTML = '❌ Failed: ' + result.error;
-                log('\n❌ Registration failed: ' + result.error);
+            const isSupported = BiometricAuth.isSupported();
+            log(`WebAuthn supported: ${isSupported ? 'YES ✅' : 'NO ❌'}`, isSupported ? 'success' : 'error');
+            
+            if (isSupported) {
+                document.getElementById('testBiometric').disabled = false;
             }
         });
 
-        log('Page loaded. Click button to test.');
+        // Test 2: Biometric Hardware
+        document.getElementById('testBiometric').addEventListener('click', async function() {
+            log('Checking biometric hardware...', 'test');
+            
+            try {
+                const isAvailable = await BiometricAuth.isBiometricAvailable();
+                log(`Biometric hardware available: ${isAvailable ? 'YES ✅' : 'NO ❌'}`, isAvailable ? 'success' : 'error');
+                
+                if (isAvailable) {
+                    document.getElementById('testEnrollment').disabled = false;
+                }
+            } catch (err) {
+                log(`Error checking biometric: ${err.message}`, 'error');
+            }
+        });
+
+        // Test 3: Enrollment
+        document.getElementById('testEnrollment').addEventListener('click', async function() {
+            log('Starting biometric enrollment...', 'test');
+            
+            try {
+                // Check if already registered
+                const checkResponse = await fetch('/api/biometric_login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_challenge' })
+                });
+                
+                const checkResult = await checkResponse.json();
+                log(`API response: ${JSON.stringify(checkResult).substring(0, 100)}`, 'api');
+                
+                if (checkResult.allowCredentials && checkResult.allowCredentials.length > 0) {
+                    log('⚠️ You already have biometric registered!', 'warning');
+                    alert('You already have biometric login enabled!');
+                    return;
+                }
+                
+                // Try to register
+                const result = await BiometricAuth.register(
+                    '<?= $_SESSION['user_email'] ?>',
+                    <?= $_SESSION['user_id'] ?>
+                );
+                
+                if (result.success) {
+                    log('✅ Biometric enrollment successful!', 'success');
+                    alert('Biometric login enabled!');
+                } else {
+                    log(`❌ Enrollment failed: ${result.error}`, 'error');
+                    alert('Failed: ' + result.error);
+                }
+            } catch (err) {
+                log(`❌ Error: ${err.message}`, 'error');
+                alert('Error: ' + err.message);
+            }
+        });
+
+        // Auto-run initial check
+        setTimeout(() => {
+            document.getElementById('testWebAuthn').click();
+        }, 500);
     </script>
 </body>
 </html>
