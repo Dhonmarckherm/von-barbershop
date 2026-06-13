@@ -17,7 +17,7 @@
     
     <div id="output" class="output">Click "Test Registration" to begin...</div>
     
-    <script src="/js/biometric-auth.js?v=<?= time() ?>"></script>
+    <script src="/www/js/biometric-auth.js?v=<?= time() ?>"></script>
     <script>
         async function testRegistration() {
             const output = document.getElementById('output');
