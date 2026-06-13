@@ -124,14 +124,22 @@ const BiometricAuth = {
             });
 
             // Send credential to server for storage
-            const credentialIdBase64url = bufferToBase64url(new Uint8Array(credential.rawId));
+            console.log('[Biometric Register] About to convert rawId...');
+            console.log('[Biometric Register] credential.rawId type:', typeof credential.rawId);
+            console.log('[Biometric Register] credential.rawId is ArrayBuffer:', credential.rawId instanceof ArrayBuffer);
+            console.log('[Biometric Register] credential.rawId.byteLength:', credential.rawId.byteLength);
+            
+            const rawIdBytes = new Uint8Array(credential.rawId);
+            console.log('[Biometric Register] rawIdBytes length:', rawIdBytes.length);
+            console.log('[Biometric Register] rawIdBytes:', rawIdBytes);
+            
+            const credentialIdBase64url = bufferToBase64url(rawIdBytes);
             console.log('[Biometric Register] === CREDENTIAL INFO ===');
             console.log('[Biometric Register] credential.id (short):', credential.id);
             console.log('[Biometric Register] credential.id length:', credential.id.length);
-            console.log('[Biometric Register] credential.rawId (Uint8Array):', credential.rawId);
-            console.log('[Biometric Register] credential.rawId byte length:', credential.rawId.byteLength);
             console.log('[Biometric Register] Converted to base64url:', credentialIdBase64url);
             console.log('[Biometric Register] base64url length:', credentialIdBase64url.length);
+            console.log('[Biometric Register] base64url preview:', credentialIdBase64url.substring(0, 50));
             
             const verifyResponse = await fetch('/api/biometric_verify.php', {
                 method: 'POST',

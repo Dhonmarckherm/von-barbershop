@@ -917,13 +917,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             enableBtn.style.background = '#28a745';
             enableBtn.style.borderColor = '#28a745';
             
-            // Check browser console for credential length
-            console.log('[Biometric Enrollment] SUCCESS!');
-            console.log('[Biometric Enrollment] Credential length from result:', result.credentialLength);
-            console.log('[Biometric Enrollment] Full result object:', result);
+            // Show success message with credential length
+            let statusMsg = '✅ Biometric login enabled!\n\n';
+            statusMsg += 'Credential ID Length: ' + credLength + ' characters\n\n';
             
-            // Show success message
-            alert('✅ Biometric login enabled!\n\nCheck browser console for credential length.\n\nNow test: Logout and click "Login with Biometrics"');
+            if (credLength >= 60) {
+                statusMsg += '✅ PERFECT! This is a valid credential length.\n\n';
+                statusMsg += 'Now test: Logout and click "Login with Biometrics"';
+            } else {
+                statusMsg += '❌ TOO SHORT! Should be 60-100+ characters.\n\n';
+                statusMsg += 'Please take a screenshot and report this issue.';
+            }
+            
+            alert(statusMsg);
             
             setTimeout(function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));

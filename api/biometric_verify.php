@@ -78,7 +78,8 @@ if ($action === 'register') {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Biometric login enabled successfully!'
+            'message' => 'Biometric login enabled successfully!',
+            'credentialLength' => strlen($credentialId)
         ]);
         
     } catch (Exception $e) {
