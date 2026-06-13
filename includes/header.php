@@ -118,11 +118,11 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
-                        // Keep showing overlay for realistic installation time (15 seconds)
+                        // Keep showing overlay for realistic installation time (25 seconds)
                         setTimeout(() => {
                             hideInstallingOverlay();
                             showSuccessPopup();
-                        }, 15000);
+                        }, 25000);
                     } else {
                         console.log('User dismissed the install prompt');
                         // Hide overlay and reset
@@ -148,15 +148,15 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             `;
             document.body.appendChild(overlay);
             
-            // Stage 1: 10% - Initializing
+            // Stage 1: 10% - Initializing (0-2s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '10%';
                 }
-            }, 1000);
+            }, 2000);
             
-            // Stage 2: 20% - Preparing
+            // Stage 2: 20% - Preparing (2-4s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -166,9 +166,9 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Preparing installation...';
                 }
-            }, 2500);
+            }, 4000);
             
-            // Stage 3: 30% - Downloading
+            // Stage 3: 30% - Downloading (4-6s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -178,17 +178,17 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Downloading app package...';
                 }
-            }, 4000);
+            }, 6000);
             
-            // Stage 4: 40%
+            // Stage 4: 40% (6-8s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '40%';
                 }
-            }, 5000);
+            }, 8000);
             
-            // Stage 5: 50% - Extracting
+            // Stage 5: 50% - Extracting (8-10s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -198,17 +198,17 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Extracting app files...';
                 }
-            }, 6500);
+            }, 10000);
             
-            // Stage 6: 60%
+            // Stage 6: 60% (10-12s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '60%';
                 }
-            }, 7500);
+            }, 12000);
             
-            // Stage 7: 70% - Installing
+            // Stage 7: 70% - Installing (12-15s)
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -218,9 +218,9 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Installing application...';
                 }
-            }, 9000);
+            }, 15000);
             
-            // Stage 8: 80% - Configuring
+            // Stage 8: 80% - Configuring (15-18s) - STARTING TO SLOW DOWN
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -230,9 +230,21 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Configuring app settings...';
                 }
-            }, 10500);
+            }, 18000);
             
-            // Stage 9: 90% - Creating shortcut
+            // Stage 9: 85% - Almost there (18-20s) - SLOWING DOWN
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '85%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Optimizing performance...';
+                }
+            }, 20000);
+            
+            // Stage 10: 90% - Creating shortcut (20-22s) - VERY SLOW
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -242,9 +254,21 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Creating home screen shortcut...';
                 }
-            }, 12000);
+            }, 22000);
             
-            // Stage 10: 100% - Finalizing
+            // Stage 11: 95% - Almost done (22-23.5s) - EXTREMELY SLOW
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '95%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Almost done...';
+                }
+            }, 23500);
+            
+            // Stage 12: 100% - Finalizing (23.5-25s) - FINAL STEP
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -254,7 +278,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Finalizing installation...';
                 }
-            }, 14000);
+            }, 24500);
         }
         
         function hideInstallingOverlay() {
