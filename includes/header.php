@@ -153,20 +153,22 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 <body>
     <!-- PWA Install Banner (Android) -->
     <div id="pwa-install-banner">
-        <div class="banner-content">
-            <div class="banner-icon">
-                <i class="bi bi-phone"></i>
-            </div>
-            <div class="banner-text">
-                <h6>Install VON BARBER STUDIO</h6>
-                <p>Book your next cut faster!</p>
-            </div>
-            <div class="banner-btns">
-                <button class="btn-install" onclick="installPWA()">
-                    <i class="bi bi-download"></i> Install
-                </button>
+        <div class="banner-container">
+            <div class="banner-header">
+                <div class="banner-app-icon">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <div class="banner-title-section">
+                    <h6>VON BARBER STUDIO</h6>
+                    <p>Book your next cut faster!</p>
+                </div>
                 <button class="btn-close" onclick="closePWABanner()">
                     <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="banner-action">
+                <button class="btn-install" onclick="installPWA()">
+                    <i class="bi bi-download"></i> Install App
                 </button>
             </div>
         </div>
