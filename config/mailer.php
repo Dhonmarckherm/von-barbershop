@@ -239,7 +239,7 @@ function sendCancellationEmail(string $customerEmail, string $customerName, arra
         return sendBrevoEmail(
             $customerEmail,
             $customerName,
-            'Your Appointment Has Been Cancelled - Barbershop',
+            'Your Appointment Has Been Cancelled (By You) - Barbershop',
             buildCancellationEmailBody($details)
         );
     }
@@ -248,7 +248,7 @@ function sendCancellationEmail(string $customerEmail, string $customerName, arra
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
         $mail->isHTML(true);
-        $mail->Subject = 'Your Appointment Has Been Cancelled - Barbershop';
+        $mail->Subject = 'Your Appointment Has Been Cancelled (By You) - Barbershop';
         $mail->Body    = buildCancellationEmailBody($details);
         $mail->send();
         return true;
@@ -273,7 +273,7 @@ function sendRescheduleEmail(string $customerEmail, string $customerName, array 
         return sendBrevoEmail(
             $customerEmail,
             $customerName,
-            'Your Appointment Has Been Rescheduled - Barbershop',
+            'Your Appointment Has Been Rescheduled (By You) - Barbershop',
             buildRescheduleEmailBody($details)
         );
     }
@@ -282,7 +282,7 @@ function sendRescheduleEmail(string $customerEmail, string $customerName, array 
         $mail = getMailer();
         $mail->addAddress($customerEmail, $customerName);
         $mail->isHTML(true);
-        $mail->Subject = 'Your Appointment Has Been Rescheduled - Barbershop';
+        $mail->Subject = 'Your Appointment Has Been Rescheduled (By You) - Barbershop';
         $mail->Body    = buildRescheduleEmailBody($details);
         $mail->send();
         return true;
@@ -508,6 +508,11 @@ function buildCancellationEmailBody(array $details): string {
                 
                 <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>We regret to inform you that your appointment has been <strong style='color: #dc3545; font-size: 18px;'>CANCELLED</strong>.</p>
                 
+                <!-- Cancelled By Info -->
+                <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 15px; border-radius: 8px; margin-bottom: 25px;'>
+                    <p style='margin: 0; color: #F5F0E8; font-size: 15px;'><strong>Cancelled by:</strong> You (Customer)</p>
+                </div>
+                
                 <!-- Appointment Details Card -->
                 <div style='background: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
                     <h3 style='color: #dc3545; margin: 0 0 15px 0; font-size: 18px;'>📋 Cancelled Appointment Details</h3>
@@ -563,7 +568,12 @@ function buildRescheduleEmailBody(array $details): string {
             <div style='padding: 30px;'>
                 <p style='font-size: 18px; margin-bottom: 25px;'>Hello <strong style='color: #C5A059;'>" . htmlspecialchars($details['customer_name']) . "</strong>,</p>
                 
-                <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>Your appointment has been <strong style='color: #C5A059; font-size: 18px;'>RESCHEDULED</strong> by our barber. Please review the new details:</p>
+                <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>Your appointment has been <strong style='color: #C5A059; font-size: 18px;'>RESCHEDULED</strong>. Please review the new details:</p>
+                
+                <!-- Rescheduled By Info -->
+                <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 15px; border-radius: 8px; margin-bottom: 20px;'>
+                    <p style='margin: 0; color: #F5F0E8; font-size: 15px;'><strong>Rescheduled by:</strong> You (Customer)</p>
+                </div>
                 
                 <!-- Old Appointment Details -->
                 <div style='background: rgba(108, 117, 125, 0.1); border-left: 4px solid #6c757d; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
