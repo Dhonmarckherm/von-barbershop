@@ -118,11 +118,11 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
-                        // Keep showing overlay for realistic installation time (5 seconds)
+                        // Keep showing overlay for realistic installation time (15 seconds)
                         setTimeout(() => {
                             hideInstallingOverlay();
                             showSuccessPopup();
-                        }, 5000);
+                        }, 15000);
                     } else {
                         console.log('User dismissed the install prompt');
                         // Hide overlay and reset
@@ -148,39 +148,79 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             `;
             document.body.appendChild(overlay);
             
-            // Stage 1: 20% - Downloading app files
+            // Stage 1: 10% - Initializing
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '10%';
+                }
+            }, 1000);
+            
+            // Stage 2: 20% - Preparing
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '20%';
                 }
-            }, 500);
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Preparing installation...';
+                }
+            }, 2500);
             
-            // Stage 2: 40% - Preparing installation
+            // Stage 3: 30% - Downloading
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '30%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Downloading app package...';
+                }
+            }, 4000);
+            
+            // Stage 4: 40%
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '40%';
                 }
+            }, 5000);
+            
+            // Stage 5: 50% - Extracting
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '50%';
+                }
                 const statusText = overlay.querySelector('.install-status');
                 if (statusText) {
-                    statusText.textContent = 'Downloading app resources...';
+                    statusText.textContent = 'Extracting app files...';
                 }
-            }, 1500);
+            }, 6500);
             
-            // Stage 3: 60% - Installing
+            // Stage 6: 60%
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
                     progressBar.style.width = '60%';
                 }
+            }, 7500);
+            
+            // Stage 7: 70% - Installing
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '70%';
+                }
                 const statusText = overlay.querySelector('.install-status');
                 if (statusText) {
                     statusText.textContent = 'Installing application...';
                 }
-            }, 2500);
+            }, 9000);
             
-            // Stage 4: 80% - Creating shortcut
+            // Stage 8: 80% - Configuring
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -188,11 +228,23 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 }
                 const statusText = overlay.querySelector('.install-status');
                 if (statusText) {
+                    statusText.textContent = 'Configuring app settings...';
+                }
+            }, 10500);
+            
+            // Stage 9: 90% - Creating shortcut
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '90%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
                     statusText.textContent = 'Creating home screen shortcut...';
                 }
-            }, 3500);
+            }, 12000);
             
-            // Stage 5: 100% - Finalizing
+            // Stage 10: 100% - Finalizing
             setTimeout(() => {
                 const progressBar = overlay.querySelector('.progress-bar');
                 if (progressBar) {
@@ -202,7 +254,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 if (statusText) {
                     statusText.textContent = 'Finalizing installation...';
                 }
-            }, 4500);
+            }, 14000);
         }
         
         function hideInstallingOverlay() {
