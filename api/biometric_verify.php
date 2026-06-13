@@ -33,7 +33,20 @@ if ($action === 'register') {
     }
     
     try {
-        // Store credential in database (simplified - in production, verify attestation)
+        // Get credential ID - ensure it's a string
+        $credentialId = $credential['id'];
+        
+        // Log what we're storing
+        error_log("[Biometric Register] Raw credential ID type: " . gettype($credentialId));
+        error_log("[Biometric Register] Raw credential ID: " . (is_string($credentialId) ? $credentialId : json_encode($credentialId)));
+        
+        // Ensure it's a string and trim it
+        $credentialId = trim((string)$credentialId);
+        
+        error_log("[Biometric Register] Stored credential ID: " . $credentialId);
+        error_log("[Biometric Register] Stored credential ID length: " . strlen($credentialId));
+        
+        // Store credential in database
         $stmt = $pdo->prepare("
             INSERT INTO user_passkeys (user_id, credential_id, credential_public_key, transports)
             VALUES (?, ?, ?, ?)
@@ -41,7 +54,7 @@ if ($action === 'register') {
         
         $stmt->execute([
             $userId,
-            $credential['id'],
+            $credentialId,
             $credential['response']['attestationObject'], // Store as-is for now
             implode(',', $credential['response']['transports'] ?? ['internal'])
         ]);
@@ -50,7 +63,7 @@ if ($action === 'register') {
         unset($_SESSION['webauthn_challenge']);
         unset($_SESSION['webauthn_user_id']);
         
-        error_log("Biometric credential registered for user {$userId}");
+        error_log("Biometric credential registered successfully for user {$userId}, credential_id: {$credentialId}");
         
         echo json_encode([
             'success' => true,
