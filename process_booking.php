@@ -115,6 +115,12 @@ $_SESSION['push_notification'] = [
     'id' => $appointmentId
 ];
 
+// Check if this is user's first booking (for biometric enrollment)
+$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM appointments WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$bookingCount = $stmt->fetch()['count'];
+$showBiometricPrompt = ($bookingCount <= 1) ? '&biometric_prompt=1' : '';
+
 // Redirect to success page
-header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed'));
+header('Location: my_appointments.php?booked=1&email=' . (isset($emailSent) && $emailSent ? 'sent' : 'failed') . $showBiometricPrompt);
 exit;

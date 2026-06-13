@@ -784,7 +784,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 <button type="button" class="btn btn-secondary" id="biometric-skip-btn" style="border-radius: 8px;">
                     Not Now
                 </button>
-                <button type="button" class="btn btn-primary" id="biometric-enable-btn" style="border-radius: 8px; background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); border: none; color: #FFFFFF; font-weight: 700; padding: 12px 24px; box-shadow: 0 4px 15px rgba(197,160,89,0.4);">
+                <button type="button" class="btn btn-primary" id="biometric-enable-btn" style="border-radius: 8px; background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); border: none; color: #1a1a1a; font-weight: 700; padding: 12px 24px; box-shadow: 0 4px 15px rgba(197,160,89,0.4);">
                     <i class="bi bi-fingerprint"></i> Enable Now
                 </button>
             </div>
@@ -860,11 +860,37 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Clean URL (remove query parameter)
             window.history.replaceState({}, document.title, window.location.pathname);
             
+            // Show a brief notification before modal
+            const bioNotification = document.createElement('div');
+            bioNotification.id = 'biometric-notification';
+            bioNotification.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); color: #1a1a1a; padding: 12px 24px; border-radius: 10px; font-weight: bold; z-index: 9998; box-shadow: 0 4px 15px rgba(197,160,89,0.4); animation: fadeSlideIn 0.5s ease;';
+            bioNotification.innerHTML = '<i class="bi bi-fingerprint"></i> Setting up quick login...';
+            document.body.appendChild(bioNotification);
+            
             // Show modal after a short delay
             setTimeout(function() {
-                const modal = new bootstrap.Modal(document.getElementById('biometricPromptModal'));
-                modal.show();
-            }, 1000);
+                // Remove notification
+                if (bioNotification) {
+                    bioNotification.style.animation = 'fadeSlideOut 0.3s ease';
+                    setTimeout(() => bioNotification.remove(), 300);
+                }
+                
+                try {
+                    const modalElement = document.getElementById('biometricPromptModal');
+                    if (!modalElement) {
+                        console.error('[Biometric] Modal element not found!');
+                        alert('Biometric enrollment modal not found. Please contact support.');
+                        return;
+                    }
+                    
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                    console.log('[Biometric] Modal shown successfully');
+                } catch (error) {
+                    console.error('[Biometric] Error showing modal:', error);
+                    alert('Error showing biometric modal: ' + error.message);
+                }
+            }, 1500); // Increased delay to 1.5s for better reliability
             
             // Handle Enable button
             document.getElementById('biometric-enable-btn').addEventListener('click', async function() {
