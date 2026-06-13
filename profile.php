@@ -99,9 +99,74 @@ require_once 'includes/header.php';
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
+
+                <hr class="my-4">
+
+                <!-- Biometric Login Section -->
+                <div class="text-center">
+                    <h5 style="color: var(--barber-gold); font-family: 'Playfair Display', serif; margin-bottom: 15px;">
+                        <i class="bi bi-fingerprint"></i> Quick Login
+                    </h5>
+                    <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
+                        Enable fingerprint or face recognition for faster login
+                    </p>
+                    <button type="button" id="reenableBiometricBtn" class="btn btn-outline-warning" style="border-color: var(--barber-gold); color: var(--barber-gold);">
+                        <i class="bi bi-fingerprint"></i> Re-enable Biometric Login
+                    </button>
+                    <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                        Use this if biometric login stopped working on this device
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Biometric Authentication Script -->
+<script src="/www/js/biometric-auth.js"></script>
+<script>
+// Re-enable biometric login
+document.getElementById('reenableBiometricBtn').addEventListener('click', async function() {
+    const btn = this;
+    
+    // Check if WebAuthn is supported
+    if (typeof BiometricAuth === 'undefined' || !BiometricAuth.isSupported()) {
+        alert('Biometric login is not supported on this device/browser.\n\nTry using Safari on iPhone or Chrome on Android.');
+        return;
+    }
+    
+    // Check if biometric hardware is available
+    const isAvailable = await BiometricAuth.isBiometricAvailable();
+    if (!isAvailable) {
+        alert('No biometric hardware detected on this device.\n\nMake sure Face ID or Touch ID is enabled in your iPhone settings.');
+        return;
+    }
+    
+    // Register new biometric credential
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Setting up...';
+    
+    const result = await BiometricAuth.register(
+        '<?php echo htmlspecialchars($_SESSION["email"]); ?>',
+        <?php echo (int)$_SESSION["user_id"]; ?>
+    );
+    
+    if (result.success) {
+        btn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
+        btn.style.background = '#28a745';
+        btn.style.borderColor = '#28a745';
+        btn.style.color = '#ffffff';
+        
+        setTimeout(function() {
+            alert('✅ Biometric login enabled successfully!\n\nNext time you can login with fingerprint or face recognition.');
+            btn.innerHTML = '<i class="bi bi-fingerprint"></i> Biometric Enabled';
+        }, 1000);
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-fingerprint"></i> Re-enable Biometric Login';
+        alert('❌ Failed to enable biometric login:\n\n' + result.error + '\n\nPlease try again or contact support.');
+    }
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>
