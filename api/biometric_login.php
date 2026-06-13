@@ -34,6 +34,11 @@ $_SESSION['webauthn_challenge'] = bin2hex($challenge);
 $allowCredentials = array_map(function($cred) {
     // Trim any whitespace and ensure proper base64url format
     $credentialId = trim($cred['credential_id']);
+    
+    error_log("[Biometric Login API] Raw credential_id: '" . $cred['credential_id'] . "'");
+    error_log("[Biometric Login API] Trimmed credential_id: '" . $credentialId . "'");
+    error_log("[Biometric Login API] Credential ID length: " . strlen($credentialId));
+    
     return [
         'id' => $credentialId,
         'type' => 'public-key',

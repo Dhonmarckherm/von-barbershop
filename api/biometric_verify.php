@@ -72,20 +72,34 @@ if ($action === 'register') {
     }
     
     try {
-        // Find credential in database
+        // Get the credential ID from assertion
+        $assertionId = $assertion['id'];
+        error_log("[Biometric Login] Assertion ID: $assertionId");
+        
+        // Find credential in database - use TRIM to handle whitespace issues
         $stmt = $pdo->prepare("
             SELECT up.*, u.id as user_id, u.name, u.email, u.role
             FROM user_passkeys up
             JOIN users u ON up.user_id = u.id
-            WHERE up.credential_id = ?
+            WHERE TRIM(up.credential_id) = ?
         ");
-        $stmt->execute([$assertion['id']]);
+        $stmt->execute([$assertionId]);
         $cred = $stmt->fetch();
         
         if (!$cred) {
-            echo json_encode(['error' => 'Credential not found']);
+            error_log("[Biometric Login] Credential NOT found in database!");
+            error_log("[Biometric Login] Looking for: $assertionId");
+            
+            // Debug: Show all credentials in database
+            $debugStmt = $pdo->query("SELECT credential_id, user_id FROM user_passkeys");
+            $allCreds = $debugStmt->fetchAll();
+            error_log("[Biometric Login] All credentials in DB: " . json_encode($allCreds));
+            
+            echo json_encode(['error' => 'Credential not found. Please re-enable biometric login.']);
             exit;
         }
+        
+        error_log("[Biometric Login] Credential found for user: " . $cred['user_id'] . " (" . $cred['email'] . ")");
         
         // In production, verify the cryptographic signature here
         // For now, we trust the WebAuthn API verification (browser-level)
