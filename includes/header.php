@@ -73,19 +73,28 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             });
         }
 
-        // iOS Detection
+        // iOS Detection - More Accurate
         const isIos = () => {
             const userAgent = window.navigator.userAgent.toLowerCase();
-            return /iphone|ipad|ipod/.test(userAgent);
+            // Check for iPhone, iPad, iPod
+            const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+            // Also check for iPad on iOS 13+ (reports as MacIntel)
+            const isIPad = /MacIntel/.test(window.navigator.platform) && window.navigator.maxTouchPoints > 1;
+            return isIOSDevice || isIPad;
         }
 
-        // Check if already in standalone mode
+        // Check if already in standalone mode (PWA installed)
         const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
         window.addEventListener('load', () => {
-            // Show iOS hint if on iOS and not already installed
+            // ALWAYS hide iOS hint first
+            const iosHint = document.getElementById('ios-install-hint');
+            if (iosHint) {
+                iosHint.style.display = 'none';
+            }
+            
+            // Only show iOS hint if ACTUALLY on iOS device and not installed
             if (isIos() && !isInStandaloneMode()) {
-                const iosHint = document.getElementById('ios-install-hint');
                 if (iosHint) {
                     iosHint.style.display = 'block';
                 }
