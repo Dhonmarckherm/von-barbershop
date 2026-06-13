@@ -118,9 +118,11 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
-                        // Show success popup
-                        hideInstallingOverlay();
-                        showSuccessPopup();
+                        // Keep showing overlay for realistic installation time (3 seconds)
+                        setTimeout(() => {
+                            hideInstallingOverlay();
+                            showSuccessPopup();
+                        }, 3000);
                     } else {
                         console.log('User dismissed the install prompt');
                         // Hide overlay and reset
@@ -138,10 +140,43 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 <div class="overlay-content">
                     <div class="overlay-spinner"></div>
                     <h5>Installing App...</h5>
-                    <p>Please wait while we set up VON BARBER STUDIO on your device</p>
+                    <p class="install-status">Setting up VON BARBER STUDIO on your device...</p>
+                    <div class="install-progress">
+                        <div class="progress-bar"></div>
+                    </div>
                 </div>
             `;
             document.body.appendChild(overlay);
+            
+            // Animate progress bar
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '33%';
+                }
+            }, 500);
+            
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '66%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Creating shortcut on home screen...';
+                }
+            }, 1500);
+            
+            setTimeout(() => {
+                const progressBar = overlay.querySelector('.progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '100%';
+                }
+                const statusText = overlay.querySelector('.install-status');
+                if (statusText) {
+                    statusText.textContent = 'Almost done...';
+                }
+            }, 2500);
         }
         
         function hideInstallingOverlay() {
