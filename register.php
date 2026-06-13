@@ -115,8 +115,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <li>✅ Manage your bookings</li>
                         </ul>
                         <div style='text-align: center; margin: 30px 0;'>
-                            <a href='https://von-barbershop.onrender.com/login.php' style='background: #c0c0c0; color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;'>Login Now</a>
+                            <a href='https://von-barbershop.onrender.com/login.php' target='_blank' style='background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(197,160,89,0.3);'>Login Now</a>
                         </div>
+                        <p style='text-align: center; margin-top: 15px;'>
+                            <small style='color: #8A8A9A;'>Or copy this link: <a href='https://von-barbershop.onrender.com/login.php' style='color: #C5A059;'>https://von-barbershop.onrender.com/login.php</a></small>
+                        </p>
                         <p style='color: #8A8A9A; font-size: 14px; line-height: 1.6;'>If you have any questions, feel free to contact us. We look forward to serving you!</p>
                     </div>
                     <hr style='border-color: rgba(192,192,192,0.3); margin: 0 20px;'>

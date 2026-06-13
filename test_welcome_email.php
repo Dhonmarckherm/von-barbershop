@@ -46,7 +46,7 @@ try {
                     <li>✅ Manage your bookings</li>
                 </ul>
                 <div style='text-align: center; margin: 30px 0;'>
-                    <a href='https://von-barbershop.onrender.com/login.php' style='background: #c0c0c0; color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;'>Login Now</a>
+                    <a href='https://von-barbershop.onrender.com/login.php' target='_blank' style='background: linear-gradient(135deg, #C5A059 0%, #D4AF37 100%); color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(197,160,89,0.3);'>Login Now</a>
                 </div>
             </div>
         </div>
