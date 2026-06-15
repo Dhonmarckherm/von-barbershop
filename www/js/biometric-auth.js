@@ -232,7 +232,14 @@ const BiometricAuth = {
             
             const assertion = await navigator.credentials.get(getOptions);
             
-            console.log('[Biometric Login] Biometric verified! Assertion ID:', assertion.id);
+            console.log('[Biometric Login] === ASSERTION RECEIVED ===');
+            console.log('[Biometric Login] assertion.id:', assertion.id);
+            console.log('[Biometric Login] assertion.id length:', assertion.id.length);
+            console.log('[Biometric Login] assertion.rawId byteLength:', assertion.rawId.byteLength);
+            
+            const rawIdBase64url = bufferToBase64url(new Uint8Array(assertion.rawId));
+            console.log('[Biometric Login] Converted rawId to base64url:', rawIdBase64url);
+            console.log('[Biometric Login] rawId base64url length:', rawIdBase64url.length);
 
             // Verify credential with server
             const verifyResponse = await fetch('/api/biometric_verify.php', {
@@ -242,7 +249,7 @@ const BiometricAuth = {
                     action: 'login',
                     assertion: {
                         id: assertion.id,
-                        rawId: bufferToBase64url(new Uint8Array(assertion.rawId)),
+                        rawId: rawIdBase64url,
                         response: {
                             authenticatorData: bufferToBase64url(new Uint8Array(assertion.response.authenticatorData)),
                             clientDataJSON: bufferToBase64url(new Uint8Array(assertion.response.clientDataJSON)),
