@@ -10,6 +10,23 @@ require_once 'includes/auth_check.php';
 require_once 'config/db.php';
 
 require_once 'includes/header.php';
+
+// Display booking errors if any
+if (isset($_SESSION['booking_errors']) && !empty($_SESSION['booking_errors'])) {
+    $bookingErrors = $_SESSION['booking_errors'];
+    unset($_SESSION['booking_errors']);
+    
+    echo '<div class="alert alert-danger" style="background: rgba(220,53,69,0.15); border: 2px solid #dc3545; color: #ff6b6b; border-radius: 10px; padding: 15px; margin-bottom: 20px;">';
+    echo '<i class="bi bi-exclamation-triangle-fill"></i> <strong>Booking Error:</strong><br>';
+    foreach ($bookingErrors as $error) {
+        echo '• ' . htmlspecialchars($error) . '<br>';
+    }
+    echo '</div>';
+}
+
+// Restore old form input if exists
+$oldInput = $_SESSION['booking_old_input'] ?? [];
+unset($_SESSION['booking_old_input']);
 ?>
 
 <div class="row justify-content-center">
@@ -31,6 +48,7 @@ require_once 'includes/header.php';
                         </label>
                         <input type="text" class="form-control" id="haircut_description" name="haircut_description" 
                                placeholder="e.g. Low Taper, Blow Out Taper, Mid Fade, Consultation, etc." 
+                               value="<?php echo htmlspecialchars($oldInput['haircut_description'] ?? ''); ?>"
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
                         <style>
                             #haircut_description::placeholder { color: rgba(255,255,255,0.5); }
@@ -67,6 +85,7 @@ require_once 'includes/header.php';
                         </label>
                         <input type="text" class="form-control" id="location" name="location" 
                                placeholder="Enter the address where you're located" 
+                               value="<?php echo htmlspecialchars($oldInput['location'] ?? ''); ?>"
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
                         <style>
                             #location::placeholder { color: rgba(255,255,255,0.5); }
@@ -79,6 +98,7 @@ require_once 'includes/header.php';
                         </label>
                         <input type="date" class="form-control" id="appointment_date" name="appointment_date" required
                                min="<?php echo date('Y-m-d'); ?>"
+                               value="<?php echo htmlspecialchars($oldInput['appointment_date'] ?? ''); ?>"
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;">
                     </div>
 
@@ -248,6 +268,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     dateInput.addEventListener('change', fetchSlots);
+    
+    // If there's an old date value, fetch slots automatically
+    if (dateInput.value) {
+        fetchSlots();
+    }
 
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         console.log('[Booking] Form submitted');
