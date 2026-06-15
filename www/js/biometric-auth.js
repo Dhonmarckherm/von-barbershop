@@ -199,7 +199,8 @@ const BiometricAuth = {
             console.log('[Biometric Login] Credentials from server:', JSON.stringify(options.allowCredentials, null, 2));
             
             // Get credential using device biometrics
-            const assertion = await navigator.credentials.get({
+            // iOS Safari fix: Don't specify authenticatorAttachment to allow all types
+            const getOptions = {
                 publicKey: {
                     challenge: base64urlToBuffer(options.challenge),
                     allowCredentials: options.allowCredentials.map(cred => {
@@ -210,13 +211,20 @@ const BiometricAuth = {
                         return {
                             id: base64urlToBuffer(cred.id),
                             type: 'public-key',
-                            transports: cred.transports
+                            // iOS Safari fix: Include all transports
+                            transports: cred.transports || ['internal', 'hybrid']
                         };
                     }),
                     timeout: 60000,
-                    userVerification: 'required'
+                    userVerification: 'required',
+                    // iOS Safari fix: Don't restrict to platform authenticator
+                    rpId: window.location.hostname
                 }
-            });
+            };
+            
+            console.log('[Biometric Login] Getting credential with options:', getOptions);
+            
+            const assertion = await navigator.credentials.get(getOptions);
             
             console.log('[Biometric Login] Biometric verified! Assertion ID:', assertion.id);
 

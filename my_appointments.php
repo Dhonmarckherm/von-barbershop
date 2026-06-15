@@ -933,30 +933,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
         
         if (result.success) {
-            const credLength = (typeof result.credentialLength === 'number') ? result.credentialLength : 0;
             enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
             enableBtn.style.background = '#28a745';
             enableBtn.style.borderColor = '#28a745';
             
-            console.log('[Biometric Enrollment] Result object:', result);
-            console.log('[Biometric Enrollment] Credential length:', credLength);
+            console.log('[Biometric Enrollment] Success:', result);
             
-            // Show success message with credential length
-            let statusMsg = '✅ Biometric login enabled!\n\n';
-            statusMsg += 'Credential ID Length: ' + (credLength > 0 ? credLength + ' characters' : 'Checking...') + '\n\n';
-            
-            if (credLength >= 60) {
-                statusMsg += '✅ PERFECT! This is a valid credential length.\n\n';
-                statusMsg += 'Now test: Logout and click "Login with Biometrics"';
-            } else if (credLength > 0 && credLength < 60) {
-                statusMsg += '❌ TOO SHORT! Should be 60-100+ characters.\n\n';
-                statusMsg += 'Please take a screenshot and report this issue.';
-            } else {
-                statusMsg += '✅ Biometric login has been enabled.\n\n';
-                statusMsg += 'Now test: Logout and click "Login with Biometrics"';
-            }
-            
-            alert(statusMsg);
+            // Close modal
+            setTimeout(function() {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
+                modal.hide();
+                
+                // Show beautiful success modal
+                showBiometricSuccessModal();
+            }, 500);
             
             setTimeout(function() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('biometricPromptModal'));
@@ -985,6 +975,80 @@ document.addEventListener('DOMContentLoaded', async function() {
         modal.hide();
     });
 });
+
+// Beautiful biometric success modal
+function showBiometricSuccessModal() {
+    const modalHTML = `
+        <div id="biometricSuccessOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 9999; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
+            <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 20px; padding: 40px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 2px solid rgba(40,167,69,0.3); animation: slideUp 0.5s ease;">
+                <!-- Success Icon with Animation -->
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; animation: scaleIn 0.5s ease 0.2s both; box-shadow: 0 10px 30px rgba(40,167,69,0.4);">
+                        <i class="bi bi-check-lg" style="font-size: 48px; color: white;"></i>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <h2 style="color: #28a745; text-align: center; font-family: 'Playfair Display', serif; font-size: 28px; margin: 0 0 15px 0; animation: fadeIn 0.5s ease 0.4s both;">Welcome to V.O.N Barber Studio!</h2>
+                
+                <!-- Message -->
+                <p style="color: #F5F0E8; text-align: center; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; animation: fadeIn 0.5s ease 0.6s both;">
+                    Biometric login has been <strong style="color: #28a745;">successfully enabled</strong>!<br>
+                    You can now login with Face ID or Touch ID
+                </p>
+                
+                <!-- Features List -->
+                <div style="background: rgba(40,167,69,0.1); border-left: 4px solid #28a745; padding: 15px; border-radius: 10px; margin-bottom: 25px; animation: fadeIn 0.5s ease 0.8s both;">
+                    <p style="color: #F5F0E8; font-size: 14px; margin: 0 0 10px 0; font-weight: 600;">
+                        <i class="bi bi-lightning-charge-fill" style="color: #28a745;"></i> What's Next?
+                    </p>
+                    <ul style="color: #B8B8CC; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;">
+                        <li>Next time, just click <strong style="color: #28a745;">"Login with Biometrics"</strong></li>
+                        <li>No need to type your password anymore</li>
+                        <li>Works with Face ID, Touch ID, or Windows Hello</li>
+                    </ul>
+                </div>
+                
+                <!-- Done Button -->
+                <button onclick="closeBiometricSuccess()" style="width: 100%; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: fadeIn 0.5s ease 1s both;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(40,167,69,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <i class="bi bi-check-circle"></i> Done
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeBiometricSuccess() {
+    const overlay = document.getElementById('biometricSuccessOverlay');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => overlay.remove(), 300);
+    }
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes scaleIn {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
 </script>
 
 <?php require_once 'includes/footer.php'; ?>
