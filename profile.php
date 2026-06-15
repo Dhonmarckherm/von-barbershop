@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_password_toke
 }
 
 // Handle password change after token verification
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) && isset($_GET['verified'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) && (isset($_GET['verified']) || isset($_SESSION['verified_for_password_change']))) {
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     
@@ -104,6 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) &&
         $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
         $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?");
         $stmt->execute([$passwordHash, $_SESSION['user_id']]);
+        
+        // Clear verification session
+        unset($_SESSION['verified_for_password_change']);
         
         header('Location: profile.php?password_changed=1');
         exit;
@@ -172,7 +175,8 @@ if (isset($_GET['verify_token'])) {
         $errors[] = 'Verification token has expired. Please request a new one.';
     } else {
         $verified = true;
-        // Token is valid, show password change form
+        // Token is valid, set session flag for password change
+        $_SESSION['verified_for_password_change'] = true;
     }
 }
 
