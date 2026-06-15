@@ -933,21 +933,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         );
         
         if (result.success) {
-            const credLength = result.credentialLength || 'N/A';
+            const credLength = (typeof result.credentialLength === 'number') ? result.credentialLength : 0;
             enableBtn.innerHTML = '<i class="bi bi-check-circle"></i> Enabled!';
             enableBtn.style.background = '#28a745';
             enableBtn.style.borderColor = '#28a745';
             
+            console.log('[Biometric Enrollment] Result object:', result);
+            console.log('[Biometric Enrollment] Credential length:', credLength);
+            
             // Show success message with credential length
             let statusMsg = '✅ Biometric login enabled!\n\n';
-            statusMsg += 'Credential ID Length: ' + credLength + ' characters\n\n';
+            statusMsg += 'Credential ID Length: ' + (credLength > 0 ? credLength + ' characters' : 'Checking...') + '\n\n';
             
             if (credLength >= 60) {
                 statusMsg += '✅ PERFECT! This is a valid credential length.\n\n';
                 statusMsg += 'Now test: Logout and click "Login with Biometrics"';
-            } else {
+            } else if (credLength > 0 && credLength < 60) {
                 statusMsg += '❌ TOO SHORT! Should be 60-100+ characters.\n\n';
                 statusMsg += 'Please take a screenshot and report this issue.';
+            } else {
+                statusMsg += '✅ Biometric login has been enabled.\n\n';
+                statusMsg += 'Now test: Logout and click "Login with Biometrics"';
             }
             
             alert(statusMsg);
