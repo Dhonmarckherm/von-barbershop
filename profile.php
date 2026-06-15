@@ -18,6 +18,9 @@ if (isset($_GET['updated']) && $_GET['updated'] == '1') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
 
     if (empty($name) || strlen($name) < 2) {
         $errors[] = 'Name must be at least 2 characters.';
@@ -36,9 +39,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Validate password change if new password is provided
+    if (!empty($new_password)) {
+        if (empty($current_password)) {
+            $errors[] = 'Current password is required to change password.';
+        } elseif (strlen($new_password) < 6) {
+            $errors[] = 'New password must be at least 6 characters.';
+        } elseif ($new_password !== $confirm_password) {
+            $errors[] = 'New passwords do not match.';
+        } else {
+            // Verify current password
+            $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $userPassword = $stmt->fetch();
+            
+            if (!password_verify($current_password, $userPassword['password_hash'])) {
+                $errors[] = 'Current password is incorrect.';
+            }
+        }
+    }
+
     if (empty($errors)) {
+        // Update name and email
         $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
         $stmt->execute([$name, $email, $_SESSION['user_id']]);
+        
+        // Update password if provided
+        if (!empty($new_password)) {
+            $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+            $stmt->execute([$passwordHash, $_SESSION['user_id']]);
+        }
         
         // Update session
         $_SESSION['name'] = $name;
@@ -155,6 +186,35 @@ body, .profile-container {
                         <input type="email" class="form-control" id="email" name="email" required
                                value="<?php echo htmlspecialchars($user['email']); ?>">
                     </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Password Change Section -->
+                    <h5 style="color: var(--text-primary); font-family: 'Playfair Display', serif; margin-bottom: 20px;">
+                        <i class="bi bi-key"></i> Change Password
+                    </h5>
+                    <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
+                        Leave blank to keep current password
+                    </p>
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password"
+                               placeholder="Enter current password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password"
+                               placeholder="Enter new password (min 6 characters)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                               placeholder="Re-enter new password">
+                    </div>
+                    
+                    <hr class="my-4">
+                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
