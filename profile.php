@@ -246,8 +246,76 @@ body, .profile-container {
                 <h2 class="text-center mb-4" style="color: var(--text-primary); font-family: 'Playfair Display', serif;">My Profile</h2>
                 <p class="text-center mb-4" style="color: var(--barber-gray); font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Update your personal information</p>
 
-                <?php if ($success): ?>
+                <?php if ($success && !isset($_GET['password_changed'])): ?>
                     <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['password_changed']) && $_GET['password_changed'] == '1'): ?>
+                    <!-- Password Changed Success Modal -->
+                    <div id="passwordSuccessModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 9999; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
+                        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 24px; padding: 40px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 2px solid rgba(40,167,69,0.3); animation: slideUp 0.5s ease;">
+                            <!-- Success Icon with Animation -->
+                            <div style="text-align: center; margin-bottom: 30px;">
+                                <div style="width: 100px; height: 100px; margin: 0 auto; background: linear-gradient(135deg, rgba(40,167,69,0.2) 0%, rgba(40,167,69,0.1) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid #28a745; animation: scaleIn 0.6s ease;">
+                                    <i class="bi bi-check-circle" style="font-size: 56px; color: #28a745; animation: checkPop 0.8s ease 0.3s both;"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Success Message -->
+                            <div style="text-align: center; margin-bottom: 30px;">
+                                <h2 style="color: #ffffff; margin: 0 0 12px 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 28px;">Password Changed!</h2>
+                                <p style="color: #b0b0b0; margin: 0; font-size: 15px; line-height: 1.6;">Your password has been successfully updated. You can now login with your new password.</p>
+                            </div>
+                            
+                            <!-- Info Box -->
+                            <div style="background: rgba(40,167,69,0.1); border-left: 3px solid #28a745; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                                <p style="color: #F5F0E8; margin: 0; font-size: 13px; line-height: 1.6;">
+                                    <i class="bi bi-shield-check" style="color: #28a745; margin-right: 8px;"></i>
+                                    <strong>Security Tip:</strong> Keep your password safe and never share it with anyone.
+                                </p>
+                            </div>
+                            
+                            <!-- Done Button -->
+                            <button onclick="closePasswordModal()" style="width: 100%; padding: 16px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: #ffffff; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; box-shadow: 0 4px 15px rgba(40,167,69,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40,167,69,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(40,167,69,0.3)'">
+                                <i class="bi bi-check-lg" style="margin-right: 8px;"></i> Done
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        @keyframes slideUp {
+                            from { transform: translateY(50px); opacity: 0; }
+                            to { transform: translateY(0); opacity: 1; }
+                        }
+                        @keyframes scaleIn {
+                            from { transform: scale(0); }
+                            to { transform: scale(1); }
+                        }
+                        @keyframes checkPop {
+                            0% { transform: scale(0); opacity: 0; }
+                            50% { transform: scale(1.2); }
+                            100% { transform: scale(1); opacity: 1; }
+                        }
+                    </style>
+                    
+                    <script>
+                        function closePasswordModal() {
+                            const modal = document.getElementById('passwordSuccessModal');
+                            modal.style.animation = 'fadeOut 0.3s ease';
+                            setTimeout(() => {
+                                window.location.href = 'profile.php';
+                            }, 300);
+                        }
+                        
+                        // Add fadeOut animation
+                        const style = document.createElement('style');
+                        style.textContent = '@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }';
+                        document.head.appendChild(style);
+                    </script>
                 <?php endif; ?>
 
                 <?php if (!empty($errors)): ?>
