@@ -28,48 +28,72 @@ function isIncompleteAddress(string $address): bool {
     
     // Common abbreviations and shortcuts that are NOT complete addresses
     $shortcuts = [
-        // 2-letter abbreviations
+        // 2-letter abbreviations (standalone only)
         'SJ', 'CD', 'MB', 'BV', 'SB', 'LB', 'CB', 'NB', 'TB', 'PB',
         'SN', 'ST', 'JR', 'SR', 'NR', 'MR', 'KR', 'LR',
         
-        // City/municipality names alone (without street/barangay)
-        'SAN JUAN', 'CANDON', 'VIGAN', 'BANTAY', 'NARVACAN', 
-        'SANTO DOMINGO', 'SANTA LUCIA', 'SANTA MARIA', 'SINAIT',
-        'BACARRA', 'BADOC', 'BANGUI', 'BURGOS', 'CARASI',
-        'LAOAG', 'PAGUDPUD', 'PAOAY', 'SAN NICOLAS', 'SARRAT',
-        'DINGRAS', 'DUMALNEG', 'BATAAC', 'MARCOS', 'NUEVA ERA',
-        'PINILI', 'SAN FERNANDO', 'VINTAR', 'ADAMS',
-        
-        // Single words or very short addresses
+        // Single words or very short generic terms
         'HOME', 'HOUSE', 'NEAR', 'CHURCH', 'PLAZA', 'MALL',
         'CENTER', 'PUBLIC', 'MARKET', 'STORE', 'SHOP',
     ];
     
-    // Check if address matches any shortcut (exact match or contains only shortcut)
+    // Check if address matches any shortcut (exact match only)
     foreach ($shortcuts as $shortcut) {
-        // Exact match (case-insensitive)
         if ($addressUpper === $shortcut) {
             return true;
         }
     }
     
-    // Check if address is too short (less than 15 chars likely incomplete)
-    if (strlen($address) < 15) {
+    // Check if address is too short (less than 10 chars definitely incomplete)
+    if (strlen($address) < 10) {
         return true;
     }
     
-    // Check if address lacks common address components
+    // Check if address has useful components
     $hasStreet = preg_match('/\b(street|st\.?|avenue|ave\.?|road|rd\.?|blvd|boulevard|lane|ln\.?)\b/i', $address);
     $hasBarangay = preg_match('/\b(brgy\.?|barangay)\b/i', $address);
     $hasSubdivision = preg_match('/\b(subd\.?|subdivision|village|phase|block|lot)\b/i', $address);
     $hasLandmark = preg_match('/\b(near|beside|opposite|across|front|back|behind)\b/i', $address);
+    $hasNumber = preg_match('/\d+/', $address); // Has street number
     
-    // If no address components found and it's less than 30 characters, likely incomplete
-    if (!$hasStreet && !$hasBarangay && !$hasSubdivision && !$hasLandmark && strlen($address) < 30) {
-        return true;
+    // ACCEPT if address has barangay + city/province (reasonable for home service)
+    if ($hasBarangay) {
+        // If it has barangay and is at least 20 chars, it's likely complete enough
+        if (strlen($address) >= 20) {
+            return false; // VALID - accept it
+        }
     }
     
-    return false;
+    // ACCEPT if address has multiple components
+    $componentCount = 0;
+    if ($hasStreet) $componentCount++;
+    if ($hasBarangay) $componentCount++;
+    if ($hasSubdivision) $componentCount++;
+    if ($hasLandmark) $componentCount++;
+    if ($hasNumber) $componentCount++;
+    
+    // If it has 2+ components, it's likely complete
+    if ($componentCount >= 2) {
+        return false; // VALID
+    }
+    
+    // If it's just a city name alone (no barangay, street, etc) and less than 40 chars
+    if (!$hasStreet && !$hasBarangay && !$hasSubdivision && !$hasLandmark && strlen($address) < 40) {
+        // Check if it's just a city/municipality name
+        $cityNames = [
+            'SAN JUAN', 'CANDON', 'VIGAN', 'BANTAY', 'NARVACAN', 
+            'SANTO DOMINGO', 'SANTA LUCIA', 'SANTA MARIA', 'SINAIT',
+            'LAOAG', 'PAGUDPUD', 'PAOAY', 'SAN NICOLAS', 'SARRAT',
+        ];
+        
+        foreach ($cityNames as $city) {
+            if (strpos($addressUpper, $city) !== false && strlen($address) < 30) {
+                return true; // Just city name, too short
+            }
+        }
+    }
+    
+    return false; // Default: accept it
 }
 
 // Sanitize and validate inputs
