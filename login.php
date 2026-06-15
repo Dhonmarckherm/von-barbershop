@@ -234,8 +234,8 @@ if (isset($_GET['registered']) && $_GET['registered'] == '1'):
             <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, rgba(197, 160, 89, 0.2) 0%, rgba(197, 160, 89, 0.1) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--barber-gold);">
                 <i class="bi bi-fingerprint" style="font-size: 48px; color: var(--barber-gold);"></i>
             </div>
-            <h3 style="color: #ffffff; margin: 0 0 10px 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px;">Biometric Not Enabled</h3>
-            <p style="color: #b0b0b0; margin: 0; font-size: 14px; font-family: 'Inter', sans-serif; line-height: 1.6;">You haven't enabled biometric login yet on this device.</p>
+            <h3 style="color: #ffffff; margin: 0 0 10px 0; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px;">Biometric Login Failed</h3>
+            <p id="biometric-error-message" style="color: #ff6b6b; margin: 0; font-size: 14px; font-family: 'Inter', sans-serif; line-height: 1.6; font-weight: 600;"></p>
         </div>
         
         <div style="background: rgba(197, 160, 89, 0.1); border-left: 3px solid var(--barber-gold); padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
@@ -313,6 +313,15 @@ document.addEventListener('DOMContentLoaded', async function() {
 <script>
 function showBiometricErrorModal(error) {
     const modal = document.getElementById('biometricErrorModal');
+    const errorMsg = document.getElementById('biometric-error-message');
+    
+    // Show the actual error message
+    if (errorMsg) {
+        errorMsg.textContent = error || 'Unknown error occurred';
+    }
+    
+    console.error('[Biometric Login Error]', error);
+    
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
