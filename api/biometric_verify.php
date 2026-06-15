@@ -30,6 +30,27 @@ if ($action === 'delete_all') {
     exit;
 }
 
+// Handle delete_current_user action
+if ($action === 'delete_current_user') {
+    $userId = $_SESSION['user_id'] ?? null;
+    if (!$userId) {
+        echo json_encode(['error' => 'Not logged in']);
+        exit;
+    }
+    try {
+        $stmt = $pdo->prepare("DELETE FROM user_passkeys WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $deleted = $stmt->rowCount();
+        echo json_encode([
+            'success' => true,
+            'message' => "Deleted $deleted credential(s) for user ID $userId"
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Failed to delete: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
 // Verify challenge exists
 if (!isset($_SESSION['webauthn_challenge'])) {
     echo json_encode(['error' => 'Invalid session']);
