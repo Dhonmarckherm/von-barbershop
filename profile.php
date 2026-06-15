@@ -2,10 +2,12 @@
 /**
  * Customer Profile Page
  * Logged-in customers can edit their name and email address.
+ * Password change requires email verification token for enhanced security.
  */
 $pageTitle = 'My Profile';
 require_once 'includes/auth_check.php';
 require_once 'config/db.php';
+require_once 'config/mailer.php';
 
 $success = '';
 $errors = [];
@@ -15,12 +17,102 @@ if (isset($_GET['updated']) && $_GET['updated'] == '1') {
     $success = 'Profile updated successfully!';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $current_password = $_POST['current_password'] ?? '';
+if (isset($_GET['password_changed']) && $_GET['password_changed'] == '1') {
+    $success = 'Password changed successfully!';
+}
+
+// Handle password change verification token request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_password_token'])) {
+    // Generate verification token
+    $token = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', strtotime('+15 minutes')); // Token expires in 15 minutes
+    
+    // Store token in database
+    $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?");
+    $stmt->execute([$token, $expires, $_SESSION['user_id']]);
+    
+    // Send verification email
+    $verificationLink = "https://von-barbershop.onrender.com/profile.php?verify_token=$token";
+    $subject = "Password Change Verification - V.O.N Barber Studio";
+    $htmlBody = "
+        <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+            <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #c0c0c0;'>
+                <div style='font-size: 48px; margin-bottom: 10px;'>🔐</div>
+                <h1 style='color: #c0c0c0; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Verify Password Change</h1>
+                <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Security verification required</p>
+            </div>
+            
+            <div style='padding: 30px;'>
+                <p style='font-size: 18px; margin-bottom: 25px;'>Hello <strong style='color: #C5A059;'>" . htmlspecialchars($_SESSION['name']) . "</strong>,</p>
+                
+                <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>We received a request to change your password. For security, please verify this request by clicking the button below:</p>
+                
+                <div style='text-align: center; margin: 30px 0;'>
+                    <a href='$verificationLink' style='display: inline-block; background: #c0c0c0; color: #000000; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;'>
+                        ✅ Verify Password Change
+                    </a>
+                </div>
+                
+                <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC; background: rgba(220,53,69,0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;'>
+                    <strong>⚠️ Security Notice:</strong> This link will expire in <strong>15 minutes</strong>. If you did not request this change, please ignore this email or contact support immediately.
+                </p>
+            </div>
+            
+            <div style='background: rgba(192, 192, 192, 0.05); padding: 25px 30px; text-align: center; border-top: 1px solid rgba(192, 192, 192, 0.3);'>
+                <p style='color: #c0c0c0; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>V.O.N Barber Studio - Security Team</p>
+            </div>
+        </div>
+    ";
+    
+    try {
+        $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null);
+        
+        if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+            $emailSent = sendBrevoEmail($_SESSION['email'], $_SESSION['name'], $subject, $htmlBody);
+        } else {
+            $mail = getMailer();
+            $mail->addAddress($_SESSION['email'], $_SESSION['name']);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $htmlBody;
+            $mail->send();
+            $emailSent = true;
+        }
+        
+        if ($emailSent) {
+            $success = "Verification email sent to " . htmlspecialchars($_SESSION['email']) . ". Please check your inbox and click the verification link to change your password.";
+        } else {
+            $errors[] = "Failed to send verification email. Please try again.";
+        }
+    } catch (Exception $e) {
+        error_log("Profile password token error: " . $e->getMessage());
+        $errors[] = "Failed to send verification email. Please try again.";
+    }
+}
+
+// Handle password change after token verification
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password']) && isset($_GET['verified'])) {
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
+    
+    if (strlen($new_password) < 6) {
+        $errors[] = 'Password must be at least 6 characters.';
+    } elseif ($new_password !== $confirm_password) {
+        $errors[] = 'Passwords do not match.';
+    } else {
+        // Update password
+        $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?");
+        $stmt->execute([$passwordHash, $_SESSION['user_id']]);
+        
+        header('Location: profile.php?password_changed=1');
+        exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['request_password_token']) && !isset($_POST['change_password'])) {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
 
     if (empty($name) || strlen($name) < 2) {
         $errors[] = 'Name must be at least 2 characters.';
@@ -39,37 +131,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Validate password change if new password is provided
-    if (!empty($new_password)) {
-        if (empty($current_password)) {
-            $errors[] = 'Current password is required to change password.';
-        } elseif (strlen($new_password) < 6) {
-            $errors[] = 'New password must be at least 6 characters.';
-        } elseif ($new_password !== $confirm_password) {
-            $errors[] = 'New passwords do not match.';
-        } else {
-            // Verify current password
-            $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = ?");
-            $stmt->execute([$_SESSION['user_id']]);
-            $userPassword = $stmt->fetch();
-            
-            if (!password_verify($current_password, $userPassword['password_hash'])) {
-                $errors[] = 'Current password is incorrect.';
-            }
-        }
-    }
-
     if (empty($errors)) {
         // Update name and email
         $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
         $stmt->execute([$name, $email, $_SESSION['user_id']]);
-        
-        // Update password if provided
-        if (!empty($new_password)) {
-            $passwordHash = password_hash($new_password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
-            $stmt->execute([$passwordHash, $_SESSION['user_id']]);
-        }
         
         // Update session
         $_SESSION['name'] = $name;
@@ -90,6 +155,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmt = $pdo->prepare("SELECT name, email FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
+
+// Check if user clicked verification link from email
+$verified = false;
+if (isset($_GET['verify_token'])) {
+    $token = $_GET['verify_token'];
+    
+    // Verify token
+    $stmt = $pdo->prepare("SELECT id, reset_token_expires FROM users WHERE id = ? AND reset_token = ?");
+    $stmt->execute([$_SESSION['user_id'], $token]);
+    $tokenData = $stmt->fetch();
+    
+    if (!$tokenData) {
+        $errors[] = 'Invalid verification token.';
+    } elseif (strtotime($tokenData['reset_token_expires']) < time()) {
+        $errors[] = 'Verification token has expired. Please request a new one.';
+    } else {
+        $verified = true;
+        // Token is valid, show password change form
+    }
+}
 
 require_once 'includes/header.php';
 ?>
@@ -193,25 +278,52 @@ body, .profile-container {
                     <h5 style="color: var(--text-primary); font-family: 'Playfair Display', serif; margin-bottom: 20px;">
                         <i class="bi bi-key"></i> Change Password
                     </h5>
-                    <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
-                        Leave blank to keep current password
-                    </p>
                     
-                    <div class="mb-3">
-                        <label for="current_password" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="current_password" name="current_password"
-                               placeholder="Enter current password">
-                    </div>
-                    <div class="mb-3">
-                        <label for="new_password" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password"
-                               placeholder="Enter new password (min 6 characters)">
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirm_password" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                               placeholder="Re-enter new password">
-                    </div>
+                    <?php if ($verified): ?>
+                        <!-- Show password change form after email verification -->
+                        <div class="alert alert-success" style="background: rgba(40,167,69,0.15); border: 2px solid #28a745; color: #28a745; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                            <i class="bi bi-check-circle-fill"></i> Email verified! You can now change your password.
+                        </div>
+                        
+                        <form method="POST" action="profile.php?verified=1">
+                            <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
+                                Enter your new password below:
+                            </p>
+                            
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="new_password" name="new_password" required
+                                       placeholder="Enter new password (min 6 characters)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required
+                                       placeholder="Re-enter new password">
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
+                                <a href="profile.php" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    <?php else: ?>
+                        <!-- Show request verification button -->
+                        <p style="color: var(--barber-gray); font-size: 14px; margin-bottom: 15px;">
+                            <i class="bi bi-shield-lock"></i> For security, we'll send a verification link to your email to change your password.
+                        </p>
+                        
+                        <form method="POST" id="requestTokenForm">
+                            <div class="alert alert-info" style="background: rgba(0,123,255,0.1); border-left: 4px solid #007bff; color: #F5F0E8; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                                <i class="bi bi-info-circle"></i> A verification link will be sent to <strong><?php echo htmlspecialchars($_SESSION['email']); ?></strong>. The link expires in 15 minutes.
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" name="request_password_token" class="btn btn-outline-primary" id="requestTokenBtn">
+                                    <i class="bi bi-envelope"></i> Send Verification Email
+                                </button>
+                            </div>
+                        </form>
+                    <?php endif; ?>
                     
                     <hr class="my-4">
                     
