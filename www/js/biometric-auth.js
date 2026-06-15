@@ -15,13 +15,19 @@ function base64urlToBuffer(base64url) {
         throw new Error('Invalid base64url input: ' + JSON.stringify(base64url));
     }
     
+    // Normalize: remove padding and convert to base64url format
+    let normalized = base64url.trim();
+    normalized = normalized.replace(/=/g, ''); // Remove padding
+    normalized = normalized.replace(/\+/g, '-'); // Convert + to -
+    normalized = normalized.replace(/\//g, '_'); // Convert / to _
+    
     // Validate base64url characters (A-Z, a-z, 0-9, -, _)
-    if (!/^[A-Za-z0-9_-]+$/.test(base64url)) {
-        console.error('[Base64url] Invalid characters in:', base64url);
+    if (!/^[A-Za-z0-9_-]+$/.test(normalized)) {
+        console.error('[Base64url] Invalid characters in:', base64url, 'Normalized:', normalized);
         throw new Error('Base64url string contains invalid characters: ' + base64url);
     }
     
-    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = normalized.replace(/-/g, '+').replace(/_/g, '/');
     const pad = base64.length % 4;
     const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
     
@@ -33,7 +39,7 @@ function base64urlToBuffer(base64url) {
         }
         return buffer;
     } catch (e) {
-        console.error('[Base64url] Failed to decode:', { original: base64url, converted: padded });
+        console.error('[Base64url] Failed to decode:', { original: base64url, normalized, converted: padded });
         throw new Error('Failed to decode base64url: ' + e.message);
     }
 }
