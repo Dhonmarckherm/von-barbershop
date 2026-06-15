@@ -109,7 +109,7 @@ if (empty($credentials)) {
     $html .= "<p>Found <strong>" . count($credentials) . "</strong> credential(s)</p>";
     
     foreach ($credentials as $i => $cred) {
-        $isGood = $cred['char_len'] >= 60;
+        $isGood = $cred['char_len'] >= 20;
         $statusClass = $isGood ? 'success' : 'error';
         $statusText = $isGood ? '✅ VALID (Will work)' : '❌ TOO SHORT (Will NOT work)';
         

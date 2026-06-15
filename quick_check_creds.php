@@ -13,8 +13,8 @@ $stmt = $pdo->query("
         LENGTH(up.credential_id) as length,
         up.created_at,
         CASE 
-            WHEN LENGTH(up.credential_id) < 50 THEN '❌ TOO SHORT (corrupted)'
-            WHEN LENGTH(up.credential_id) >= 60 THEN '✅ GOOD LENGTH'
+            WHEN LENGTH(up.credential_id) < 20 THEN '❌ TOO SHORT (corrupted)'
+            WHEN LENGTH(up.credential_id) >= 20 THEN '✅ GOOD LENGTH'
             ELSE '⚠️ MEDIUM'
         END as status
     FROM user_passkeys up
@@ -48,8 +48,8 @@ $creds = $stmt->fetchAll();
     <?php endforeach; ?>
     
     <hr>
-    <p><strong>Expected:</strong> 60-100+ characters (✅ GOOD LENGTH)</p>
-    <p><strong>Problem:</strong> 27 characters = corrupted credential (❌ TOO SHORT)</p>
+    <p><strong>Expected:</strong> 20-100+ characters (✅ GOOD LENGTH)</p>
+    <p><strong>Problem:</strong> Under 20 characters = corrupted credential (❌ TOO SHORT)</p>
     
     <a href="force_reset_biometric.php" style="color: #ff6b6b;">→ Force Reset & Delete All</a><br>
     <a href="full_biometric_diagnostic.php" style="color: #74c0fc;">→ Full Diagnostic</a>

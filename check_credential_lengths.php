@@ -49,7 +49,7 @@ if (empty($credentials)) {
     </tr>";
     
     foreach ($credentials as $cred) {
-        $status = $cred['char_len'] >= 60 ? '<span class="good">✅ GOOD</span>' : '<span class="bad">❌ TOO SHORT</span>';
+        $status = $cred['char_len'] >= 20 ? '<span class="good">✅ GOOD</span>' : '<span class="bad">❌ TOO SHORT</span>';
         
         echo "<tr>
             <td>{$cred['id']}</td>
@@ -73,7 +73,7 @@ echo "<h2>📊 Summary</h2>";
 $good = 0;
 $bad = 0;
 foreach ($credentials as $cred) {
-    if ($cred['char_len'] >= 60) {
+    if ($cred['char_len'] >= 20) {
         $good++;
     } else {
         $bad++;

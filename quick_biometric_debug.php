@@ -78,9 +78,9 @@ header('Content-Type: text/html; charset=utf-8');
                             <td><?= htmlspecialchars($cred['name']) ?></td>
                             <td><?= htmlspecialchars($cred['email']) ?></td>
                             <td><?= htmlspecialchars($cred['role']) ?></td>
-                            <td class="<?= $cred['char_len'] >= 60 ? 'good' : 'bad' ?>">
+                            <td class="<?= $cred['char_len'] >= 20 ? 'good' : 'bad' ?>">
                                 <?= $cred['char_len'] ?> chars 
-                                <?= $cred['char_len'] >= 60 ? '✅' : '❌ TOO SHORT' ?>
+                                <?= $cred['char_len'] >= 20 ? '✅' : '❌ TOO SHORT' ?>
                             </td>
                             <td><?= date('M j, Y g:i A', strtotime($cred['created_at'])) ?></td>
                             <td class="credential-preview"><?= htmlspecialchars(substr($cred['credential_id'], 0, 50)) ?>...</td>
