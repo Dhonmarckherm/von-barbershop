@@ -185,6 +185,8 @@ const BiometricAuth = {
     async login() {
         try {
             console.log('[Biometric Login] Starting login process...');
+            console.log('[Biometric Login] Browser:', navigator.userAgent);
+            console.log('[Biometric Login] Is Safari:', /^((?!chrome|android).)*safari/i.test(navigator.userAgent));
             
             // Get challenge from server
             const response = await fetch('/api/biometric_login.php', {
@@ -205,27 +207,32 @@ const BiometricAuth = {
             console.log('[Biometric Login] Credentials from server:', JSON.stringify(options.allowCredentials, null, 2));
             
             // Get credential using device biometrics
-            // iOS Safari fix: Don't specify authenticatorAttachment to allow all types
+            const publicKeyOptions = {
+                challenge: base64urlToBuffer(options.challenge),
+                allowCredentials: options.allowCredentials.map(cred => {
+                    console.log('[Biometric Login] Processing credential ID:', cred.id);
+                    console.log('[Biometric Login] Credential ID length:', cred.id.length);
+                    
+                    return {
+                        id: base64urlToBuffer(cred.id),
+                        type: 'public-key',
+                        transports: cred.transports || ['internal', 'hybrid']
+                    };
+                }),
+                timeout: 60000,
+                userVerification: 'required',
+                rpId: window.location.hostname
+            };
+            
+            // Safari-specific fix: Remove options that Safari doesn't support well
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            if (isSafari) {
+                console.log('[Biometric Login] Safari detected - applying Safari-specific fixes');
+                // Safari works better without explicit transports in some cases
+            }
+            
             const getOptions = {
-                publicKey: {
-                    challenge: base64urlToBuffer(options.challenge),
-                    allowCredentials: options.allowCredentials.map(cred => {
-                        console.log('[Biometric Login] Processing credential ID:', cred.id);
-                        console.log('[Biometric Login] Credential ID length:', cred.id.length);
-                        console.log('[Biometric Login] Credential ID matches pattern:', /^[A-Za-z0-9_-]+$/.test(cred.id));
-                        
-                        return {
-                            id: base64urlToBuffer(cred.id),
-                            type: 'public-key',
-                            // iOS Safari fix: Include all transports
-                            transports: cred.transports || ['internal', 'hybrid']
-                        };
-                    }),
-                    timeout: 60000,
-                    userVerification: 'required',
-                    // iOS Safari fix: Don't restrict to platform authenticator
-                    rpId: window.location.hostname
-                }
+                publicKey: publicKeyOptions
             };
             
             console.log('[Biometric Login] Getting credential with options:', getOptions);
@@ -276,8 +283,24 @@ const BiometricAuth = {
                 throw new Error(result.error || 'Login failed');
             }
         } catch (err) {
-            console.error('Biometric login error:', err);
-            return { success: false, error: err.message };
+            console.error('[Biometric Login] ERROR:', err);
+            console.error('[Biometric Login] Error name:', err.name);
+            console.error('[Biometric Login] Error message:', err.message);
+            console.error('[Biometric Login] Error stack:', err.stack);
+            
+            // Provide helpful error messages
+            let errorMessage = err.message;
+            if (err.name === 'NotAllowedError') {
+                errorMessage = 'Biometric authentication was cancelled or not recognized. Please try again.';
+            } else if (err.name === 'NotSupportedError') {
+                errorMessage = 'Biometric login is not supported on this browser. Please use Chrome or Safari with Face ID/Touch ID enabled.';
+            } else if (err.name === 'SecurityError') {
+                errorMessage = 'Security error. Please make sure you are using HTTPS and try again.';
+            } else if (err.message.includes('invalid characters')) {
+                errorMessage = 'Credential format error. Please re-enable biometric login from your profile after logging in with password.';
+            }
+            
+            return { success: false, error: errorMessage };
         }
     },
 
