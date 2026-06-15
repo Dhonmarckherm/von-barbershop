@@ -248,7 +248,7 @@ const BiometricAuth = {
                 body: JSON.stringify({
                     action: 'login',
                     assertion: {
-                        id: assertion.id,
+                        id: rawIdBase64url,  // Use normalized rawId instead of assertion.id
                         rawId: rawIdBase64url,
                         response: {
                             authenticatorData: bufferToBase64url(new Uint8Array(assertion.response.authenticatorData)),
