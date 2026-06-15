@@ -134,29 +134,58 @@ if ($action === 'register') {
     try {
         // Get the credential ID from assertion
         $assertionId = $assertion['id'];
-        error_log("[Biometric Login] Assertion ID: $assertionId");
+        $assertionRawId = $assertion['rawId'];
         
-        // Find credential in database - use TRIM to handle whitespace issues
+        error_log("[Biometric Login] === START LOGIN VERIFICATION ===");
+        error_log("[Biometric Login] Assertion ID: $assertionId");
+        error_log("[Biometric Login] Assertion RawID: $assertionRawId");
+        
+        // Try to find credential using BOTH assertion.id AND assertion.rawId
+        // iOS may return different formats, so we try both
         $stmt = $pdo->prepare("
             SELECT up.*, u.id as user_id, u.name, u.email, u.role
             FROM user_passkeys up
             JOIN users u ON up.user_id = u.id
             WHERE TRIM(up.credential_id) = ?
+               OR TRIM(up.credential_id) = ?
         ");
-        $stmt->execute([$assertionId]);
+        $stmt->execute([$assertionId, $assertionRawId]);
         $cred = $stmt->fetch();
         
         if (!$cred) {
-            error_log("[Biometric Login] Credential NOT found in database!");
-            error_log("[Biometric Login] Looking for: $assertionId");
+            error_log("[Biometric Login] ❌ Credential NOT found!");
+            error_log("[Biometric Login] Looking for ID: '$assertionId'");
+            error_log("[Biometric Login] Looking for RawID: '$assertionRawId'");
             
-            // Debug: Show all credentials in database
-            $debugStmt = $pdo->query("SELECT credential_id, user_id FROM user_passkeys");
+            // Show all credentials for debugging
+            $debugStmt = $pdo->query("SELECT id, user_id, credential_id, CHAR_LENGTH(credential_id) as len FROM user_passkeys");
             $allCreds = $debugStmt->fetchAll();
             error_log("[Biometric Login] All credentials in DB: " . json_encode($allCreds));
             
-            echo json_encode(['error' => 'Credential not found. Please re-enable biometric login.']);
-            exit;
+            // Try one more time with base64url normalization
+            $normalizedId = rtrim(strtr($assertionId, '-_', '+/'), '=');
+            $normalizedRawId = rtrim(strtr($assertionRawId, '-_', '+/'), '=');
+            
+            error_log("[Biometric Login] Normalized ID: '$normalizedId'");
+            error_log("[Biometric Login] Normalized RawID: '$normalizedRawId'");
+            
+            $stmt2 = $pdo->prepare("
+                SELECT up.*, u.id as user_id, u.name, u.email, u.role
+                FROM user_passkeys up
+                JOIN users u ON up.user_id = u.id
+                WHERE TRIM(up.credential_id) LIKE ?
+                   OR TRIM(up.credential_id) LIKE ?
+            ");
+            $stmt2->execute([$normalizedId . '%', $normalizedRawId . '%']);
+            $cred = $stmt2->fetch();
+            
+            if (!$cred) {
+                error_log("[Biometric Login] ❌ Still not found after normalization!");
+                echo json_encode(['error' => 'Credential not found. Please re-enable biometric login.']);
+                exit;
+            }
+            
+            error_log("[Biometric Login] ✅ Found with normalization!");
         }
         
         error_log("[Biometric Login] Credential found for user: " . $cred['user_id'] . " (" . $cred['email'] . ")");
