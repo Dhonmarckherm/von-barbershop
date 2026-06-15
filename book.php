@@ -81,15 +81,18 @@ unset($_SESSION['booking_old_input']);
 
                     <div class="mb-4">
                         <label for="location" class="form-label" style="color: #F5F0E8; font-weight: 600; font-size: 15px; margin-bottom: 8px;">
-                            <i class="bi bi-geo-alt" style="color: var(--barber-gold);"></i> Location / Address
+                            <i class="bi bi-geo-alt" style="color: var(--barber-gold);"></i> Complete Address
                         </label>
                         <input type="text" class="form-control" id="location" name="location" 
-                               placeholder="Enter the address where you're located" 
+                               placeholder="e.g. 123 Rizal Street, Brgy. San Jose, San Juan, Ilocos Sur" 
                                value="<?php echo htmlspecialchars($oldInput['location'] ?? ''); ?>"
                                style="background: rgba(255,255,255,0.08); border: 2px solid rgba(192,192,192,0.3); color: #FFFFFF; padding: 14px 16px; border-radius: 10px; font-size: 15px;" required>
                         <style>
                             #location::placeholder { color: rgba(255,255,255,0.5); }
                         </style>
+                        <small class="d-block mt-2" style="color: var(--barber-gold); font-size: 12px; background: rgba(197,160,89,0.1); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--barber-gold);">
+                            <i class="bi bi-info-circle"></i> <strong>Tip:</strong> Please provide your complete address including street, barangay, and city. Avoid shortcuts like "SJ", "CD", or just the town name.
+                        </small>
                     </div>
 
                     <div class="mb-4">

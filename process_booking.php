@@ -18,6 +18,60 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+/**
+ * Check if address is incomplete/abbreviated
+ * Returns true if address appears to be just a shortcut/abbreviation
+ */
+function isIncompleteAddress(string $address): bool {
+    $address = trim($address);
+    $addressUpper = strtoupper($address);
+    
+    // Common abbreviations and shortcuts that are NOT complete addresses
+    $shortcuts = [
+        // 2-letter abbreviations
+        'SJ', 'CD', 'MB', 'BV', 'SB', 'LB', 'CB', 'NB', 'TB', 'PB',
+        'SN', 'ST', 'JR', 'SR', 'NR', 'MR', 'KR', 'LR',
+        
+        // City/municipality names alone (without street/barangay)
+        'SAN JUAN', 'CANDON', 'VIGAN', 'BANTAY', 'NARVACAN', 
+        'SANTO DOMINGO', 'SANTA LUCIA', 'SANTA MARIA', 'SINAIT',
+        'BACARRA', 'BADOC', 'BANGUI', 'BURGOS', 'CARASI',
+        'LAOAG', 'PAGUDPUD', 'PAOAY', 'SAN NICOLAS', 'SARRAT',
+        'DINGRAS', 'DUMALNEG', 'BATAAC', 'MARCOS', 'NUEVA ERA',
+        'PINILI', 'SAN FERNANDO', 'VINTAR', 'ADAMS',
+        
+        // Single words or very short addresses
+        'HOME', 'HOUSE', 'NEAR', 'CHURCH', 'PLAZA', 'MALL',
+        'CENTER', 'PUBLIC', 'MARKET', 'STORE', 'SHOP',
+    ];
+    
+    // Check if address matches any shortcut (exact match or contains only shortcut)
+    foreach ($shortcuts as $shortcut) {
+        // Exact match (case-insensitive)
+        if ($addressUpper === $shortcut) {
+            return true;
+        }
+    }
+    
+    // Check if address is too short (less than 15 chars likely incomplete)
+    if (strlen($address) < 15) {
+        return true;
+    }
+    
+    // Check if address lacks common address components
+    $hasStreet = preg_match('/\b(street|st\.?|avenue|ave\.?|road|rd\.?|blvd|boulevard|lane|ln\.?)\b/i', $address);
+    $hasBarangay = preg_match('/\b(brgy\.?|barangay)\b/i', $address);
+    $hasSubdivision = preg_match('/\b(subd\.?|subdivision|village|phase|block|lot)\b/i', $address);
+    $hasLandmark = preg_match('/\b(near|beside|opposite|across|front|back|behind)\b/i', $address);
+    
+    // If no address components found and it's less than 30 characters, likely incomplete
+    if (!$hasStreet && !$hasBarangay && !$hasSubdivision && !$hasLandmark && strlen($address) < 30) {
+        return true;
+    }
+    
+    return false;
+}
+
 // Sanitize and validate inputs
 $haircutDescription = trim($_POST['haircut_description'] ?? '');
 $location = trim($_POST['location'] ?? '');
@@ -32,6 +86,8 @@ if (empty($haircutDescription) || strlen($haircutDescription) < 2) {
 
 if (empty($location) || strlen($location) < 3) {
     $errors[] = 'Please enter a valid location or address.';
+} elseif (isIncompleteAddress($location)) {
+    $errors[] = 'Please provide a complete address. Abbreviations like "SJ", "CD", "San Juan", "Candon" alone are not sufficient. Include street, barangay, city/municipality for better service.';
 }
 
 if (empty($date) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
