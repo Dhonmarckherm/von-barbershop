@@ -52,14 +52,26 @@ if (empty($errors)) {
 }
 
 if (!empty($errors)) {
+    error_log("[Booking] Validation errors: " . implode(', ', $errors));
     $_SESSION['booking_errors'] = $errors;
+    $_SESSION['booking_old_input'] = $_POST; // Preserve user input
     header('Location: book.php');
     exit;
 }
 
 // Insert appointment
-$stmt = $pdo->prepare("INSERT INTO appointments (user_id, service_id, haircut_description, location, appointment_date, appointment_time, status) VALUES (?, NULL, ?, ?, ?, ?, 'pending')");
-$stmt->execute([$_SESSION['user_id'], $haircutDescription, $location, $date, $time]);
+try {
+    $stmt = $pdo->prepare("INSERT INTO appointments (user_id, service_id, haircut_description, location, appointment_date, appointment_time, status) VALUES (?, NULL, ?, ?, ?, ?, 'pending')");
+    $stmt->execute([$_SESSION['user_id'], $haircutDescription, $location, $date, $time]);
+    
+    error_log("[Booking] INSERT successful for user " . $_SESSION['user_id']);
+} catch (PDOException $e) {
+    error_log("[Booking] INSERT failed: " . $e->getMessage());
+    $errors[] = 'Failed to create booking. Please try again.';
+    $_SESSION['booking_errors'] = $errors;
+    header('Location: book.php');
+    exit;
+}
 
 // Get the appointment ID
 $appointmentId = $pdo->lastInsertId();
