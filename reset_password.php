@@ -45,7 +45,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
         $stmt->execute([$password_hash, $user['id']]);
         
         $success = 'Password has been reset successfully! You can now login with your new password.';
-        unset($user);
+        
+        // Auto-login the user
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['name'] = $user['name'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['role'] = 'customer';
+        $_SESSION['login_time'] = time();
+        
+        // Set auth cookies
+        $isHttps = true;
+        setcookie('auth_user_id', $user['id'], time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_name', $user['name'], time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_email', $user['email'], time() + (86400 * 30), '/', '', $isHttps, true);
+        setcookie('auth_role', 'customer', time() + (86400 * 30), '/', '', $isHttps, true);
+        
+        // Redirect to my_appointments with biometric enrollment prompt
+        header('Location: my_appointments.php?password_reset=1&biometric_prompt=1');
+        exit;
     }
 }
 

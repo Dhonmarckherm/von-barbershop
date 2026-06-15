@@ -45,6 +45,9 @@ require_once 'includes/header.php';
 
 // Check if this is a new user who just registered
 $isNewUser = isset($_GET['welcome']) && $_GET['welcome'] == '1';
+
+// Check if user just reset their password
+$isPasswordReset = isset($_GET['password_reset']) && $_GET['password_reset'] == '1';
 ?>
 
 <!-- Welcome Greeting Section -->
@@ -762,11 +765,11 @@ window.addEventListener('DOMContentLoaded', function() {
         <div class="modal-content" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(197, 160, 89, 0.3); border-radius: 15px;">
             <div class="modal-header" style="border-bottom: 1px solid rgba(197, 160, 89, 0.2); padding: 20px 25px 15px;">
                 <h5 class="modal-title" id="biometricPromptLabel" style="color: var(--barber-gold); font-family: 'Playfair Display', serif; font-size: 1.5rem;">
-                    <i class="bi bi-fingerprint"></i> Enable Quick Login?
+                    <i class="bi bi-fingerprint"></i> <span id="biometricModalTitle">Enable Quick Login?</span>
                 </h5>
             </div>
             <div class="modal-body" style="padding: 20px 25px;">
-                <p style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; margin-bottom: 15px;">
+                <p style="color: #F5F0E8; font-size: 1rem; line-height: 1.6; margin-bottom: 15px;" id="biometricModalMessage">
                     Would you like to enable <strong style="color: var(--barber-gold);">biometric login</strong> for faster access?
                 </p>
                 <div style="background: rgba(197, 160, 89, 0.1); border-left: 3px solid var(--barber-gold); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
@@ -803,13 +806,31 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Check if we should show biometric prompt
     const urlParams = new URLSearchParams(window.location.search);
     const showBiometricPrompt = urlParams.get('biometric_prompt') === '1';
+    const isPasswordReset = urlParams.get('password_reset') === '1';
     
     console.log('[Biometric] showBiometricPrompt:', showBiometricPrompt);
+    console.log('[Biometric] isPasswordReset:', isPasswordReset);
     console.log('[Biometric] URL:', window.location.href);
     
     if (!showBiometricPrompt) {
         console.log('[Biometric] No biometric_prompt parameter - skipping');
         return;
+    }
+    
+    // Update modal content for password reset users
+    if (isPasswordReset) {
+        const titleEl = document.getElementById('biometricModalTitle');
+        const messageEl = document.getElementById('biometricModalMessage');
+        
+        if (titleEl) {
+            titleEl.textContent = 'Re-enable Biometric Login';
+        }
+        
+        if (messageEl) {
+            messageEl.innerHTML = 'Your password has been reset. For security, you need to <strong style="color: var(--barber-gold);">re-enable biometric login</strong> on this device.';
+        }
+        
+        console.log('[Biometric] Updated modal for password reset user');
     }
     
     if (typeof BiometricAuth === 'undefined') {
