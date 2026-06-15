@@ -251,6 +251,7 @@ body, .profile-container {
                 <?php endif; ?>
                 
                 <?php if (isset($_GET['password_changed']) && $_GET['password_changed'] == '1'): ?>
+                    <!-- DEBUG: Password changed modal should appear -->
                     <!-- Password Changed Success Modal -->
                     <div id="passwordSuccessModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 9999; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease;">
                         <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 24px; padding: 40px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); border: 2px solid rgba(40,167,69,0.3); animation: slideUp 0.5s ease;">
