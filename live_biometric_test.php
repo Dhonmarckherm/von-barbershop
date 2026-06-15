@@ -167,9 +167,19 @@ session_start();
                     
                     if (result.success) {
                         log('🎉 SUCCESS! You are now logged in!', 'success');
-                        log(`User: ${result.user.name} (${result.user.email})`, 'success');
+                        log(`User: ${result.name} (${result.email || 'N/A'})`, 'success');
+                        log(`Role: ${result.role}`, 'success');
                         btn.textContent = '✅ LOGIN SUCCESS!';
                         btn.style.background = '#28a745';
+                        
+                        // Redirect after 2 seconds
+                        setTimeout(() => {
+                            if (result.role === 'admin' || result.role === 'barber') {
+                                window.location.href = '/admin_dashboard.php';
+                            } else {
+                                window.location.href = '/my_appointments.php';
+                            }
+                        }, 2000);
                     } else {
                         throw new Error(`Server rejected: ${result.error}`);
                     }
