@@ -156,18 +156,82 @@ if ($user) {
         'location'       => $location,
     ];
 
-    // Fetch barber/admin email
-    $barberStmt = $pdo->query("SELECT email FROM users WHERE role = 'admin' OR role = 'barber' ORDER BY id ASC LIMIT 1");
-    $barber = $barberStmt->fetch();
-    $barberEmail = $barber ? $barber['email'] : 'dhonmarck2004@gmail.com';
+    // Fetch ALL barber/admin emails
+    $barberStmt = $pdo->query("SELECT email, name FROM users WHERE role IN ('admin', 'barber')");
+    $barbers = $barberStmt->fetchAll();
+    
+    if (empty($barbers)) {
+        // Fallback to default admin email
+        $barbers = [['email' => 'dhonmarck2004@gmail.com', 'name' => 'Admin']];
+    }
+    
+    error_log("[Booking] Sending admin notifications to " . count($barbers) . " admin(s)/barber(s)");
 
     // Send emails via PHPMailer (with error handling)
     try {
-        $emailSent = sendBookingEmails($user['email'], $user['name'], $appointmentDetails, $barberEmail);
-        if ($emailSent) {
-            error_log('Booking emails SENT successfully to customer and barber');
+        // Send to customer
+        $customerSent = false;
+        $adminSentCount = 0;
+        
+        $brevoKey = getenv('BREVO_API_KEY') ?: ($_ENV['BREVO_API_KEY'] ?? null) ?: ($_SERVER['BREVO_API_KEY'] ?? null);
+        
+        if ($brevoKey && strpos($brevoKey, 'xkeysib-') === 0) {
+            // Use Brevo HTTP API
+            $customerSent = sendBrevoEmail(
+                $user['email'],
+                $user['name'],
+                'Your Appointment Confirmation - Barbershop',
+                buildCustomerEmailBody($appointmentDetails)
+            );
+            
+            // Send to ALL admins/barbers
+            foreach ($barbers as $barber) {
+                $sent = sendBrevoEmail(
+                    $barber['email'],
+                    $barber['name'],
+                    'New Booking Received - Barbershop',
+                    buildAdminEmailBody($appointmentDetails)
+                );
+                if ($sent) {
+                    $adminSentCount++;
+                    error_log("[Booking] Admin notification SENT to: " . $barber['email']);
+                } else {
+                    error_log("[Booking] Admin notification FAILED for: " . $barber['email']);
+                }
+            }
         } else {
-            error_log('Booking emails returned false - sendBookingEmails failed');
+            // Fallback to PHPMailer SMTP
+            $mail = getMailer();
+            $mail->addAddress($user['email'], $user['name']);
+            $mail->isHTML(true);
+            $mail->Subject = 'Your Appointment Confirmation - Barbershop';
+            $mail->Body    = buildCustomerEmailBody($appointmentDetails);
+            $mail->send();
+            $customerSent = true;
+            
+            // Send to ALL admins/barbers
+            foreach ($barbers as $barber) {
+                try {
+                    $mail = getMailer();
+                    $mail->addAddress($barber['email'], $barber['name']);
+                    $mail->isHTML(true);
+                    $mail->Subject = 'New Booking Received - Barbershop';
+                    $mail->Body    = buildAdminEmailBody($appointmentDetails);
+                    $mail->send();
+                    $adminSentCount++;
+                    error_log("[Booking] Admin notification SENT to: " . $barber['email']);
+                } catch (Exception $e) {
+                    error_log("[Booking] Admin notification FAILED for " . $barber['email'] . ": " . $e->getMessage());
+                }
+            }
+        }
+        
+        $emailSent = $customerSent && ($adminSentCount > 0);
+        
+        if ($emailSent) {
+            error_log("[Booking] Customer email SENT. Admin emails sent: {$adminSentCount}/" . count($barbers));
+        } else {
+            error_log("[Booking] Email sending failed. Customer: " . ($customerSent ? 'YES' : 'NO') . ", Admins: {$adminSentCount}/" . count($barbers));
         }
     } catch (Exception $e) {
         error_log('Booking email FAILED with exception: ' . $e->getMessage());
