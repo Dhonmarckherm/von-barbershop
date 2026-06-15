@@ -16,6 +16,20 @@ $action = $input['action'] ?? '';
 // Start session
 session_start();
 
+// Handle delete_all action (no challenge needed)
+if ($action === 'delete_all') {
+    try {
+        $stmt = $pdo->exec("DELETE FROM user_passkeys");
+        echo json_encode([
+            'success' => true,
+            'message' => "Deleted $stmt biometric credentials. Users must re-enable biometrics."
+        ]);
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Failed to delete credentials: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
 // Verify challenge exists
 if (!isset($_SESSION['webauthn_challenge'])) {
     echo json_encode(['error' => 'Invalid session']);
