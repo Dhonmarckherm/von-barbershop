@@ -26,7 +26,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE payment_logs SET status = 'verified', verified_at = NOW(), verified_by = ? WHERE appointment_id = ?");
                 $stmt->execute([$_SESSION['user_id'], $appointment_id]);
                 
-                $message = 'Payment approved successfully!';
+                // Get customer details for notification
+                $stmt = $pdo->prepare("
+                    SELECT u.id as user_id, u.name, u.email, a.appointment_date, a.appointment_time
+                    FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ?
+                ");
+                $stmt->execute([$appointment_id]);
+                $customer = $stmt->fetch();
+                
+                if ($customer) {
+                    // Convert time to 12-hour format
+                    $time12 = $customer['appointment_time'];
+                    if (preg_match('/^(\d{1,2}):(\d{2})(?::\d{2})?$/', $time12, $matches)) {
+                        $hours = (int)$matches[1];
+                        $minutes = $matches[2];
+                        $period = $hours >= 12 ? 'PM' : 'AM';
+                        if ($hours > 12) $hours -= 12;
+                        else if ($hours == 0) $hours = 12;
+                        $time12 = $hours . ':' . $minutes . ' ' . $period;
+                    }
+                    
+                    // Send push notification to customer
+                    require_once __DIR__ . '/includes/push_helper.php';
+                    sendPushNotification($pdo, $customer['user_id'], '✅ Payment Verified', 
+                        "Your payment of ₱50.00 has been verified! Your appointment on {$customer['appointment_date']} at {$time12} is confirmed.", 
+                        '/my_appointments.php');
+                    
+                    // Send email notification to customer
+                    try {
+                        require_once 'config/mailer.php';
+                        $emailBody = "
+                            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+                                <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 30px; text-align: center; border-bottom: 3px solid #28a745;'>
+                                    <h1 style='color: #28a745; font-family: Georgia, serif; font-size: 28px; margin: 0;'>✅ Payment Verified!</h1>
+                                </div>
+                                <div style='padding: 30px;'>
+                                    <p style='font-size: 18px; margin-bottom: 20px;'>Hello <strong style='color: #C5A059;'>{$customer['name']}</strong>,</p>
+                                    <p style='font-size: 16px; line-height: 1.6; margin-bottom: 20px;'>Your payment has been verified and approved. Your appointment is now confirmed!</p>
+                                    <div style='background: rgba(40,167,69,0.1); border-left: 4px solid #28a745; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
+                                        <h3 style='color: #28a745; margin: 0 0 15px 0; font-size: 18px;'>📋 Appointment Details</h3>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Date:</strong> " . date('M d, Y', strtotime($customer['appointment_date'])) . "</p>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Time:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>{$time12}</span></p>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Amount Paid:</strong> <span style='color: #28a745; font-weight: bold;'>₱50.00</span></p>
+                                    </div>
+                                    <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC;'>We look forward to seeing you! Please arrive 10 minutes before your scheduled time.</p>
+                                </div>
+                            </div>
+                        ";
+                        sendBrevoEmail($customer['email'], $customer['name'], '✅ Payment Verified - Appointment Confirmed', $emailBody);
+                    } catch (Exception $e) {
+                        error_log('Payment approval email failed: ' . $e->getMessage());
+                    }
+                }
+                
+                $message = 'Payment approved successfully! Customer has been notified.';
                 $message_type = 'success';
                 
             } elseif ($action === 'reject') {
@@ -36,7 +89,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE payment_logs SET status = 'rejected', verified_at = NOW(), verified_by = ? WHERE appointment_id = ?");
                 $stmt->execute([$_SESSION['user_id'], $appointment_id]);
                 
-                $message = 'Payment rejected.';
+                // Get customer details for notification
+                $stmt = $pdo->prepare("
+                    SELECT u.id as user_id, u.name, u.email, a.appointment_date, a.appointment_time
+                    FROM appointments a JOIN users u ON a.user_id = u.id WHERE a.id = ?
+                ");
+                $stmt->execute([$appointment_id]);
+                $customer = $stmt->fetch();
+                
+                if ($customer) {
+                    // Convert time to 12-hour format
+                    $time12 = $customer['appointment_time'];
+                    if (preg_match('/^(\d{1,2}):(\d{2})(?::\d{2})?$/', $time12, $matches)) {
+                        $hours = (int)$matches[1];
+                        $minutes = $matches[2];
+                        $period = $hours >= 12 ? 'PM' : 'AM';
+                        if ($hours > 12) $hours -= 12;
+                        else if ($hours == 0) $hours = 12;
+                        $time12 = $hours . ':' . $minutes . ' ' . $period;
+                    }
+                    
+                    // Send push notification to customer
+                    require_once __DIR__ . '/includes/push_helper.php';
+                    sendPushNotification($pdo, $customer['user_id'], '❌ Payment Rejected', 
+                        "Your payment proof was rejected. Please contact VON Barber Studio for assistance.", 
+                        '/my_appointments.php');
+                    
+                    // Send email notification to customer
+                    try {
+                        require_once 'config/mailer.php';
+                        $emailBody = "
+                            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
+                                <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 30px; text-align: center; border-bottom: 3px solid #dc3545;'>
+                                    <h1 style='color: #dc3545; font-family: Georgia, serif; font-size: 28px; margin: 0;'>❌ Payment Rejected</h1>
+                                </div>
+                                <div style='padding: 30px;'>
+                                    <p style='font-size: 18px; margin-bottom: 20px;'>Hello <strong style='color: #C5A059;'>{$customer['name']}</strong>,</p>
+                                    <p style='font-size: 16px; line-height: 1.6; margin-bottom: 20px;'>Your payment proof could not be verified. This may be due to an unclear screenshot or payment not being received.</p>
+                                    <div style='background: rgba(220,53,69,0.1); border-left: 4px solid #dc3545; padding: 20px; border-radius: 8px; margin-bottom: 20px;'>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Appointment:</strong> " . date('M d, Y', strtotime($customer['appointment_date'])) . " at {$time12}</p>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Amount:</strong> ₱50.00</p>
+                                    </div>
+                                    <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC;'>Please contact us or re-upload your payment proof. GCash: <strong style='color: #28a745;'>0992-249-1190</strong></p>
+                                </div>
+                            </div>
+                        ";
+                        sendBrevoEmail($customer['email'], $customer['name'], '❌ Payment Rejected - Action Required', $emailBody);
+                    } catch (Exception $e) {
+                        error_log('Payment rejection email failed: ' . $e->getMessage());
+                    }
+                }
+                
+                $message = 'Payment rejected. Customer has been notified.';
                 $message_type = 'warning';
             }
         } catch (PDOException $e) {
