@@ -9,6 +9,24 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
+// Auto-cleanup: Remove old file-based payment records (non-base64)
+try {
+    $cleanup_stmt = $pdo->query("SELECT id FROM appointments WHERE payment_proof IS NOT NULL AND payment_proof NOT LIKE 'data:%'");
+    $old_records = $cleanup_stmt->fetchAll(PDO::FETCH_COLUMN);
+    
+    if (!empty($old_records)) {
+        foreach ($old_records as $apt_id) {
+            // Delete payment logs
+            $pdo->prepare("DELETE FROM payment_logs WHERE appointment_id = ?")->execute([$apt_id]);
+            // Clear payment proof
+            $pdo->prepare("UPDATE appointments SET payment_proof = NULL, payment_status = 'pending' WHERE id = ?")->execute([$apt_id]);
+        }
+        error_log("Auto-cleaned " . count($old_records) . " old file-based payment records");
+    }
+} catch (PDOException $e) {
+    error_log("Cleanup error: " . $e->getMessage());
+}
+
 // Handle payment verification actions
 $message = '';
 $message_type = '';
@@ -62,6 +80,7 @@ $query = "
     JOIN users u ON a.user_id = u.id
     LEFT JOIN payment_logs p ON a.id = p.appointment_id
     WHERE a.payment_proof IS NOT NULL
+    AND a.payment_proof LIKE 'data:%'
 ";
 
 if ($filter === 'pending') {
