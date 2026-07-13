@@ -268,9 +268,299 @@ $showBiometricPrompt = ($bookingCount <= 1) ? '&biometric_prompt=1' : '';
 
 error_log("[Booking] User has $bookingCount bookings. Biometric prompt: " . ($showBiometricPrompt ? 'YES' : 'NO'));
 
-// Redirect to payment upload page (after booking, customer needs to pay ₱50 downpayment)
+// Redirect to payment upload page with beautiful loading animation
 $redirectUrl = 'payment_upload.php?appointment_id=' . $appointmentId;
-error_log("[Booking] Final redirect URL: $redirectUrl");
 
-header('Location: ' . $redirectUrl);
-exit;
+// Format time for display
+$timeDisplay = $time;
+if (preg_match('/^(\d{1,2}):(\d{2})$/', $time, $m)) {
+    $hours = (int)$m[1];
+    $mins = $m[2];
+    $period = $hours >= 12 ? 'PM' : 'AM';
+    if ($hours > 12) $hours -= 12;
+    else if ($hours == 0) $hours = 12;
+    $timeDisplay = $hours . ':' . $mins . ' ' . $period;
+}
+$dateDisplay = date('M d, Y', strtotime($date));
+
+// Render beautiful loading animation page
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Your Booking...</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000000;
+            color: #F5F0E8;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .processing-container {
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 420px;
+            width: 100%;
+        }
+        /* Animated checkmark circle */
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            position: relative;
+            opacity: 0;
+            animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+        }
+        .success-icon .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(40, 167, 69, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .success-icon .circle i {
+            font-size: 48px;
+            color: white;
+            opacity: 0;
+            animation: checkDraw 0.4s ease 0.8s forwards;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.3); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes checkDraw {
+            from { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(40, 167, 69, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(40, 167, 69, 0.6); }
+        }
+        .title {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #C5A059;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.6s forwards;
+        }
+        .subtitle {
+            color: #8A8A9A;
+            font-size: 15px;
+            margin-bottom: 35px;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.8s forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Appointment card */
+        .apt-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1s forwards;
+        }
+        .apt-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8A8A9A;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .apt-card .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .apt-card .row:last-child { border-bottom: none; }
+        .apt-card .row .key { color: #8A8A9A; font-size: 14px; }
+        .apt-card .row .val { color: #F5F0E8; font-weight: 600; font-size: 14px; }
+        .apt-card .row .val.gold { color: #C5A059; }
+        .apt-card .row .val.green { color: #28a745; }
+        /* Progress steps */
+        .steps {
+            text-align: left;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.2s forwards;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            font-size: 14px;
+            color: #8A8A9A;
+            transition: all 0.3s ease;
+        }
+        .step .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+        }
+        .step.active { color: #F5F0E8; }
+        .step.active .icon {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);
+        }
+        .step.done .icon {
+            background: rgba(40, 167, 69, 0.15);
+            border-color: #28a745;
+            color: #28a745;
+        }
+        .step.done { color: rgba(245, 240, 232, 0.5); }
+        /* Spinner for active step */
+        .step.active .icon::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: rgba(40, 167, 69, 0.6);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Redirect bar */
+        .redirect-bar {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.4s forwards;
+        }
+        .redirect-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #28a745, #C5A059);
+            border-radius: 3px;
+            animation: fillBar 3s ease 2s forwards;
+        }
+        @keyframes fillBar {
+            to { width: 100%; }
+        }
+        .redirect-text {
+            font-size: 13px;
+            color: #8A8A9A;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 1.6s forwards;
+        }
+        .redirect-text a {
+            color: #C5A059;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="processing-container">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <div class="circle">
+                <i class="bi bi-check-lg"></i>
+            </div>
+        </div>
+        
+        <h1 class="title">Booking Confirmed!</h1>
+        <p class="subtitle">Your appointment has been successfully created</p>
+        
+        <!-- Appointment Details Card -->
+        <div class="apt-card">
+            <div class="label">Appointment Details</div>
+            <div class="row">
+                <span class="key">Service</span>
+                <span class="val gold"><?php echo htmlspecialchars($haircutDescription); ?></span>
+            </div>
+            <div class="row">
+                <span class="key">Date</span>
+                <span class="val"><?php echo $dateDisplay; ?></span>
+            </div>
+            <div class="row">
+                <span class="key">Time</span>
+                <span class="val"><?php echo $timeDisplay; ?></span>
+            </div>
+            <div class="row">
+                <span class="key">Location</span>
+                <span class="val"><?php echo htmlspecialchars($location); ?></span>
+            </div>
+            <div class="row">
+                <span class="key">Downpayment</span>
+                <span class="val green">₱50.00</span>
+            </div>
+        </div>
+        
+        <!-- Progress Steps -->
+        <div class="steps">
+            <div class="step done" id="step1">
+                <div class="icon"><i class="bi bi-check"></i></div>
+                <span>Appointment created</span>
+            </div>
+            <div class="step done" id="step2">
+                <div class="icon"><i class="bi bi-check"></i></div>
+                <span>Confirmation email sent</span>
+            </div>
+            <div class="step active" id="step3">
+                <div class="icon"><i class="bi bi-credit-card"></i></div>
+                <span>Redirecting to payment...</span>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="redirect-bar">
+            <div class="fill"></div>
+        </div>
+        <p class="redirect-text">
+            Redirecting to payment page... <a href="<?php echo $redirectUrl; ?>">Skip</a>
+        </p>
+    </div>
+    
+    <script>
+        // Animate steps sequentially
+        setTimeout(() => {
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step3').classList.add('done');
+            document.getElementById('step3').querySelector('.icon').innerHTML = '<i class="bi bi-check"></i>';
+        }, 2000);
+        
+        // Redirect after animation
+        setTimeout(() => {
+            window.location.href = '<?php echo $redirectUrl; ?>';
+        }, 5000);
+    </script>
+</body>
+</html>
