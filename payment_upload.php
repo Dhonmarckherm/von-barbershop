@@ -183,7 +183,7 @@ include 'includes/header.php';
                             <i class="bi bi-info-circle-fill"></i> Payment Instructions
                         </h5>
                         <ol style="color: var(--text-primary); padding-left: 20px; margin: 0;">
-                            <li>Send <strong>₱50.00</strong> to GCash number: <strong style="color: #28a745;">0969-055-8227</strong></li>
+                            <li>Send <strong>₱50.00</strong> to GCash number: <strong style="color: #28a745;">0992-249-1190</strong></li>
                             <li>Take a screenshot of the payment confirmation</li>
                             <li>Upload the screenshot below</li>
                             <li>Wait for admin verification (usually within 5 minutes)</li>
@@ -192,13 +192,11 @@ include 'includes/header.php';
                     
                     <!-- GCash QR Code Display -->
                     <div class="text-center mb-4">
-                        <div style="background: white; padding: 20px; border-radius: 12px; display: inline-block;">
-                            <i class="bi bi-qr-code" style="font-size: 150px; color: #007bff;"></i>
-                            <p style="color: #000; margin-top: 10px; font-weight: 600;">GCash QR Code</p>
-                            <p style="color: #666; font-size: 12px; margin: 0;">Scan to pay ₱50.00</p>
+                        <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block;">
+                            <img src="qr-code.jpg" alt="GCash QR Code" style="width: 200px; height: 200px; object-fit: contain; border-radius: 8px;">
                         </div>
                         <p class="mt-2" style="color: var(--text-secondary); font-size: 14px;">
-                            Or send manually to: <strong style="color: #28a745;">0969-055-8227</strong>
+                            Scan QR code or send manually to: <strong style="color: #28a745;">0992-249-1190</strong>
                         </p>
                     </div>
                     

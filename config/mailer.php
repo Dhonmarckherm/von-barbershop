@@ -344,7 +344,7 @@ function buildCustomerEmailBody(array $details): string {
                     <p style='font-size: 15px; line-height: 1.6; margin-bottom: 15px;'>To confirm your booking, please pay <strong style='color: #28a745; font-size: 18px;'>₱50.00</strong> downpayment via GCash:</p>
                     
                     <div style='background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;'>
-                        <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>GCash Number:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>0969-055-8227</span></p>
+                        <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>GCash Number:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>0992-249-1190</span></p>
                         <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Amount:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>₱50.00</span></p>
                     </div>
                     
