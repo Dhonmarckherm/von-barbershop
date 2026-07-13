@@ -7,7 +7,7 @@ $pageTitle = 'My Appointments';
 require_once 'includes/auth_check.php';
 require_once 'config/db.php';
 
-$stmt = $pdo->prepare("SELECT id, appointment_date, appointment_time, status, created_at, haircut_description, location FROM appointments WHERE user_id = ? ORDER BY appointment_date DESC, appointment_time DESC");
+$stmt = $pdo->prepare("SELECT id, appointment_date, appointment_time, status, created_at, haircut_description, location, payment_proof FROM appointments WHERE user_id = ? ORDER BY appointment_date DESC, appointment_time DESC");
 $stmt->execute([$_SESSION['user_id']]);
 $appointments = $stmt->fetchAll();
 
@@ -191,6 +191,13 @@ $isPasswordReset = isset($_GET['password_reset']) && $_GET['password_reset'] == 
                             <?php elseif ($appt['status'] === 'completed' && in_array($appt['id'], $reviewedAppointments)): ?>
                                 <span class="badge bg-success"><i class="bi bi-check-circle"></i> Reviewed</span>
                             <?php elseif (in_array($appt['status'], ['pending', 'accepted'])): ?>
+                                <?php if (empty($appt['payment_proof'])): ?>
+                                    <a href="payment_upload.php?appointment_id=<?php echo $appt['id']; ?>" class="btn btn-sm btn-success me-1" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; font-weight: 600;">
+                                        <i class="bi bi-credit-card"></i> Pay Now
+                                    </a>
+                                <?php else: ?>
+                                    <span class="badge bg-info me-1"><i class="bi bi-clock-history"></i> Payment Pending</span>
+                                <?php endif; ?>
                                 <button class="btn btn-sm btn-warning me-1" onclick="openRescheduleModal(<?php echo $appt['id']; ?>, '<?php echo $appt['appointment_date']; ?>', '<?php echo substr($appt['appointment_time'], 0, 5); ?>')">
                                     <i class="bi bi-calendar-check"></i> Reschedule
                                 </button>
