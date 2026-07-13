@@ -366,13 +366,98 @@ document.getElementById('paymentForm').addEventListener('submit', function(e) {
         return;
     }
     
+    e.preventDefault(); // Stop normal submission
+    
     // Show loading overlay
     document.getElementById('loadingOverlay').style.display = 'flex';
     document.getElementById('submitBtn').disabled = true;
     
-    // Don't prevent default - let the form submit normally
-    // The loading overlay will show while the page processes
+    const file = fileInput.files[0];
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Compress image before upload (fixes iOS white screen from large images)
+    compressImage(file, function(compressedFile) {
+        // Create new FormData with compressed file
+        const formData = new FormData();
+        formData.append('payment_proof', compressedFile, file.name);
+        
+        // Submit via fetch
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        })
+        .then(response => {
+            // Check if redirected
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                // Reload page to show result
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            document.getElementById('loadingOverlay').style.display = 'none';
+            submitBtn.disabled = false;
+            alert('Upload failed. Please try again.');
+        });
+    }, function(error) {
+        console.error('Compression error:', error);
+        // If compression fails, submit original
+        document.getElementById('paymentForm').submit();
+    });
 });
+
+// Compress image using canvas
+function compressImage(file, onSuccess, onError) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            
+            // Resize if larger than 1200px (keeps quality good but reduces file size)
+            const maxSize = 1200;
+            if (width > maxSize || height > maxSize) {
+                if (width > height) {
+                    height = (height / width) * maxSize;
+                    width = maxSize;
+                } else {
+                    width = (width / height) * maxSize;
+                    height = maxSize;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Convert to blob (JPEG with 0.8 quality for good compression)
+            canvas.toBlob(function(blob) {
+                if (blob) {
+                    console.log('Compressed: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB → ' + (blob.size / 1024 / 1024).toFixed(2) + 'MB');
+                    const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), { type: 'image/jpeg' });
+                    onSuccess(compressedFile);
+                } else {
+                    onError('Compression failed');
+                }
+            }, 'image/jpeg', 0.8);
+        };
+        img.onerror = function() {
+            onError('Image load failed');
+        };
+        img.src = e.target.result;
+    };
+    reader.onerror = function() {
+        onError('File read failed');
+    };
+    reader.readAsDataURL(file);
+}
 </script>
 
 <script>
