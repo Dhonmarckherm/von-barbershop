@@ -73,9 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
             // Send email notification to admin/barber
             try {
                 require_once 'config/mailer.php';
+                require_once __DIR__ . '/includes/push_helper.php';
                 
                 // Get all admins/barbers
-                $stmt = $pdo->query("SELECT email, name FROM users WHERE role IN ('admin', 'barber')");
+                $stmt = $pdo->query("SELECT id, email, name FROM users WHERE role IN ('admin', 'barber')");
                 $admins = $stmt->fetchAll();
                 
                 // Get customer and appointment details
@@ -89,7 +90,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
                 $details = $stmt->fetch();
                 
                 if ($details && !empty($admins)) {
+                    // Convert time to 12-hour format
+                    $time12 = $details['appointment_time'];
+                    if (preg_match('/^(\d{1,2}):(\d{2})(?::\d{2})?$/', $time12, $matches)) {
+                        $hours = (int)$matches[1];
+                        $minutes = $matches[2];
+                        $period = $hours >= 12 ? 'PM' : 'AM';
+                        if ($hours > 12) $hours -= 12;
+                        else if ($hours == 0) $hours = 12;
+                        $time12 = $hours . ':' . $minutes . ' ' . $period;
+                    }
+                    
                     foreach ($admins as $admin) {
+                        // Send PUSH notification to each admin/barber
+                        sendPushNotification($pdo, $admin['id'], '💰 Payment Received', 
+                            "{$details['customer_name']} uploaded payment proof for {$details['appointment_date']} at {$time12}", 
+                            '/admin_payments.php');
+                        
+                        // Send email notification
                         $emailBody = "
                             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
                                 <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 30px; text-align: center; border-bottom: 3px solid #28a745;'>
@@ -106,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
                                         <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Customer:</strong> " . htmlspecialchars($details['customer_name']) . "</p>
                                         <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Email:</strong> " . htmlspecialchars($details['customer_email']) . "</p>
                                         <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Amount:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>₱50.00</span></p>
-                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Appointment:</strong> " . date('M d, Y', strtotime($details['appointment_date'])) . " at " . date('g:i A', strtotime($details['appointment_time'])) . "</p>
+                                        <p style='margin: 8px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Appointment:</strong> " . date('M d, Y', strtotime($details['appointment_date'])) . " at " . $time12 . "</p>
                                     </div>
                                     
                                     <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC; margin-bottom: 20px;'>Please check your GCash app to verify the payment, then approve it in the admin dashboard.</p>
@@ -121,6 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
                         sendBrevoEmail($admin['email'], $admin['name'], '💰 New Payment Received - Please Verify', $emailBody);
                     }
                 }
+                
+                // Send push notification to customer confirming upload
+                sendPushNotification($pdo, $_SESSION['user_id'], '✅ Payment Uploaded', 
+                    "Your payment proof has been uploaded successfully. Waiting for admin verification.", 
+                    '/my_appointments.php');
+                    
             } catch (Exception $e) {
                 error_log('Payment notification email failed: ' . $e->getMessage());
             }
