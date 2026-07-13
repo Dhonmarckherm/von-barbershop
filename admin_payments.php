@@ -55,7 +55,8 @@ $filter = $_GET['filter'] ?? 'pending';
 // Get appointments with payments
 $query = "
     SELECT a.*, u.name as customer_name, u.email as customer_email,
-           p.amount as payment_amount, p.status as payment_log_status,
+           COALESCE(p.amount, a.downpayment_amount, 50.00) as payment_amount, 
+           p.status as payment_log_status,
            p.proof_filename, p.created_at as payment_created_at
     FROM appointments a
     JOIN users u ON a.user_id = u.id
@@ -240,7 +241,7 @@ include 'includes/header.php';
                                             <div style="background: rgba(40,167,69,0.1); padding: 12px; border-radius: 10px; border-left: 3px solid #28a745;">
                                                 <small style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; font-weight: 600;">Amount</small>
                                                 <p style="color: #28a745; font-weight: 700; margin: 4px 0 0 0; font-size: 20px;">
-                                                    ₱<?php number_format($apt['payment_amount'] ?? 50.00, 2); ?>
+                                                    ₱<?php echo number_format($apt['payment_amount'] ?? 50.00, 2); ?>
                                                 </p>
                                             </div>
                                         </div>
