@@ -264,7 +264,7 @@ include 'includes/header.php';
                                                 Payment Proof
                                             </small>
                                             <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center;">
-                                                <img src="uploads/payments/<?php echo htmlspecialchars($apt['proof_filename']); ?>" 
+                                                <img src="<?php echo htmlspecialchars($apt['proof_filename']); ?>" 
                                                      alt="Payment Proof" 
                                                      class="img-fluid rounded"
                                                      style="max-height: 250px; width: 100%; object-fit: contain; border-radius: 8px; cursor: pointer; border: 2px solid var(--border-color);"
