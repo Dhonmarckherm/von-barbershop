@@ -380,15 +380,8 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <nav class="bottom-nav">
         <div class="container">
             <div class="bottom-nav-container">
-                <?php if ($isLoggedIn): ?>
-                    <?php if ($isAdmin): ?>
-                        <!-- Admin Bottom Nav (Hidden on Desktop - Use Top Navbar) -->
-                        <!-- Only show minimal nav on mobile for admins -->
-                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item" id="logoutNavBtn">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Logout</span>
-                        </a>
-                    <?php else: ?>
+                <?php if ($isLoggedIn && !$isAdmin): ?>
+                    <!-- Customer Bottom Nav Only (Admins use top navbar) -->
                         <!-- Customer Bottom Nav -->
                         <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
                             <i class="bi bi-house-door"></i>
@@ -410,7 +403,6 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
                         </a>
-                    <?php endif; ?>
                 <?php else: ?>
                     <!-- Guest Bottom Nav -->
                     <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
