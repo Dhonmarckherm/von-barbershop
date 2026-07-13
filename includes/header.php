@@ -34,7 +34,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?><?php echo htmlspecialchars($siteName); ?></title>
     <link rel="icon" type="image/png" href="/assets/images/rubiks.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -427,24 +427,22 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <style>
         .bottom-nav {
             position: fixed;
-            bottom: 0;
             left: 0;
             right: 0;
-            background: #0a0a0a;
-            border-top: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 12px 0 8px 0;
-            padding-bottom: calc(8px + constant(safe-area-inset-bottom)); /* iOS 11.0 - 11.2 */
-            padding-bottom: calc(8px + env(safe-area-inset-bottom)); /* iOS 11.2+ */
-            z-index: 1000;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
-            /* Force iOS to render fixed element properly */
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
+            width: 100%;
+            background: #0a0a0a !important;
+            border-top: 1px solid rgba(197, 160, 89, 0.3) !important;
+            padding: 12px 0 8px 0 !important;
+            z-index: 9999 !important;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            -webkit-transform: translate3d(0, 0, 0) !important;
+            transform: translate3d(0, 0, 0) !important;
         }
         body {
             padding-bottom: 80px !important;
-            padding-bottom: calc(80px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0 - 11.2 */
-            padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important; /* iOS 11.2+ */
         }
         .bottom-nav-container {
             position: relative;
@@ -557,6 +555,41 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             }
         }
     </style>
+    
+    <!-- iOS/Mobile Bottom Nav Fix: Force position with JavaScript -->
+    <script>
+    (function() {
+        function fixBottomNav() {
+            var navs = document.querySelectorAll('.bottom-nav');
+            navs.forEach(function(nav) {
+                nav.style.bottom = '0px';
+                nav.style.position = 'fixed';
+                nav.style.left = '0';
+                nav.style.right = '0';
+                nav.style.width = '100%';
+                nav.style.display = 'flex';
+                nav.style.zIndex = '9999';
+            });
+        }
+        // Run on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fixBottomNav);
+        } else {
+            fixBottomNav();
+        }
+        // Run again after iOS Safari settles
+        setTimeout(fixBottomNav, 100);
+        setTimeout(fixBottomNav, 500);
+        // Run on scroll (iOS dynamic toolbar)
+        window.addEventListener('scroll', fixBottomNav, { passive: true });
+        // Run on resize
+        window.addEventListener('resize', fixBottomNav, { passive: true });
+        // Run on orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(fixBottomNav, 200);
+        });
+    })();
+    </script>
     
     <!-- Logout Confirmation Modal -->
     <div id="logoutModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); align-items: center; justify-content: center;">
