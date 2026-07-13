@@ -381,7 +381,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <nav class="bottom-nav">
         <div class="container">
             <div class="bottom-nav-container">
-                <!-- Guest Bottom Nav Only (Logged in users use top navbar) -->
+                <!-- Guest Bottom Nav -->
                 <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
                     <i class="bi bi-house-door"></i>
                     <span>Home</span>
@@ -393,6 +393,30 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                 <a href="register.php" class="bottom-nav-item <?php echo $current_page == 'register.php' ? 'active' : ''; ?>">
                     <i class="bi bi-person-plus"></i>
                     <span>Register</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <?php elseif ($isLoggedIn && !$isAdmin): ?>
+    <!-- Customer Bottom Nav (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="bottom-nav-container">
+                <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
+                </a>
+                <a href="my_appointments.php" class="bottom-nav-item <?php echo $current_page == 'my_appointments.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="profile.php" class="bottom-nav-item <?php echo $current_page == 'profile.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
                 </a>
             </div>
         </div>
