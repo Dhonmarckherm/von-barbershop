@@ -28,9 +28,16 @@ if (!$appointment) {
     exit;
 }
 
-// Check if payment already uploaded
-if ($appointment['payment_status'] === 'verified') {
+// Check if payment already verified
+if ($appointment['payment_status'] === 'verified' && !isset($_GET['success'])) {
     $_SESSION['success'] = 'Payment already verified!';
+    header('Location: my_appointments.php');
+    exit;
+}
+
+// If payment is pending and not showing success page, redirect to appointments
+if ($appointment['payment_status'] === 'pending' && !isset($_GET['success'])) {
+    $_SESSION['info'] = 'Payment already uploaded! Waiting for admin verification.';
     header('Location: my_appointments.php');
     exit;
 }
@@ -149,8 +156,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
                 error_log('Payment notification email failed: ' . $e->getMessage());
             }
             
-            $_SESSION['success'] = 'Payment uploaded successfully! Waiting for admin verification.';
-            header('Location: my_appointments.php');
+            $_SESSION['payment_success'] = true;
+            header('Location: payment_upload.php?appointment_id=' . $appointment_id . '&success=1');
             exit;
         } catch (PDOException $e) {
             $error = 'Database error: ' . $e->getMessage();
@@ -232,7 +239,7 @@ include 'includes/header.php';
                     </div>
                     
                     <!-- Upload Form -->
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" id="paymentForm">
                         <div class="mb-3">
                             <label for="payment_proof" class="form-label" style="color: var(--text-primary);">
                                 <i class="bi bi-upload"></i> Upload Payment Screenshot
@@ -244,7 +251,7 @@ include 'includes/header.php';
                         </div>
                         
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; padding: 12px; font-weight: 600;">
+                            <button type="submit" class="btn btn-success" id="submitBtn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; padding: 12px; font-weight: 600;">
                                 <i class="bi bi-check-circle"></i> Submit Payment Proof
                             </button>
                             <a href="my_appointments.php" class="btn btn-outline-secondary">
@@ -257,5 +264,89 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
+    <div style="text-align: center; padding: 40px;">
+        <!-- Spinner -->
+        <div style="width: 80px; height: 80px; margin: 0 auto 30px; position: relative;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid rgba(40,167,69,0.2); border-top-color: #28a745; animation: spin 1s linear infinite;"></div>
+        </div>
+        <h3 style="color: #C5A059; font-family: Georgia, serif; margin-bottom: 10px;">Uploading Payment Proof...</h3>
+        <p style="color: #8A8A9A; font-size: 14px;">Please wait while we process your payment</p>
+    </div>
+</div>
+
+<!-- Success Overlay -->
+<div id="successOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; flex-direction: column;">
+    <div style="text-align: center; padding: 40px; max-width: 400px;">
+        <!-- Success Icon -->
+        <div style="width: 100px; height: 100px; margin: 0 auto 30px; position: relative; animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
+            <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(40, 167, 69, 0.4);">
+                <i class="bi bi-check-lg" style="font-size: 48px; color: white;"></i>
+            </div>
+        </div>
+        <h2 style="color: #C5A059; font-family: Georgia, serif; margin-bottom: 12px;">Payment Submitted!</h2>
+        <p style="color: #b0b0b0; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Your payment proof has been uploaded successfully.
+        </p>
+        <p style="color: #8A8A9A; font-size: 14px; margin-bottom: 30px;">
+            Please wait for admin verification. You will receive a notification once approved.
+        </p>
+        <!-- Progress Steps -->
+        <div style="text-align: left; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; color: #28a745;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(40,167,69,0.15); border: 1px solid #28a745; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="bi bi-check"></i>
+                </div>
+                <span>Payment proof uploaded</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; color: #8A8A9A;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+                <span>Waiting for admin verification</span>
+            </div>
+        </div>
+        <a href="my_appointments.php" style="display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 14px 35px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(40,167,69,0.3);">
+            <i class="bi bi-arrow-right"></i> View My Appointments
+        </a>
+    </div>
+</div>
+
+<style>
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('payment_proof');
+    if (!fileInput.files.length) {
+        e.preventDefault();
+        alert('Please select a file to upload.');
+        return;
+    }
+    
+    // Show loading overlay
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.getElementById('submitBtn').disabled = true;
+    
+    // Don't prevent default - let the form submit normally
+    // The loading overlay will show while the page processes
+});
+</script>
+
+<script>
+// Show success overlay if coming from successful upload
+<?php if (isset($_GET['success']) && $_GET['success'] == '1'): ?>
+document.getElementById('successOverlay').style.display = 'flex';
+<?php endif; ?>
+</script>
 
 <?php include 'includes/footer.php'; ?>
