@@ -20,40 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($appointment_id && $action) {
         try {
             if ($action === 'approve') {
-                // Approve payment
-                $stmt = $pdo->prepare("
-                    UPDATE appointments 
-                    SET payment_status = 'verified', payment_verified_at = NOW()
-                    WHERE id = ?
-                ");
+                $stmt = $pdo->prepare("UPDATE appointments SET payment_status = 'verified', payment_verified_at = NOW() WHERE id = ?");
                 $stmt->execute([$appointment_id]);
                 
-                // Update payment log
-                $stmt = $pdo->prepare("
-                    UPDATE payment_logs 
-                    SET status = 'verified', verified_at = NOW(), verified_by = ?
-                    WHERE appointment_id = ?
-                ");
+                $stmt = $pdo->prepare("UPDATE payment_logs SET status = 'verified', verified_at = NOW(), verified_by = ? WHERE appointment_id = ?");
                 $stmt->execute([$_SESSION['user_id'], $appointment_id]);
                 
                 $message = 'Payment approved successfully!';
                 $message_type = 'success';
                 
             } elseif ($action === 'reject') {
-                // Reject payment
-                $stmt = $pdo->prepare("
-                    UPDATE appointments 
-                    SET payment_status = 'rejected'
-                    WHERE id = ?
-                ");
+                $stmt = $pdo->prepare("UPDATE appointments SET payment_status = 'rejected' WHERE id = ?");
                 $stmt->execute([$appointment_id]);
                 
-                // Update payment log
-                $stmt = $pdo->prepare("
-                    UPDATE payment_logs 
-                    SET status = 'rejected', verified_at = NOW(), verified_by = ?
-                    WHERE appointment_id = ?
-                ");
+                $stmt = $pdo->prepare("UPDATE payment_logs SET status = 'rejected', verified_at = NOW(), verified_by = ? WHERE appointment_id = ?");
                 $stmt->execute([$_SESSION['user_id'], $appointment_id]);
                 
                 $message = 'Payment rejected.';
@@ -75,12 +55,10 @@ $filter = $_GET['filter'] ?? 'pending';
 // Get appointments with payments
 $query = "
     SELECT a.*, u.name as customer_name, u.email as customer_email,
-           s.name as service_name, s.price,
            p.amount as payment_amount, p.status as payment_log_status,
            p.proof_filename, p.created_at as payment_created_at
     FROM appointments a
     JOIN users u ON a.user_id = u.id
-    LEFT JOIN services s ON a.service_id = s.id
     LEFT JOIN payment_logs p ON a.id = p.appointment_id
     WHERE a.payment_proof IS NOT NULL
 ";
@@ -112,62 +90,67 @@ $page_title = 'Payment Verification';
 include 'includes/header.php';
 ?>
 
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 style="color: var(--text-primary); font-family: 'Playfair Display', serif;">
-                    <i class="bi bi-credit-card"></i> Payment Verification Dashboard
-                </h2>
-                <a href="admin_dashboard.php" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Dashboard
-                </a>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-12">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 style="color: var(--text-primary); font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700;">
+                    <i class="bi bi-credit-card" style="color: #28a745;"></i> Payment Verification Dashboard
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 16px; margin-top: 10px;">
+                    Review and verify customer payment proofs
+                </p>
             </div>
             
+            <!-- Success/Error Message -->
             <?php if ($message): ?>
-                <div class="alert alert-<?php echo $message_type; ?> alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill"></i> <?php echo htmlspecialchars($message); ?>
+                <div class="alert alert-<?php echo $message_type; ?> alert-dismissible fade show" role="alert" style="border-radius: 12px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <i class="bi bi-<?php echo $message_type === 'success' ? 'check-circle' : ($message_type === 'warning' ? 'exclamation-triangle' : 'x-circle'); ?>"></i>
+                    <?php echo htmlspecialchars($message); ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
             
             <!-- Stats Cards -->
             <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color);">
-                        <div class="card-body">
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); border: none; border-radius: 16px; box-shadow: 0 8px 24px rgba(255, 193, 7, 0.3);">
+                        <div class="card-body text-white">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="text-muted mb-1">Pending Verification</h6>
-                                    <h3 class="mb-0" style="color: #ffc107;"><?php echo $pending_count; ?></h3>
+                                    <h6 class="text-white mb-1" style="opacity: 0.9; font-size: 14px;">Pending Verification</h6>
+                                    <h2 class="mb-0" style="font-weight: 700; font-size: 42px;"><?php echo $pending_count; ?></h2>
                                 </div>
-                                <i class="bi bi-hourglass-split" style="font-size: 48px; color: #ffc107; opacity: 0.3;"></i>
+                                <i class="bi bi-hourglass-split" style="font-size: 56px; opacity: 0.3;"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color);">
-                        <div class="card-body">
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; border-radius: 16px; box-shadow: 0 8px 24px rgba(40, 167, 69, 0.3);">
+                        <div class="card-body text-white">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="text-muted mb-1">Verified</h6>
-                                    <h3 class="mb-0" style="color: #28a745;"><?php echo $verified_count; ?></h3>
+                                    <h6 class="text-white mb-1" style="opacity: 0.9; font-size: 14px;">Verified</h6>
+                                    <h2 class="mb-0" style="font-weight: 700; font-size: 42px;"><?php echo $verified_count; ?></h2>
                                 </div>
-                                <i class="bi bi-check-circle" style="font-size: 48px; color: #28a745; opacity: 0.3;"></i>
+                                <i class="bi bi-check-circle" style="font-size: 56px; opacity: 0.3;"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color);">
-                        <div class="card-body">
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border: none; border-radius: 16px; box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3);">
+                        <div class="card-body text-white">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h6 class="text-muted mb-1">Rejected</h6>
-                                    <h3 class="mb-0" style="color: #dc3545;"><?php echo $rejected_count; ?></h3>
+                                    <h6 class="text-white mb-1" style="opacity: 0.9; font-size: 14px;">Rejected</h6>
+                                    <h2 class="mb-0" style="font-weight: 700; font-size: 42px;"><?php echo $rejected_count; ?></h2>
                                 </div>
-                                <i class="bi bi-x-circle" style="font-size: 48px; color: #dc3545; opacity: 0.3;"></i>
+                                <i class="bi bi-x-circle" style="font-size: 56px; opacity: 0.3;"></i>
                             </div>
                         </div>
                     </div>
@@ -175,25 +158,25 @@ include 'includes/header.php';
             </div>
             
             <!-- Filter Tabs -->
-            <ul class="nav nav-tabs mb-3" style="border-bottom: 1px solid var(--border-color);">
-                <li class="nav-item">
+            <ul class="nav nav-pills mb-4" style="border: none; background: var(--card-bg); padding: 8px; border-radius: 12px;">
+                <li class="nav-item flex-fill text-center">
                     <a class="nav-link <?php echo $filter === 'pending' ? 'active' : ''; ?>" 
                        href="?filter=pending"
-                       style="color: var(--text-primary);">
+                       style="border-radius: 8px; color: var(--text-primary); font-weight: 600; border: none;">
                         <i class="bi bi-hourglass-split"></i> Pending (<?php echo $pending_count; ?>)
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item flex-fill text-center">
                     <a class="nav-link <?php echo $filter === 'verified' ? 'active' : ''; ?>" 
                        href="?filter=verified"
-                       style="color: var(--text-primary);">
+                       style="border-radius: 8px; color: var(--text-primary); font-weight: 600; border: none;">
                         <i class="bi bi-check-circle"></i> Verified (<?php echo $verified_count; ?>)
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item flex-fill text-center">
                     <a class="nav-link <?php echo $filter === 'rejected' ? 'active' : ''; ?>" 
                        href="?filter=rejected"
-                       style="color: var(--text-primary);">
+                       style="border-radius: 8px; color: var(--text-primary); font-weight: 600; border: none;">
                         <i class="bi bi-x-circle"></i> Rejected (<?php echo $rejected_count; ?>)
                     </a>
                 </li>
@@ -201,76 +184,74 @@ include 'includes/header.php';
             
             <!-- Payment List -->
             <?php if (empty($appointments)): ?>
-                <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color);">
+                <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;">
                     <div class="card-body text-center py-5">
-                        <i class="bi bi-inbox" style="font-size: 64px; color: var(--text-secondary);"></i>
-                        <h5 class="mt-3" style="color: var(--text-primary);">No payments found</h5>
-                        <p style="color: var(--text-secondary);">
+                        <i class="bi bi-inbox" style="font-size: 80px; color: var(--text-secondary); opacity: 0.5;"></i>
+                        <h4 class="mt-4" style="color: var(--text-primary); font-weight: 600;">No payments found</h4>
+                        <p style="color: var(--text-secondary); font-size: 16px;">
                             <?php if ($filter === 'pending'): ?>
                                 All payments have been verified! Or no payments uploaded yet.
                             <?php else: ?>
                                 No <?php echo $filter; ?> payments yet.
                             <?php endif; ?>
                         </p>
-                        <hr style="border-color: var(--border-color);">
-                        <small style="color: var(--text-secondary);">
-                            <strong>Debug Info:</strong><br>
-                            Total appointments with payment_proof: <?php echo $pdo->query("SELECT COUNT(*) FROM appointments WHERE payment_proof IS NOT NULL")->fetchColumn(); ?><br>
-                            Total payment_logs: <?php echo $pdo->query("SELECT COUNT(*) FROM payment_logs")->fetchColumn(); ?>
-                        </small>
                     </div>
                 </div>
             <?php else: ?>
                 <div class="row">
                     <?php foreach ($appointments as $apt): ?>
                         <div class="col-lg-6 mb-4">
-                            <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;">
-                                <div class="card-body">
+                            <div class="card" style="background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'">
+                                <div class="card-body p-4">
                                     <!-- Header -->
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-3 pb-3" style="border-bottom: 2px solid var(--border-color);">
                                         <div>
-                                            <h5 class="mb-1" style="color: var(--text-primary);">
-                                                <?php echo htmlspecialchars($apt['customer_name']); ?>
+                                            <h5 class="mb-1" style="color: var(--text-primary); font-weight: 700; font-size: 20px;">
+                                                <i class="bi bi-person-circle" style="color: #28a745;"></i> <?php echo htmlspecialchars($apt['customer_name']); ?>
                                             </h5>
-                                            <small style="color: var(--text-secondary);">
-                                                <?php echo htmlspecialchars($apt['customer_email']); ?>
-                                            </small>
+                                            <p class="mb-0" style="color: var(--text-secondary); font-size: 14px;">
+                                                <i class="bi bi-envelope"></i> <?php echo htmlspecialchars($apt['customer_email']); ?>
+                                            </p>
                                         </div>
                                         <?php
                                         $status_colors = [
-                                            'pending' => 'warning',
-                                            'verified' => 'success',
-                                            'rejected' => 'danger'
+                                            'pending' => '#ffc107',
+                                            'verified' => '#28a745',
+                                            'rejected' => '#dc3545'
                                         ];
-                                        $status_color = $status_colors[$apt['payment_status']] ?? 'secondary';
+                                        $status_color = $status_colors[$apt['payment_status']] ?? '#6c757d';
                                         ?>
-                                        <span class="badge bg-<?php echo $status_color; ?>">
+                                        <span class="badge" style="background: <?php echo $status_color; ?>; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 13px;">
                                             <?php echo ucfirst($apt['payment_status']); ?>
                                         </span>
                                     </div>
                                     
-                                    <!-- Appointment Details -->
-                                    <div class="mb-3 p-2" style="background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <small style="color: var(--text-secondary);">Service:</small>
-                                                <p style="color: var(--text-primary); font-weight: 600; margin: 0; font-size: 14px;">
+                                    <!-- Details Grid -->
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px;">
+                                                <small style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; font-weight: 600;">Service</small>
+                                                <p style="color: var(--text-primary); font-weight: 600; margin: 4px 0 0 0; font-size: 15px;">
                                                     <?php echo htmlspecialchars($apt['service_name'] ?? 'Custom'); ?>
                                                 </p>
                                             </div>
-                                            <div class="col-6">
-                                                <small style="color: var(--text-secondary);">Amount:</small>
-                                                <p style="color: #28a745; font-weight: 600; margin: 0; font-size: 14px;">
-                                                    ₱<?php echo number_format($apt['payment_amount'] ?? 50.00, 2); ?>
+                                        </div>
+                                        <div class="col-6">
+                                            <div style="background: rgba(40,167,69,0.1); padding: 12px; border-radius: 10px; border-left: 3px solid #28a745;">
+                                                <small style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; font-weight: 600;">Amount</small>
+                                                <p style="color: #28a745; font-weight: 700; margin: 4px 0 0 0; font-size: 20px;">
+                                                    ₱<?php number_format($apt['payment_amount'] ?? 50.00, 2); ?>
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="mt-2">
-                                            <small style="color: var(--text-secondary);">Appointment:</small>
-                                            <p style="color: var(--text-primary); margin: 0; font-size: 14px;">
-                                                <i class="bi bi-calendar"></i> 
-                                                <?php echo date('M d, Y', strtotime($apt['appointment_date'])); ?>
-                                                at <?php echo date('g:i A', strtotime($apt['appointment_time'])); ?>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div style="background: rgba(0,123,255,0.1); padding: 12px; border-radius: 10px; border-left: 3px solid #007bff;">
+                                            <small style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; font-weight: 600;">Appointment</small>
+                                            <p style="color: var(--text-primary); margin: 4px 0 0 0; font-size: 15px;">
+                                                <i class="bi bi-calendar-event" style="color: #007bff;"></i>
+                                                <?php echo date('M d, Y', strtotime($apt['appointment_date'])); ?> at <?php echo date('g:i A', strtotime($apt['appointment_time'])); ?>
                                             </p>
                                         </div>
                                     </div>
@@ -278,15 +259,17 @@ include 'includes/header.php';
                                     <!-- Payment Proof -->
                                     <?php if ($apt['proof_filename']): ?>
                                         <div class="mb-3">
-                                            <small style="color: var(--text-secondary);">Payment Proof:</small>
-                                            <div class="mt-2">
+                                            <small style="color: var(--text-secondary); font-size: 12px; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 8px;">
+                                                Payment Proof
+                                            </small>
+                                            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; text-align: center;">
                                                 <img src="uploads/payments/<?php echo htmlspecialchars($apt['proof_filename']); ?>" 
                                                      alt="Payment Proof" 
                                                      class="img-fluid rounded"
-                                                     style="max-height: 300px; width: 100%; object-fit: contain; border: 1px solid var(--border-color);"
+                                                     style="max-height: 250px; width: 100%; object-fit: contain; border-radius: 8px; cursor: pointer; border: 2px solid var(--border-color);"
                                                      onclick="window.open(this.src, '_blank')">
-                                                <small class="d-block mt-1 text-center" style="color: var(--text-secondary);">
-                                                    Click image to view full size
+                                                <small class="d-block mt-2" style="color: var(--text-secondary); font-size: 12px;">
+                                                    <i class="bi bi-zoom-in"></i> Click image to view full size
                                                 </small>
                                             </div>
                                         </div>
@@ -294,30 +277,32 @@ include 'includes/header.php';
                                     
                                     <!-- Actions -->
                                     <?php if ($apt['payment_status'] === 'pending'): ?>
-                                        <div class="d-grid gap-2">
+                                        <div class="d-grid gap-2 mt-4">
                                             <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to APPROVE this payment? Make sure you received ₱50 via GCash.');">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
                                                 <input type="hidden" name="action" value="approve">
-                                                <button type="submit" class="btn btn-success w-100">
-                                                    <i class="bi bi-check-circle"></i> Approve Payment
+                                                <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(40,167,69,0.3);">
+                                                    <i class="bi bi-check-circle-fill"></i> Approve Payment
                                                 </button>
                                             </form>
                                             <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to REJECT this payment?');">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
                                                 <input type="hidden" name="action" value="reject">
-                                                <button type="submit" class="btn btn-outline-danger w-100">
-                                                    <i class="bi bi-x-circle"></i> Reject Payment
+                                                <button type="submit" class="btn w-100" style="background: white; color: #dc3545; border: 2px solid #dc3545; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px;">
+                                                    <i class="bi bi-x-circle-fill"></i> Reject Payment
                                                 </button>
                                             </form>
                                         </div>
                                     <?php elseif ($apt['payment_status'] === 'verified'): ?>
-                                        <div class="alert alert-success mb-0" style="background: rgba(40,167,69,0.1); border: 1px solid #28a745;">
-                                            <i class="bi bi-check-circle-fill"></i> Payment verified on 
+                                        <div class="alert alert-success mb-0" style="background: rgba(40,167,69,0.1); border: 2px solid #28a745; border-radius: 10px; padding: 12px;">
+                                            <i class="bi bi-check-circle-fill" style="color: #28a745;"></i>
+                                            <strong style="color: #28a745;">Payment verified</strong> on 
                                             <?php echo date('M d, Y g:i A', strtotime($apt['payment_verified_at'])); ?>
                                         </div>
                                     <?php elseif ($apt['payment_status'] === 'rejected'): ?>
-                                        <div class="alert alert-danger mb-0" style="background: rgba(220,53,69,0.1); border: 1px solid #dc3545;">
-                                            <i class="bi bi-x-circle-fill"></i> Payment rejected
+                                        <div class="alert alert-danger mb-0" style="background: rgba(220,53,69,0.1); border: 2px solid #dc3545; border-radius: 10px; padding: 12px;">
+                                            <i class="bi bi-x-circle-fill" style="color: #dc3545;"></i>
+                                            <strong style="color: #dc3545;">Payment rejected</strong>
                                         </div>
                                     <?php endif; ?>
                                 </div>
