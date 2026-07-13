@@ -377,50 +377,27 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     </nav>
     
     <!-- Bottom Navigation Bar (Mobile App Style) -->
+    <?php if (!$isLoggedIn): ?>
     <nav class="bottom-nav">
         <div class="container">
             <div class="bottom-nav-container">
-                <?php if ($isLoggedIn && !$isAdmin): ?>
-                    <!-- Customer Bottom Nav Only (Admins use top navbar) -->
-                        <!-- Customer Bottom Nav -->
-                        <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-house-door"></i>
-                            <span>Home</span>
-                        </a>
-                        <a href="book.php" class="bottom-nav-item <?php echo $current_page == 'book.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-calendar-plus"></i>
-                            <span>Book</span>
-                        </a>
-                        <a href="my_appointments.php" class="bottom-nav-item <?php echo $current_page == 'my_appointments.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-calendar-check"></i>
-                            <span>My Appts</span>
-                        </a>
-                        <a href="profile.php" class="bottom-nav-item <?php echo $current_page == 'profile.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-person"></i>
-                            <span>Profile</span>
-                        </a>
-                        <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Logout</span>
-                        </a>
-                <?php else: ?>
-                    <!-- Guest Bottom Nav -->
-                    <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
-                        <i class="bi bi-house-door"></i>
-                        <span>Home</span>
-                    </a>
-                    <a href="login.php" class="bottom-nav-item <?php echo $current_page == 'login.php' ? 'active' : ''; ?>">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Login</span>
-                    </a>
-                    <a href="register.php" class="bottom-nav-item <?php echo $current_page == 'register.php' ? 'active' : ''; ?>">
-                        <i class="bi bi-person-plus"></i>
-                        <span>Register</span>
-                    </a>
-                <?php endif; ?>
+                <!-- Guest Bottom Nav Only (Logged in users use top navbar) -->
+                <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
+                </a>
+                <a href="login.php" class="bottom-nav-item <?php echo $current_page == 'login.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Login</span>
+                </a>
+                <a href="register.php" class="bottom-nav-item <?php echo $current_page == 'register.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-person-plus"></i>
+                    <span>Register</span>
+                </a>
             </div>
         </div>
     </nav>
+    <?php endif; ?>
     
     <!-- Add padding at bottom to prevent content from being hidden behind nav -->
     <style>
