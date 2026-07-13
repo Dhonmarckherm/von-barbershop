@@ -3,6 +3,13 @@ session_start();
 require_once 'config/db.php';
 require_once 'includes/admin_check.php';
 
+// Debug: Check if we're connected
+try {
+    $pdo->query("SELECT 1");
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+
 // Handle payment verification actions
 $message = '';
 $message_type = '';
@@ -12,46 +19,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? null;
     
     if ($appointment_id && $action) {
-        if ($action === 'approve') {
-            // Approve payment
-            $stmt = $pdo->prepare("
-                UPDATE appointments 
-                SET payment_status = 'verified', payment_verified_at = NOW()
-                WHERE id = ?
-            ");
-            $stmt->execute([$appointment_id]);
-            
-            // Update payment log
-            $stmt = $pdo->prepare("
-                UPDATE payment_logs 
-                SET status = 'verified', verified_at = NOW(), verified_by = ?
-                WHERE appointment_id = ?
-            ");
-            $stmt->execute([$_SESSION['user_id'], $appointment_id]);
-            
-            $message = 'Payment approved successfully!';
-            $message_type = 'success';
-            
-        } elseif ($action === 'reject') {
-            // Reject payment
-            $stmt = $pdo->prepare("
-                UPDATE appointments 
-                SET payment_status = 'rejected'
-                WHERE id = ?
-            ");
-            $stmt->execute([$appointment_id]);
-            
-            // Update payment log
-            $stmt = $pdo->prepare("
-                UPDATE payment_logs 
-                SET status = 'rejected', verified_at = NOW(), verified_by = ?
-                WHERE appointment_id = ?
-            ");
-            $stmt->execute([$_SESSION['user_id'], $appointment_id]);
-            
-            $message = 'Payment rejected.';
-            $message_type = 'warning';
+        try {
+            if ($action === 'approve') {
+                // Approve payment
+                $stmt = $pdo->prepare("
+                    UPDATE appointments 
+                    SET payment_status = 'verified', payment_verified_at = NOW()
+                    WHERE id = ?
+                ");
+                $stmt->execute([$appointment_id]);
+                
+                // Update payment log
+                $stmt = $pdo->prepare("
+                    UPDATE payment_logs 
+                    SET status = 'verified', verified_at = NOW(), verified_by = ?
+                    WHERE appointment_id = ?
+                ");
+                $stmt->execute([$_SESSION['user_id'], $appointment_id]);
+                
+                $message = 'Payment approved successfully!';
+                $message_type = 'success';
+                
+            } elseif ($action === 'reject') {
+                // Reject payment
+                $stmt = $pdo->prepare("
+                    UPDATE appointments 
+                    SET payment_status = 'rejected'
+                    WHERE id = ?
+                ");
+                $stmt->execute([$appointment_id]);
+                
+                // Update payment log
+                $stmt = $pdo->prepare("
+                    UPDATE payment_logs 
+                    SET status = 'rejected', verified_at = NOW(), verified_by = ?
+                    WHERE appointment_id = ?
+                ");
+                $stmt->execute([$_SESSION['user_id'], $appointment_id]);
+                
+                $message = 'Payment rejected.';
+                $message_type = 'warning';
+            }
+        } catch (PDOException $e) {
+            $message = 'Database error: ' . $e->getMessage();
+            $message_type = 'danger';
         }
+    } else {
+        $message = 'Invalid request. Missing appointment ID or action.';
+        $message_type = 'danger';
     }
 }
 
