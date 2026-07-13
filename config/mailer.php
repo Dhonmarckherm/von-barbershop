@@ -297,20 +297,23 @@ function sendRescheduleEmail(string $customerEmail, string $customerName, array 
  */
 function buildCustomerEmailBody(array $details): string {
     $location = isset($details['location']) && $details['location'] ? htmlspecialchars($details['location']) : 'Barbershop';
+    $appointmentId = isset($details['appointment_id']) ? intval($details['appointment_id']) : 0;
+    $siteUrl = 'https://von-barbershop.onrender.com';
+    
     return "
         <div style='font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #000000; color: #F5F0E8; border-radius: 12px; overflow: hidden;'>
             <!-- Header -->
             <div style='background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); padding: 40px 30px; text-align: center; border-bottom: 3px solid #c0c0c0;'>
                 <div style='font-size: 48px; margin-bottom: 10px;'>✂️</div>
-                <h1 style='color: #c0c0c0; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Confirmed!</h1>
-                <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Your booking is all set</p>
+                <h1 style='color: #c0c0c0; font-family: Georgia, serif; font-size: 28px; margin: 0 0 10px 0; font-weight: bold;'>Appointment Booked!</h1>
+                <p style='color: #F5F0E8; font-size: 16px; margin: 0;'>Complete payment to confirm your booking</p>
             </div>
             
             <!-- Content -->
             <div style='padding: 30px;'>
                 <p style='font-size: 18px; margin-bottom: 25px;'>Hello <strong style='color: #C5A059;'>" . htmlspecialchars($details['customer_name']) . "</strong>,</p>
                 
-                <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>Great news! Your appointment has been <strong style='color: #28a745; font-size: 18px;'>BOOKED SUCCESSFULLY</strong>. We're looking forward to seeing you!</p>
+                <p style='font-size: 16px; line-height: 1.6; margin-bottom: 25px;'>Your appointment has been <strong style='color: #28a745; font-size: 18px;'>BOOKED SUCCESSFULLY</strong>. To confirm your booking, please complete the ₱50 downpayment below.</p>
                 
                 <!-- Appointment Details Card -->
                 <div style='background: rgba(192, 192, 192, 0.1); border-left: 4px solid #c0c0c0; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
@@ -335,7 +338,24 @@ function buildCustomerEmailBody(array $details): string {
                     </table>
                 </div>
                 
-                <p style='font-size: 15px; line-height: 1.6; color: #B8B8CC;'>Please arrive 5-10 minutes early. If you need to reschedule or cancel, please contact us as soon as possible.</p>
+                <!-- Payment Instructions -->
+                <div style='background: rgba(40, 167, 69, 0.1); border-left: 4px solid #28a745; padding: 20px; border-radius: 8px; margin-bottom: 25px;'>
+                    <h3 style='color: #28a745; margin: 0 0 15px 0; font-size: 18px;'>💰 Payment Instructions</h3>
+                    <p style='font-size: 15px; line-height: 1.6; margin-bottom: 15px;'>To confirm your booking, please pay <strong style='color: #28a745; font-size: 18px;'>₱50.00</strong> downpayment via GCash:</p>
+                    
+                    <div style='background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;'>
+                        <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>GCash Number:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>0969-055-8227</span></p>
+                        <p style='margin: 5px 0; color: #F5F0E8;'><strong style='color: #C5A059;'>Amount:</strong> <span style='color: #28a745; font-size: 18px; font-weight: bold;'>₱50.00</span></p>
+                    </div>
+                    
+                    <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC; margin-bottom: 15px;'>After payment, upload your payment screenshot to complete the confirmation:</p>
+                    
+                    <a href='" . $siteUrl . "/payment_upload.php?appointment_id=" . $appointmentId . "' style='display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;'>
+                        📤 Upload Payment Proof
+                    </a>
+                </div>
+                
+                <p style='font-size: 15px; line-height: 1.6; color: #B8B8CC;'>Your appointment will be confirmed once payment is verified. Please arrive 5-10 minutes early. If you need to reschedule or cancel, please contact us as soon as possible.</p>
             </div>
             
             <!-- Footer -->

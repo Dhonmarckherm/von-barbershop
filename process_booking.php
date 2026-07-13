@@ -161,6 +161,7 @@ if ($user) {
         'date'           => $date,
         'time'           => $time,
         'location'       => $location,
+        'appointment_id' => $appointmentId, // Add appointment ID for payment link
     ];
 
     // Fetch ALL barber/admin emails
