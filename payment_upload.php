@@ -35,8 +35,8 @@ if ($appointment['payment_status'] === 'verified' && !isset($_GET['success'])) {
     exit;
 }
 
-// If payment is pending and not showing success page, redirect to appointments
-if ($appointment['payment_status'] === 'pending' && !isset($_GET['success'])) {
+// If payment proof already uploaded (and not showing success page), redirect to appointments
+if ($appointment['payment_proof'] !== null && !isset($_GET['success'])) {
     $_SESSION['info'] = 'Payment already uploaded! Waiting for admin verification.';
     header('Location: my_appointments.php');
     exit;
