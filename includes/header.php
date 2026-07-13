@@ -366,6 +366,11 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-gear"></i> Settings
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)" onclick="showLogoutModal()">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             <?php endif; ?>
         </div>
@@ -377,31 +382,8 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             <div class="bottom-nav-container">
                 <?php if ($isLoggedIn): ?>
                     <?php if ($isAdmin): ?>
-                        <!-- Admin Bottom Nav -->
-                        <a href="index.php" class="bottom-nav-item <?php echo $current_page == 'index.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-house-door"></i>
-                            <span>Home</span>
-                        </a>
-                        <a href="admin_dashboard.php" class="bottom-nav-item <?php echo $current_page == 'admin_dashboard.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-speedometer2"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="admin_users.php" class="bottom-nav-item <?php echo $current_page == 'admin_users.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-people"></i>
-                            <span>Users</span>
-                        </a>
-                        <a href="admin_payments.php" class="bottom-nav-item <?php echo $current_page == 'admin_payments.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-credit-card"></i>
-                            <span>Payments</span>
-                        </a>
-                        <a href="admin_announcements.php" class="bottom-nav-item <?php echo $current_page == 'admin_announcements.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-megaphone"></i>
-                            <span>Announce</span>
-                        </a>
-                        <a href="admin_settings.php" class="bottom-nav-item <?php echo $current_page == 'admin_settings.php' ? 'active' : ''; ?>">
-                            <i class="bi bi-gear"></i>
-                            <span>Settings</span>
-                        </a>
+                        <!-- Admin Bottom Nav (Hidden on Desktop - Use Top Navbar) -->
+                        <!-- Only show minimal nav on mobile for admins -->
                         <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item" id="logoutNavBtn">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Logout</span>
