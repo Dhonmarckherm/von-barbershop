@@ -432,18 +432,19 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             right: 0;
             background: #0a0a0a;
             border-top: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 12px 0 calc(8px + env(safe-area-inset-bottom, 0px)) 0;
+            padding: 12px 0 8px 0;
+            padding-bottom: calc(8px + constant(safe-area-inset-bottom)); /* iOS 11.0 - 11.2 */
+            padding-bottom: calc(8px + env(safe-area-inset-bottom)); /* iOS 11.2+ */
             z-index: 1000;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
-        }
-        /* iOS Safari fix: ensure nav is visible above the toolbar */
-        @supports (-webkit-touch-callout: none) {
-            .bottom-nav {
-                bottom: env(safe-area-inset-bottom, 0px);
-            }
+            /* Force iOS to render fixed element properly */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
         body {
-            padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+            padding-bottom: 80px !important;
+            padding-bottom: calc(80px + constant(safe-area-inset-bottom)) !important; /* iOS 11.0 - 11.2 */
+            padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important; /* iOS 11.2+ */
         }
         .bottom-nav-container {
             position: relative;
