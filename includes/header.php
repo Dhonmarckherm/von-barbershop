@@ -34,7 +34,7 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' - ' : ''; ?><?php echo htmlspecialchars($siteName); ?></title>
     <link rel="icon" type="image/png" href="/assets/images/rubiks.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -425,9 +425,6 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     
     <!-- Add padding at bottom to prevent content from being hidden behind nav -->
     <style>
-        body {
-            padding-bottom: 80px !important;
-        }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -435,9 +432,18 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             right: 0;
             background: #0a0a0a;
             border-top: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 12px 0 8px 0;
+            padding: 12px 0 calc(8px + env(safe-area-inset-bottom, 0px)) 0;
             z-index: 1000;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+        }
+        /* iOS Safari fix: ensure nav is visible above the toolbar */
+        @supports (-webkit-touch-callout: none) {
+            .bottom-nav {
+                bottom: env(safe-area-inset-bottom, 0px);
+            }
+        }
+        body {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
         }
         .bottom-nav-container {
             position: relative;
