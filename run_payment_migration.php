@@ -43,17 +43,28 @@ try {
     
     // Add payment columns to appointments table
     echo "<h2>Step 2: Adding payment columns to appointments table...</h2>";
-    $sql1 = "
-        ALTER TABLE appointments 
-        ADD COLUMN IF NOT EXISTS payment_status ENUM('pending','verified','rejected') DEFAULT 'pending',
-        ADD COLUMN IF NOT EXISTS payment_proof VARCHAR(255) DEFAULT NULL,
-        ADD COLUMN IF NOT EXISTS downpayment_amount DECIMAL(10,2) DEFAULT 50.00,
-        ADD COLUMN IF NOT EXISTS balance_amount DECIMAL(10,2) DEFAULT 0.00,
-        ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMP NULL
-    ";
     
-    $pdo->exec($sql1);
-    echo "<div class='success'>✅ Successfully added payment columns to appointments table!</div>";
+    // Check each column individually and add if missing
+    $columns_to_add = [
+        'payment_status' => "ENUM('pending','verified','rejected') DEFAULT 'pending'",
+        'payment_proof' => "VARCHAR(255) DEFAULT NULL",
+        'downpayment_amount' => "DECIMAL(10,2) DEFAULT 50.00",
+        'balance_amount' => "DECIMAL(10,2) DEFAULT 0.00",
+        'payment_verified_at' => "TIMESTAMP NULL"
+    ];
+    
+    foreach ($columns_to_add as $column_name => $column_type) {
+        // Check if column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM appointments LIKE '$column_name'");
+        if (!$stmt->fetch()) {
+            // Column doesn't exist, add it
+            $sql = "ALTER TABLE appointments ADD COLUMN $column_name $column_type";
+            $pdo->exec($sql);
+            echo "<div class='success'>✅ Added column: $column_name</div>";
+        } else {
+            echo "<div class='info'>ℹ️ Column already exists: $column_name</div>";
+        }
+    }
     
     // Create payment_logs table
     echo "<h2>Step 3: Creating payment_logs table...</h2>";
