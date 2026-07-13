@@ -216,12 +216,15 @@ include 'includes/header.php';
                     
                     <!-- GCash QR Code Display -->
                     <div class="text-center mb-4">
-                        <div style="background: white; padding: 20px; border-radius: 16px; display: inline-block; box-shadow: 0 4px 20px rgba(40,167,69,0.2);">
-                            <img src="qr-code.jpg" alt="GCash QR Code" style="width: 280px; height: 280px; object-fit: contain; border-radius: 8px; display: block;">
+                        <p style="color: #28a745; font-size: 14px; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px;">
+                            <i class="bi bi-qr-code-scan"></i> Scan to Pay
+                        </p>
+                        <div style="background: white; padding: 25px; border-radius: 20px; display: inline-block; box-shadow: 0 6px 30px rgba(40,167,69,0.25); border: 3px solid rgba(40,167,69,0.2);">
+                            <img src="qr-code.jpg" alt="GCash QR Code" style="width: 320px; height: 320px; object-fit: contain; border-radius: 8px; display: block;">
                         </div>
-                        <div class="mt-3" style="background: rgba(40,167,69,0.08); border: 1px solid rgba(40,167,69,0.2); border-radius: 12px; padding: 15px 20px; display: inline-block;">
-                            <p style="color: var(--text-secondary); font-size: 13px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">GCash Number</p>
-                            <p style="color: #28a745; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 1px;">0992-249-1190</p>
+                        <div class="mt-3" style="background: rgba(40,167,69,0.08); border: 2px solid rgba(40,167,69,0.3); border-radius: 14px; padding: 18px 25px; display: inline-block;">
+                            <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">GCash Account Number</p>
+                            <p style="color: #28a745; font-size: 28px; font-weight: 700; margin: 0; letter-spacing: 2px;">0992-249-1190</p>
                         </div>
                         <p class="mt-2" style="color: var(--text-secondary); font-size: 13px;">
                             Scan QR code or send manually to the number above
