@@ -216,11 +216,15 @@ include 'includes/header.php';
                     
                     <!-- GCash QR Code Display -->
                     <div class="text-center mb-4">
-                        <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block;">
-                            <img src="qr-code.jpg" alt="GCash QR Code" style="width: 200px; height: 200px; object-fit: contain; border-radius: 8px;">
+                        <div style="background: white; padding: 20px; border-radius: 16px; display: inline-block; box-shadow: 0 4px 20px rgba(40,167,69,0.2);">
+                            <img src="qr-code.jpg" alt="GCash QR Code" style="width: 280px; height: 280px; object-fit: contain; border-radius: 8px; display: block;">
                         </div>
-                        <p class="mt-2" style="color: var(--text-secondary); font-size: 14px;">
-                            Scan QR code or send manually to: <strong style="color: #28a745;">0992-249-1190</strong>
+                        <div class="mt-3" style="background: rgba(40,167,69,0.08); border: 1px solid rgba(40,167,69,0.2); border-radius: 12px; padding: 15px 20px; display: inline-block;">
+                            <p style="color: var(--text-secondary); font-size: 13px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">GCash Number</p>
+                            <p style="color: #28a745; font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 1px;">0992-249-1190</p>
+                        </div>
+                        <p class="mt-2" style="color: var(--text-secondary); font-size: 13px;">
+                            Scan QR code or send manually to the number above
                         </p>
                     </div>
                     
