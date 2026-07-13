@@ -193,11 +193,17 @@ include 'includes/header.php';
                         <h5 class="mt-3" style="color: var(--text-primary);">No payments found</h5>
                         <p style="color: var(--text-secondary);">
                             <?php if ($filter === 'pending'): ?>
-                                All payments have been verified!
+                                All payments have been verified! Or no payments uploaded yet.
                             <?php else: ?>
                                 No <?php echo $filter; ?> payments yet.
                             <?php endif; ?>
                         </p>
+                        <hr style="border-color: var(--border-color);">
+                        <small style="color: var(--text-secondary);">
+                            <strong>Debug Info:</strong><br>
+                            Total appointments with payment_proof: <?php echo $pdo->query("SELECT COUNT(*) FROM appointments WHERE payment_proof IS NOT NULL")->fetchColumn(); ?><br>
+                            Total payment_logs: <?php echo $pdo->query("SELECT COUNT(*) FROM payment_logs")->fetchColumn(); ?>
+                        </small>
                     </div>
                 </div>
             <?php else: ?>
@@ -275,14 +281,14 @@ include 'includes/header.php';
                                     <!-- Actions -->
                                     <?php if ($apt['payment_status'] === 'pending'): ?>
                                         <div class="d-grid gap-2">
-                                            <form method="POST" class="d-inline">
+                                            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to APPROVE this payment? Make sure you received ₱50 via GCash.');">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
                                                 <input type="hidden" name="action" value="approve">
                                                 <button type="submit" class="btn btn-success w-100">
                                                     <i class="bi bi-check-circle"></i> Approve Payment
                                                 </button>
                                             </form>
-                                            <form method="POST" class="d-inline">
+                                            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to REJECT this payment?');">
                                                 <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
                                                 <input type="hidden" name="action" value="reject">
                                                 <button type="submit" class="btn btn-outline-danger w-100">
