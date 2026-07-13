@@ -384,20 +384,12 @@ include 'includes/header.php';
                                     <!-- Actions -->
                                     <?php if ($apt['payment_status'] === 'pending'): ?>
                                         <div class="d-grid gap-2 mt-4">
-                                            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to APPROVE this payment? Make sure you received ₱50 via GCash.');">
-                                                <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
-                                                <input type="hidden" name="action" value="approve">
-                                                <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(40,167,69,0.3);">
-                                                    <i class="bi bi-check-circle-fill"></i> Approve Payment
-                                                </button>
-                                            </form>
-                                            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to REJECT this payment?');">
-                                                <input type="hidden" name="appointment_id" value="<?php echo $apt['id']; ?>">
-                                                <input type="hidden" name="action" value="reject">
-                                                <button type="submit" class="btn w-100" style="background: white; color: #dc3545; border: 2px solid #dc3545; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px;">
-                                                    <i class="bi bi-x-circle-fill"></i> Reject Payment
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn w-100" onclick="showApproveModal(<?php echo $apt['id']; ?>, '<?php echo htmlspecialchars($apt['customer_name'], ENT_QUOTES); ?>')" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(40,167,69,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40,167,69,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(40,167,69,0.3)'">
+                                                <i class="bi bi-check-circle-fill"></i> Approve Payment
+                                            </button>
+                                            <button type="button" class="btn w-100" onclick="showRejectModal(<?php echo $apt['id']; ?>, '<?php echo htmlspecialchars($apt['customer_name'], ENT_QUOTES); ?>')" style="background: transparent; color: #dc3545; border: 2px solid #dc3545; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 15px; transition: all 0.3s ease;" onmouseover="this.style.background='#dc3545'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#dc3545'">
+                                                <i class="bi bi-x-circle-fill"></i> Reject Payment
+                                            </button>
                                         </div>
                                     <?php elseif ($apt['payment_status'] === 'verified'): ?>
                                         <div class="alert alert-success mb-0" style="background: rgba(40,167,69,0.1); border: 2px solid #28a745; border-radius: 10px; padding: 12px;">
@@ -420,5 +412,98 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
+
+<!-- Approve Confirmation Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #000000; border: 1px solid rgba(40, 167, 69, 0.3); border-radius: 20px; overflow: hidden;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; padding: 35px 30px 25px; text-align: center;">
+                <div style="margin: 0 auto;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="modal-body" style="padding: 30px; text-align: center;">
+                <h4 style="color: #f5f5f5; font-family: 'Playfair Display', serif; margin-bottom: 12px;">Approve Payment?</h4>
+                <p style="color: #b0b0b0; font-size: 15px; line-height: 1.6; margin-bottom: 8px;">
+                    You are about to verify the payment for <strong style="color: #C5A059;" id="approveCustomerName"></strong>.
+                </p>
+                <p style="color: #8A8A9A; font-size: 14px; margin-bottom: 0;">
+                    Please make sure you received <strong style="color: #28a745;">₱50.00</strong> via GCash before confirming.
+                </p>
+            </div>
+            <div class="modal-footer" style="background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.1); padding: 20px 30px; justify-content: center; gap: 12px;">
+                <button type="button" class="btn" data-bs-dismiss="modal" 
+                        style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #f5f5f5; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; transition: all 0.2s ease;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <form method="POST" style="flex: 1; margin: 0; padding: 0;">
+                    <input type="hidden" name="appointment_id" id="approveAppointmentId">
+                    <input type="hidden" name="action" value="approve">
+                    <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none; color: white; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(40,167,69,0.3);">
+                        <i class="bi bi-check-circle-fill"></i> Yes, Approve
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Confirmation Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: #000000; border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 20px; overflow: hidden;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border: none; padding: 35px 30px 25px; text-align: center;">
+                <div style="margin: 0 auto;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+            </div>
+            <div class="modal-body" style="padding: 30px; text-align: center;">
+                <h4 style="color: #f5f5f5; font-family: 'Playfair Display', serif; margin-bottom: 12px;">Reject Payment?</h4>
+                <p style="color: #b0b0b0; font-size: 15px; line-height: 1.6; margin-bottom: 8px;">
+                    You are about to reject the payment for <strong style="color: #C5A059;" id="rejectCustomerName"></strong>.
+                </p>
+                <p style="color: #8A8A9A; font-size: 14px; margin-bottom: 0;">
+                    The customer will be notified and may need to re-upload their payment proof.
+                </p>
+            </div>
+            <div class="modal-footer" style="background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.1); padding: 20px 30px; justify-content: center; gap: 12px;">
+                <button type="button" class="btn" data-bs-dismiss="modal" 
+                        style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #f5f5f5; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; transition: all 0.2s ease;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <form method="POST" style="flex: 1; margin: 0; padding: 0;">
+                    <input type="hidden" name="appointment_id" id="rejectAppointmentId">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border: none; color: white; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(220,53,69,0.3);">
+                        <i class="bi bi-x-circle-fill"></i> Yes, Reject
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showApproveModal(appointmentId, customerName) {
+    document.getElementById('approveAppointmentId').value = appointmentId;
+    document.getElementById('approveCustomerName').textContent = customerName;
+    new bootstrap.Modal(document.getElementById('approveModal')).show();
+}
+
+function showRejectModal(appointmentId, customerName) {
+    document.getElementById('rejectAppointmentId').value = appointmentId;
+    document.getElementById('rejectCustomerName').textContent = customerName;
+    new bootstrap.Modal(document.getElementById('rejectModal')).show();
+}
+</script>
 
 <?php include 'includes/footer.php'; ?>
