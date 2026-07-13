@@ -338,6 +338,36 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             <a class="navbar-brand" href="index.php">
                 <?php echo htmlspecialchars($siteName); ?>
             </a>
+            <?php if ($isLoggedIn && $isAdmin): ?>
+                <!-- Desktop Admin Navigation -->
+                <ul class="navbar-nav ms-auto d-none d-lg-flex flex-row">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_dashboard.php">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_users.php">
+                            <i class="bi bi-people"></i> Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_payments.php">
+                            <i class="bi bi-credit-card"></i> Payments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_announcements.php">
+                            <i class="bi bi-megaphone"></i> Announce
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin_settings.php">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            <?php endif; ?>
         </div>
     </nav>
     
