@@ -57,7 +57,7 @@ $query = "
     SELECT a.*, u.name as customer_name, u.email as customer_email,
            COALESCE(p.amount, a.downpayment_amount, 50.00) as payment_amount, 
            p.status as payment_log_status,
-           p.proof_filename, p.created_at as payment_created_at
+           a.payment_proof as proof_filename, p.created_at as payment_created_at
     FROM appointments a
     JOIN users u ON a.user_id = u.id
     LEFT JOIN payment_logs p ON a.id = p.appointment_id
