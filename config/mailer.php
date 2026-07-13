@@ -350,6 +350,10 @@ function buildCustomerEmailBody(array $details): string {
                     
                     <p style='font-size: 14px; line-height: 1.6; color: #B8B8CC; margin-bottom: 15px;'>After payment, upload your payment screenshot to complete the confirmation:</p>
                     
+                    <div style='background: rgba(197,160,89,0.08); border-left: 4px solid #C5A059; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px;'>
+                        <p style='margin: 0; font-size: 14px; line-height: 1.6; color: #F5F0E8;'><strong style='color: #C5A059;'>💰 Remaining Balance:</strong> The remaining <strong style='color: #28a745;'>₱100.00</strong> will be paid in person at <strong>VON Studio</strong> after your haircut.</p>
+                    </div>
+                    
                     <a href='" . $siteUrl . "/payment_upload.php?appointment_id=" . $appointmentId . "' style='display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;'>
                         📤 Upload Payment Proof
                     </a>

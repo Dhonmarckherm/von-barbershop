@@ -244,6 +244,14 @@ include 'includes/header.php';
                             <li>Upload the screenshot below</li>
                             <li>Wait for admin verification (usually within 5 minutes)</li>
                         </ol>
+                        <div class="mt-3 p-2" style="background: rgba(197,160,89,0.1); border-left: 3px solid #C5A059; border-radius: 6px;">
+                            <p style="color: #C5A059; font-size: 13px; margin: 0; font-weight: 600;">
+                                <i class="bi bi-info-circle"></i> Remaining Balance
+                            </p>
+                            <p style="color: var(--text-primary); font-size: 13px; margin: 4px 0 0 0;">
+                                The remaining <strong style="color: #28a745;">₱100.00</strong> will be paid in person at <strong>VON Studio</strong> after your haircut.
+                            </p>
+                        </div>
                     </div>
                     
                     <!-- GCash QR Code Display -->

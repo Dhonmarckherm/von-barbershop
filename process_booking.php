@@ -522,6 +522,10 @@ $dateDisplay = date('M d, Y', strtotime($date));
                 <span class="key">Downpayment</span>
                 <span class="val green">₱50.00</span>
             </div>
+            <div class="row" style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(197,160,89,0.2);">
+                <span class="key" style="color: #C5A059; font-size: 12px;">Balance at Studio</span>
+                <span class="val" style="color: #F5F0E8; font-size: 14px;">₱100.00 <span style="font-size: 11px; color: #8A8A9A;">(pay after haircut)</span></span>
+            </div>
         </div>
         
         <!-- Progress Steps -->
