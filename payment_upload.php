@@ -50,6 +50,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
     $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
     $max_size = 5 * 1024 * 1024; // 5MB
     
+    // iOS Safari fix: detect MIME type from file if browser sends empty type
+    if (empty($file['type'])) {
+        // Try to detect MIME type from file content
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $detected_type = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if ($detected_type) {
+            $file['type'] = $detected_type;
+            error_log('[Payment] Detected MIME type: ' . $detected_type);
+        } else {
+            // Fallback: detect from file extension
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $ext_map = [
+                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 
+                'png' => 'image/png', 'webp' => 'image/webp', 
+                'gif' => 'image/gif', 'heic' => 'image/heic', 'heif' => 'image/heif'
+            ];
+            if (isset($ext_map[$ext])) {
+                $file['type'] = $ext_map[$ext];
+                error_log('[Payment] Detected MIME type from extension: ' . $file['type']);
+            }
+        }
+    }
+    
     if (!in_array($file['type'], $allowed_types)) {
         $error = 'Invalid file type (' . $file['type'] . '). Please upload a JPG, PNG, or WebP image.';
     } elseif ($file['size'] > $max_size) {
