@@ -421,6 +421,34 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
             </div>
         </div>
     </nav>
+    <?php elseif ($isLoggedIn && $isAdmin): ?>
+    <!-- Admin Bottom Nav (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="container">
+            <div class="bottom-nav-container">
+                <a href="admin_dashboard.php" class="bottom-nav-item <?php echo $current_page == 'admin_dashboard.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin_users.php" class="bottom-nav-item <?php echo $current_page == 'admin_users.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-people"></i>
+                    <span>Users</span>
+                </a>
+                <a href="admin_payments.php" class="bottom-nav-item <?php echo $current_page == 'admin_payments.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-credit-card"></i>
+                    <span>Payments</span>
+                </a>
+                <a href="admin_announcements.php" class="bottom-nav-item <?php echo $current_page == 'admin_announcements.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-megaphone"></i>
+                    <span>Announce</span>
+                </a>
+                <a href="javascript:void(0)" onclick="showLogoutModal()" class="bottom-nav-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </nav>
     <?php endif; ?>
     
     <!-- Add padding at bottom to prevent content from being hidden behind nav -->
