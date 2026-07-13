@@ -472,6 +472,15 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
         body {
             padding-bottom: 80px !important;
         }
+        /* Hide bottom nav on desktop/laptop (screens wider than 992px) */
+        @media (min-width: 992px) {
+            .bottom-nav {
+                display: none !important;
+            }
+            body {
+                padding-bottom: 0 !important;
+            }
+        }
         .bottom-nav-container {
             position: relative;
             display: flex;
@@ -588,6 +597,17 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
     <script>
     (function() {
         function fixBottomNav() {
+            // Only show bottom nav on mobile (screens narrower than 992px)
+            if (window.innerWidth >= 992) {
+                // Desktop/laptop - hide bottom nav
+                var navs = document.querySelectorAll('.bottom-nav');
+                navs.forEach(function(nav) {
+                    nav.style.display = 'none';
+                });
+                return;
+            }
+            
+            // Mobile - show bottom nav
             var navs = document.querySelectorAll('.bottom-nav');
             navs.forEach(function(nav) {
                 nav.style.bottom = '0px';
