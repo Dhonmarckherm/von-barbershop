@@ -40,11 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['payment_proof'])) {
     $file = $_FILES['payment_proof'];
     
     // Validate file
-    $allowed_types = ['image/jpeg', 'image/png', 'image/jpg'];
+    $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
     $max_size = 5 * 1024 * 1024; // 5MB
     
     if (!in_array($file['type'], $allowed_types)) {
-        $error = 'Invalid file type. Please upload a JPG or PNG image.';
+        $error = 'Invalid file type (' . $file['type'] . '). Please upload a JPG, PNG, or WebP image.';
     } elseif ($file['size'] > $max_size) {
         $error = 'File too large. Maximum size is 5MB.';
     } elseif ($file['error'] !== UPLOAD_ERR_OK) {
