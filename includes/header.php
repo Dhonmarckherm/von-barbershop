@@ -360,6 +360,10 @@ $siteName = getSetting('barbershop_name', 'The Gentlemen\'s Barbershop');
                             <i class="bi bi-people"></i>
                             <span>Users</span>
                         </a>
+                        <a href="admin_payments.php" class="bottom-nav-item <?php echo $current_page == 'admin_payments.php' ? 'active' : ''; ?>">
+                            <i class="bi bi-credit-card"></i>
+                            <span>Payments</span>
+                        </a>
                         <a href="admin_announcements.php" class="bottom-nav-item <?php echo $current_page == 'admin_announcements.php' ? 'active' : ''; ?>">
                             <i class="bi bi-megaphone"></i>
                             <span>Announce</span>
