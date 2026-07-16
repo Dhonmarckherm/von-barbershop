@@ -233,23 +233,33 @@ include 'includes/header.php';
                         </div>
                     </div>
                     
+                    <!-- Downpayment Policy -->
+                    <div class="mb-4 p-3" style="background: rgba(220,53,69,0.08); border-left: 3px solid #dc3545; border-radius: 8px;">
+                        <h5 style="color: #ff6b6b; margin-bottom: 8px;">
+                            <i class="bi bi-shield-exclamation"></i> Downpayment Policy
+                        </h5>
+                        <p style="color: var(--text-primary); font-size: 13px; margin: 0; line-height: 1.5;">
+                            Please note that the <strong style="color: #ff6b6b;">₱50 downpayment is non-refundable</strong>. If you cancel your appointment <strong>30 minutes or more</strong> after making the payment, your downpayment will be forfeited.
+                        </p>
+                    </div>
+                    
                     <!-- Payment Instructions -->
                     <div class="mb-4 p-3" style="background: rgba(40,167,69,0.1); border-left: 3px solid #28a745; border-radius: 8px;">
                         <h5 style="color: #28a745; margin-bottom: 10px;">
                             <i class="bi bi-info-circle-fill"></i> Payment Instructions
                         </h5>
                         <ol style="color: var(--text-primary); padding-left: 20px; margin: 0;">
-                            <li>Send <strong>₱50.00</strong> to GCash number: <strong style="color: #28a745;">0992-249-1190</strong></li>
-                            <li>Take a screenshot of the payment confirmation</li>
+                            <li>Send <strong>₱50.00</strong> via GCash to: <strong style="color: #28a745;">0992-249-1190</strong></li>
+                            <li>Take a screenshot of your payment confirmation</li>
                             <li>Upload the screenshot below</li>
-                            <li>Wait for admin verification (usually within 5 minutes)</li>
+                            <li>Wait for admin to verify your payment (usually within 5 minutes)</li>
                         </ol>
                         <div class="mt-3 p-2" style="background: rgba(197,160,89,0.1); border-left: 3px solid #C5A059; border-radius: 6px;">
                             <p style="color: #C5A059; font-size: 13px; margin: 0; font-weight: 600;">
                                 <i class="bi bi-info-circle"></i> Remaining Balance
                             </p>
                             <p style="color: var(--text-primary); font-size: 13px; margin: 4px 0 0 0;">
-                                The remaining <strong style="color: #28a745;">₱100.00</strong> will be paid in person at <strong>VON Studio</strong> after your haircut.
+                                The remaining <strong style="color: #28a745;">₱100.00</strong> will be collected at <strong>VON Studio</strong> after your haircut.
                             </p>
                         </div>
                     </div>

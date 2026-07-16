@@ -124,9 +124,12 @@ unset($_SESSION['booking_old_input']);
                         <div class="d-flex align-items-start" style="gap: 12px;">
                             <i class="bi bi-info-circle-fill" style="font-size: 22px; color: #c0c0c0; flex-shrink: 0; margin-top: 2px;"></i>
                             <div>
-                                <p style="color: #ffffff; font-size: 14px; font-weight: 600; margin: 0 0 5px 0;">Service Fee Reminder</p>
-                                <p style="color: #c0c0c0; font-size: 13px; margin: 0; line-height: 1.5;">
-                                    All haircuts and services are <strong style="color: #ffffff; font-size: 15px;">₱150</strong> each. Payment is collected at the shop after your appointment.
+                                <p style="color: #ffffff; font-size: 14px; font-weight: 600; margin: 0 0 8px 0;">Service Fee Reminder</p>
+                                <p style="color: #c0c0c0; font-size: 13px; margin: 0 0 8px 0; line-height: 1.5;">
+                                    The haircut and services are <strong style="color: #ffffff; font-size: 15px;">₱150 only</strong>. You are required to pay a <strong style="color: #28a745;">₱50 downpayment</strong> to secure your slot, and the remaining <strong style="color: #C5A059;">₱100</strong> will be collected at the shop.
+                                </p>
+                                <p style="color: #ff6b6b; font-size: 12px; margin: 0; line-height: 1.4;">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> Please note: The ₱50 downpayment is <strong>non-refundable</strong>. If you cancel 30 minutes or more after payment, your downpayment will be forfeited.
                                 </p>
                             </div>
                         </div>
